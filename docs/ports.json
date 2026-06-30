@@ -3799,12 +3799,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/spaghettikart/spaghettikart/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/spaghettikart/spaghettikart/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/spaghettikart.zip",
-      "date_updated": "2026-06-30T21:08",
+      "date_updated": "2026-06-30T21:14",
       "first_seen": "2026-01-25",
-      "md5": "b24108d915d964ce5a293af3d4fc388e",
-      "size": 28989616,
+      "md5": "3cbaa03f11983578ef1524f7be88a8ca",
+      "size": 28989613,
       "lifetime_downloads": 134,
-      "last_commit": "[SPAGHETTIKART] Make otrgen more robust"
+      "last_commit": "[SPAGHETTIKART] Typo"
     }
   },
   {
