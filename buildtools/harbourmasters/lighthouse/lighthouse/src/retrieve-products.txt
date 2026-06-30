@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../../../lib_retrieve.sh"
+
+retrieve_init "$1" "$2"
+
+copy_binary Lighthouse
+copy_o2r lighthouse.o2r
+copy_extra gamecontrollerdb.txt
+replace_libs
+package_torch_assets assets/
+
+echo "Packaging complete."

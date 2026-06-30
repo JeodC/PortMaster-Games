@@ -1,0 +1,25 @@
+set -euo pipefail
+source /root/buildtools/harbourmasters/lib_build.sh
+
+project_clone https://github.com/HarbourMasters/lighthouse.git --recursive
+
+build_sdl2
+build_sdl2_net
+build_libzip
+build_json
+build_tinyxml2
+build_spdlog
+
+project_configure_and_build GeneratePortO2R \
+    -DUSE_OPENGLES=1 \
+    -DCMAKE_BUILD_TYPE=${BUILD_TYPE:-Release} \
+    -DCMAKE_CXX_FLAGS=-ldl
+
+stage_libs Lighthouse \
+    libSDL2_net-2.0.so.0 \
+    libz.so.1 \
+    libogg.so.0 \
+    libvorbis.so.0 \
+    libvorbisenc.so.2 \
+    libvorbisfile.so.3 \
+    libzip.so.5
