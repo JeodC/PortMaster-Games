@@ -57,7 +57,7 @@ process_rom() {
     if ./torch header -o "$GAMEDIR/baseroms/$input_file" > /dev/null; then
         if ./torch o2r "$GAMEDIR/baseroms/$input_file" --additional-files meta/mods.toml >> "$LOGFILE"; then
             echo "[OTRGEN] Extraction complete. O2R generated."
-            rm -rf "$GAMEDIR/mk64.o24"
+            rm -rf "$GAMEDIR/mk64.o2r"
             mv mk64.o2r "$GAMEDIR/mk64.o2r"
         else
             emit_fail_msg "[OTRGEN] Error: O2R generation failed for $GAMEDIR/baseroms/$input_file."
