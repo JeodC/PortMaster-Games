@@ -3799,12 +3799,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/spaghettikart/spaghettikart/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/spaghettikart/spaghettikart/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/spaghettikart.zip",
-      "date_updated": "2026-06-03T15:29",
+      "date_updated": "2026-06-30T21:08",
       "first_seen": "2026-01-25",
-      "md5": "40721e621711fd9450eb274b73b97536",
-      "size": 28989595,
-      "lifetime_downloads": 98,
-      "last_commit": "[HARBOURMASTERS] Rebranding, drop the 64"
+      "md5": "b24108d915d964ce5a293af3d4fc388e",
+      "size": 28989616,
+      "lifetime_downloads": 134,
+      "last_commit": "[SPAGHETTIKART] Make otrgen more robust"
     }
   },
   {
