@@ -5528,12 +5528,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/vhr.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-01T16:32",
       "first_seen": "2025-11-11",
-      "md5": "eb6277a05681f53e2605c3236925faa3",
-      "size": 5561701,
-      "lifetime_downloads": 82,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "5f85b53b4ee3705ed585659109bf63e5",
+      "size": 5562789,
+      "lifetime_downloads": 90,
+      "last_commit": "[VHR] Add patches for pixel scale persistence"
     }
   },
   {
