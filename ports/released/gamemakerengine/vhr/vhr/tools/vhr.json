@@ -8,6 +8,8 @@
     "code_patches": [
         { "entry": "gml_GlobalScript_bookkeeping_update", "gml": "gml/gml_GlobalScript_bookkeeping_update.gml" },
         { "entry": "gml_GlobalScript_car_bounce",         "gml": "gml/gml_GlobalScript_car_bounce.gml" },
-        { "entry": "gml_GlobalScript_player_scripts",     "gml": "gml/gml_GlobalScript_player_scripts.gml" }
+        { "entry": "gml_GlobalScript_player_scripts",     "gml": "gml/gml_GlobalScript_player_scripts.gml" },
+        { "entry": "gml_Object_obj_main_Alarm_10",        "gml": "gml/gml_Object_obj_main_Alarm_10.gml" },
+        { "entry": "gml_Room_rm_BIOME_Create",            "gml": "gml/gml_Room_rm_BIOME_Create.gml" }
     ]
 }
