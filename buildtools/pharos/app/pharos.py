@@ -107,15 +107,13 @@ class Pharos:
 
         # Live discount data, populated by a background thread once repos load.
         # Shape: { steam_appid: { shop_name: cut_pct, ... }, ... }
-        # No clicking — informational only on the port detail panel.
         self.discounts_by_appid: dict = {}
         self._discounts_lock = threading.Lock()
         self.service_msg: str = ""  # last install/uninstall result, shown in log strip
 
-        # If Pharos was just self-updated and the bundled daemon differs from
-        # the on-disk copy, refresh + restart the service in the background so
-        # users don't have to manually reinstall after every Pharos update.
-        # Backgrounded because systemctl restart can take a couple of seconds.
+        # Refresh + restart the service if the bundled daemon differs from the
+        # on-disk copy (avoids manual reinstall after a self-update). Backgrounded
+        # because systemctl restart can take a couple of seconds.
         threading.Thread(
             target=self._refresh_service_if_stale,
             name="ServiceRefresh",
@@ -310,15 +308,12 @@ class Pharos:
             threading.Thread(target=_safe_bg(self._fetch_winecask_json, r), name=f"WineCaskFetcher-{r.name}", daemon=True).start()
         threading.Thread(target=_safe_bg(self._fetch_discounts), name="DiscountFetcher", daemon=True).start()
 
-    # Pulls current ITAD-tracked discounts from the RHH-Ports Cloudflare Worker
-    # for every Steam appid present in the catalog. Stored in self.discounts_by_appid
-    # for the renderer to read. Fails silently — discounts are a nice-to-have, not
-    # critical to functionality.
+    # Pulls ITAD-tracked discounts from the RHH-Ports Cloudflare Worker for every
+    # Steam appid in the catalog into self.discounts_by_appid. Fails silently.
     def _fetch_discounts(self) -> None:
         WORKER = "https://rhh-ports-discounts.jeodc.workers.dev/"
         COUNTRY = "US"
-        # Wait briefly for ports.json fetch to populate so we know which appids matter.
-        # If repos are slow, we just retry up to ~15s total.
+        # Wait for ports.json to populate so we know which appids matter; retry up to ~15s.
         deadline = time.time() + 15
         appids = set()
         while time.time() < deadline:
@@ -405,7 +400,7 @@ class Pharos:
         pending = [r for r in self.repositories if not (getattr(r, "ports", None) or getattr(r, "bottles", None))]
         if pending:
             self._spin()
-            self.ui.draw_log(text=f"{self.spinner_frame} Loading {len(pending)} repo(s)…", background=True)
+            self.ui.draw_log(text=f"{self.spinner_frame} Loading {len(pending)} repo(s)...", background=True)
             self._draw_button_bar([])
             return
 
@@ -443,16 +438,16 @@ class Pharos:
     }
     _VIEW_MODE_HEADER_SUFFIX = {
         "all": "",
-        "updated": " — by last update",
-        "new": " — newest first",
-        "discount": " — biggest discount first",
+        "updated": " - by last update",
+        "new": " - newest first",
+        "discount": " - biggest discount first",
         "installed": "",
     }
 
     def _max_discount_for_port(self, port) -> int:
         """Deepest active discount % across all of a port's stores, or 0."""
         stores = getattr(port, "store", None) or []
-        # Find the port's Steam appid (the ITAD lookup key) from any Steam URL.
+        # Find the port's Steam appid (ITAD lookup key) from any Steam URL.
         appid = None
         for s in stores:
             if not isinstance(s, dict):
@@ -488,8 +483,7 @@ class Pharos:
         elif self.view_mode == "new":
             items.sort(key=lambda p: (getattr(p, "first_seen", None) or ""), reverse=True)
         elif self.view_mode == "discount":
-            # Sort by deepest discount descending; alphabetical tiebreak so
-            # ports without active sales fall to the bottom in stable order.
+            # Deepest discount first; alphabetical tiebreak keeps no-sale ports at bottom.
             items.sort(key=lambda p: (-self._max_discount_for_port(p),
                                       (getattr(p, "title", "") or "").lower()))
         return items
@@ -523,8 +517,8 @@ class Pharos:
                 28,
                 sel,
                 # Muted ports get a darker background and lose the "update
-                # available" highlight — consistent with the daemon, which
-                # filters muted ports out before deciding what to notify.
+                # available" highlight - consistent with the daemon, which
+                # filters muted ports out before notifying.
                 fill=c_row_muted if (is_muted and not sel) else None,
                 color=color_text if sel else color_menu_bg,
                 highlight=item.update_available and not is_muted,
@@ -536,10 +530,9 @@ class Pharos:
             try:
                 self.ui.draw_port_image(selected_item)
             except Exception:
-                pass  # Image error handled below
-        # Reserve space below the description for the store-icon row when the
-        # selected port has any. Skips entirely for ports without stores so
-        # the description gets the full vertical area.
+                pass  # image draw errors are non-fatal
+        # Reserve space below the description for the store-icon row (only when
+        # the port has stores, else the description gets the full vertical area).
         has_stores = bool(selected_item and getattr(selected_item, "store", None))
         store_reserve = STORE_ROW_HEIGHT if has_stores else 0
         if selected_item and selected_item.desc:
@@ -552,7 +545,7 @@ class Pharos:
                 reserve_bottom=store_reserve,
             )
         if has_stores:
-            # Map this port's Steam appid → its per-shop discount entries so
+            # Map this port's Steam appid -> its per-shop discount entries so
             # the renderer can show "-NN%" beside relevant icons.
             shops = None
             for s in selected_item.store:
@@ -608,8 +601,7 @@ class Pharos:
         else:
             selected = items[self.port_idx] if items else None
             local_md5 = local_md5s.get(selected.name) if selected else None
-            
-            # If download is disabled, show a warning in the log area
+
             if not can_download:
                 bottom_log = f"ERROR: {WINDOWS_DIR} not found!"
             elif selected and selected.md5 and local_md5 and selected.md5 != local_md5:
@@ -629,9 +621,8 @@ class Pharos:
 
         btns.append({"key": self.layout["b"]["btn"], "label": "Back", "color": self.layout["b"]["color"]})
 
-        # X toggles per-port mute. Only meaningful for ports already in the
-        # local manifest (selected_item.name in local_md5s); no point muting
-        # something the daemon won't see anyway.
+        # X toggles per-port mute - only meaningful for ports in the local
+        # manifest (selected_item.name in local_md5s); nothing to mute otherwise.
         if selected_item is not None and selected_item.name in local_md5s:
             x_label = "Unmute" if selected_item.name in muted_ports else "Mute"
             btns.append({"key": self.layout["x"]["btn"], "label": x_label,
@@ -678,8 +669,7 @@ class Pharos:
         can_download = (not is_bottle_repo) or WINDOWS_DIR.exists()
 
         # B (back) and Y (cycle view mode) must work even when the filtered
-        # list is empty — otherwise the user is stuck in e.g. an empty
-        # "installed" view with no way to get back to "all".
+        # list is empty, else the user gets stuck in an empty view.
         if self.input.key(self.layout["b"]["key"]):
             for item in all_items:
                 item.image_path = None
@@ -705,8 +695,7 @@ class Pharos:
             self._ensure_worker()
 
         elif self.input.key(self.layout["x"]["key"]):
-            # Toggle mute on the currently selected port. Only acts on ports
-            # that have a manifest entry — there's nothing to mute otherwise.
+            # Toggle mute; only acts on ports with a manifest entry.
             sel_item = items[self.port_idx]
             if sel_item.name in local_md5s:
                 new_state = toggle_muted_port(sel_item.name)
@@ -822,7 +811,6 @@ class Pharos:
                 background=True,
             )
 
-        # Button bar.
         btns = [{"key": self.layout["b"]["btn"], "label": "Back",
                  "color": self.layout["b"]["color"]}]
         if supported:
@@ -843,11 +831,9 @@ class Pharos:
             return
 
         if self.input.key(self.layout["a"]["key"]):
-            # Block briefly while we run install/uninstall — the operation
-            # touches systemctl / batocera-settings / filesystem, all of
-            # which return in a couple of seconds at most. Show a transient
-            # "Working…" hint so the UI isn't visually frozen.
-            self.ui.draw_log(text="Working…", background=True)
+            # install/uninstall blocks for a couple seconds (systemctl /
+            # batocera-settings / filesystem); show a transient "Working..." hint.
+            self.ui.draw_log(text="Working...", background=True)
             self.ui.render_to_screen()
             if self.service.installed:
                 ok, msg = self.service.uninstall()
@@ -905,7 +891,7 @@ class Pharos:
             self.self_update_prompted = True
             if self.updater.download():
                 self.ui.draw_log(
-                    text=f"Pharos v{self.updater.latest_version} downloaded — applying and re-launching...",
+                    text=f"Pharos v{self.updater.latest_version} downloaded - applying and re-launching...",
                     background=True,
                 )
                 self.ui.render_to_screen()

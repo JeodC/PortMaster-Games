@@ -1,26 +1,23 @@
 """
-Pharos Service — install/uninstall the background update-checker daemon.
+Pharos Service - install/uninstall the background update-checker daemon.
 
 Each supported bucket gets its own autostart hook (systemd unit / userland
-service script). Plus an ES event script that SIGHUPs the daemon on
-game-end, so users see fresh notifications when ES regains the foreground.
+service script) plus an ES game-end script that SIGHUPs the daemon so users
+see fresh notifications when ES regains the foreground.
 
-MuOS is detected but unsupported for the background daemon: it has no
-ES-style game-end hook directory, and patching `/opt/muos/script/mux/
-launch.sh` is fragile across MuOS updates. MuOS users run Pharos's UI
-directly to check for updates; status_text() reports "Not supported on
-this CFW (muos)" for the install screen.
+MuOS is detected but unsupported: it has no ES game-end hook dir, and
+patching launch.sh is fragile across MuOS updates. MuOS users run Pharos's
+UI directly.
 
-The daemon ships as its own PyInstaller --onefile binary, embedded inside
-the Pharos binary via --add-binary. At runtime the bundled daemon lives in
-BASE_PATH (sys._MEIPASS); install() copies it out to INSTALL_DIR as a
-persistent executable, uninstall() removes it. The port zip therefore
-ships only the Pharos binary — no loose script files anywhere.
+The daemon is a separate PyInstaller --onefile binary embedded in the Pharos
+binary via --add-binary; at runtime it lives in BASE_PATH (sys._MEIPASS).
+install() copies it out to INSTALL_DIR as a persistent executable - so the
+port zip ships only the Pharos binary, no loose scripts.
 
-refresh_if_stale() is called once on Pharos startup; if the bundled daemon
-hash differs from the on-disk extracted copy (which happens after a Pharos
-self-update bringing new daemon code), it replaces the file and restarts
-the per-CFW service so the new code takes over without user intervention.
+refresh_if_stale() runs once on Pharos startup: if the bundled daemon hash
+differs from the extracted on-disk copy (i.e. a Pharos self-update brought
+new daemon code), it swaps the file and restarts the service - so the daemon
+follows Pharos updates automatically.
 """
 from __future__ import annotations
 
@@ -38,24 +35,22 @@ from config import BASE_PATH, INSTALL_DIR
 
 DAEMON_NAME = "pharos-daemon"
 
-# Single source of truth for the "this CFW isn't supported" message —
-# used by status_text() and the early-out in install/uninstall so we
-# don't drift across multiple wordings.
+# Shared "unsupported CFW" wording, used by status_text() and install/uninstall.
 UNSUPPORTED_MSG = "CFW '{cfw}' not supported"
 
 # Bundled binary (read-only, inside _MEIPASS) and on-disk location after install.
 DAEMON_BUNDLED_PATH = Path(BASE_PATH) / DAEMON_NAME
 DAEMON_EXTRACTED_PATH = Path(INSTALL_DIR) / DAEMON_NAME
 
-# Per-port mute lives on each manifest entry as a "muted" boolean. The
-# daemon reads it from the same manifest the Pharos UI mutates here.
+# Per-port mute is a "muted" boolean on each manifest entry; the daemon reads
+# the same manifest the Pharos UI mutates here.
 MANIFEST_PATH = Path(INSTALL_DIR) / "resources" / "manifest.json"
 
 
 def toggle_muted_port(name: str) -> bool | None:
     """Flip the "muted" flag on the manifest entry matching `name`. Returns
-    the new state (True if now muted), or None if no matching entry exists.
-    Atomic write via tmp + rename so a partial save can't corrupt manifest."""
+    the new state, or None if no matching entry exists. Atomic write via
+    tmp + rename so a partial save can't corrupt the manifest."""
     if not MANIFEST_PATH.exists():
         return None
     try:
@@ -95,9 +90,8 @@ DAEMON_PID_FILE = Path(INSTALL_DIR) / "resources" / "daemon.pid"
 # ----------------------------------------------------------------------
 # CFW detection
 # ----------------------------------------------------------------------
-# CFW_NAME values (case-insensitive) PortMaster's device_info.txt may
-# export. Family-grouped: every member of a tuple shares the same
-# install code path (paths + service framework + ES-frontend HTTP notify).
+# CFW_NAME values (case-insensitive) PortMaster's device_info.txt may export,
+# grouped by family: every member of a tuple shares one install code path.
 _LIBREELEC_FAMILY = ("rocknix", "amberelec", "jelos", "emuelec", "unofficialos")
 _BATOCERA_FAMILY = ("batocera", "knulli", "reglinux")
 _KNOWN_UNSUPPORTED = (
@@ -106,10 +100,9 @@ _KNOWN_UNSUPPORTED = (
 
 
 def _verify_systemd_capable() -> bool:
-    """The 'systemd' bucket's install + notify prereqs: systemd CLI, the
-    LibreELEC-family /storage user-systemd dir, and a batocera-ES
-    scripts dir. Belt-and-braces — env can be wrong (sandbox, dev VM,
-    weird fork) so we verify the capability before trusting the label."""
+    """Verify the 'systemd' bucket's prereqs on disk (systemctl, the
+    /storage user-systemd dir, the ES scripts dir) - env labels can be
+    wrong, so confirm capability before trusting them."""
     return (
         shutil.which("systemctl") is not None
         and Path("/storage/.config/system.d").exists()
@@ -118,8 +111,8 @@ def _verify_systemd_capable() -> bool:
 
 
 def _verify_userland_capable() -> bool:
-    """The 'userland' bucket's install + notify prereqs: Batocera
-    settings CLI, /userdata services dir, and batocera-ES scripts dir."""
+    """Verify the 'userland' bucket's prereqs: batocera-settings-set,
+    the /userdata services dir, and the ES scripts dir."""
     return (
         shutil.which("batocera-settings-set") is not None
         and Path("/userdata/system/services").exists()
@@ -130,29 +123,21 @@ def _verify_userland_capable() -> bool:
 @functools.lru_cache(maxsize=1)
 def detect_cfw() -> str:
     """Returns 'systemd' / 'userland' / 'muos' / 'unknown' (or a
-    known-but-unsupported lowercase CFW name like 'arkos' / 'retrodeck'
-    so the user-facing 'not supported' message shows what we actually
-    saw, not just 'unknown').
+    known-but-unsupported lowercase CFW name, so the 'not supported'
+    message names what we saw rather than just 'unknown').
 
-    Bucket names describe the install mechanism, not a specific CFW —
-    'systemd' covers the LibreELEC family (ROCKNIX, AmberELEC, JELOS,
-    EmuELEC, UnofficialOS), 'userland' covers the Batocera family
-    (Knulli, Batocera, REGLinux). Both buckets share the batocera-ES
-    HTTP /notify endpoint and the ES scripts/game-end/ hook.
+    Buckets name the install mechanism, not a CFW: 'systemd' = the
+    LibreELEC family (ROCKNIX, AmberELEC, JELOS, EmuELEC, UnofficialOS),
+    'userland' = the Batocera family (Knulli, Batocera, REGLinux).
 
     Detection order:
-      1. PortMaster's $CFW_NAME — set by PortMaster/device_info.txt and
-         exported via control.txt for every port launch. Authoritative
-         when present (Pharos runs as a port).
-      2. Filesystem markers — fallback for the daemon (init-launched, no
-         inherited env) and Pharos runs outside PM (diagnostics).
-      3. Capability verification — if env or markers point at a supported
-         bucket but the install/notify prereqs aren't actually on disk,
-         downgrade to 'unknown' so the user sees an accurate
-         'not supported' instead of a later opaque install failure.
+      1. PortMaster's $CFW_NAME - authoritative when present.
+      2. Filesystem markers - fallback for the init-launched daemon (no
+         inherited env) and Pharos runs outside PortMaster.
+      3. Capability verification - if env/markers point at a supported
+         bucket but its prereqs aren't on disk, downgrade to 'unknown'.
 
-    Cached: detection is invariant within a process, and we want the
-    diagnostic log line to fire exactly once per Pharos run."""
+    Cached: detection is process-invariant and the log line should fire once."""
     env_name = (os.environ.get("CFW_NAME") or "").lower()
     bucket: str | None = None
 
@@ -193,6 +178,10 @@ def detect_cfw() -> str:
 # Templates
 # ----------------------------------------------------------------------
 def _systemd_unit(daemon_path: Path) -> str:
+    # TMPDIR points PyInstaller's --onefile extraction at disk, not /tmp: /tmp
+    # is tmpfs (RAM) on these CFWs, so the ~15 MB extraction would stay pinned
+    # in memory. ExecStartPre recreates the dir (cleanup/uninstall wipes it).
+    tmpdir = daemon_path.parent / "tmp"
     return f"""[Unit]
 Description=Pharos update checker daemon
 After=emustation.service
@@ -200,6 +189,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+Environment=TMPDIR={tmpdir}
+ExecStartPre=/bin/sh -c 'mkdir -p "{tmpdir}"'
 ExecStart={daemon_path}
 Restart=on-failure
 RestartSec=10
@@ -210,8 +201,10 @@ WantedBy=default.target
 
 
 def _userland_service(daemon_path: Path) -> str:
+    # Extraction to disk, not tmpfs - see _systemd_unit for the TMPDIR rationale.
+    tmpdir = daemon_path.parent / "tmp"
     return f"""#!/bin/sh
-# Pharos update checker daemon — Batocera-style user service.
+# Pharos update checker daemon - Batocera-style user service.
 # Batocera's S99userservices runs this with start/stop arg.
 #
 # Includes a supervisor loop so a daemon crash respawns automatically (the
@@ -219,6 +212,8 @@ def _userland_service(daemon_path: Path) -> str:
 # bucket has to do it itself). The supervisor traps SIGTERM and forwards
 # it to the daemon child so 'service stop' kills both cleanly.
 PIDFILE=/var/run/pharos-daemon.pid
+export TMPDIR="{tmpdir}"
+mkdir -p "{tmpdir}" 2>/dev/null
 
 case "$1" in
     start)
@@ -306,16 +301,15 @@ def _hash_file(path: Path) -> str:
 
 
 def _daemon_alive(pid_file: Path, timeout: float = 5.0) -> bool:
-    """Poll the daemon's pidfile for up to `timeout` seconds and verify the
-    recorded pid is alive. Used after a service restart to confirm the new
-    daemon binary actually came up. Tolerates the brief window where the
-    pidfile is removed by the previous daemon's SIGTERM cleanup before the
-    new daemon writes its own."""
+    """Poll the pidfile for up to `timeout`s and verify the recorded pid is
+    alive - used after a restart to confirm the new daemon came up. Tolerates
+    the window where the old daemon's SIGTERM cleanup has removed the pidfile
+    before the new one writes its own."""
     deadline = time.time() + timeout
     while time.time() < deadline:
         try:
             pid = int(pid_file.read_text().strip())
-            os.kill(pid, 0)  # non-fatal liveness probe
+            os.kill(pid, 0)  # liveness probe
             return True
         except (OSError, ValueError, FileNotFoundError):
             time.sleep(0.2)
@@ -323,19 +317,19 @@ def _daemon_alive(pid_file: Path, timeout: float = 5.0) -> bool:
 
 
 def _cleanup_runtime_files() -> None:
-    """Remove pid / state / log files left behind by the daemon. The
-    daemon's SIGTERM handler normally clears its own pidfile, but we do it
-    here too so an `Uninstall` after a wedged or already-dead daemon leaves
-    no trace."""
+    """Remove pid / state / log files left by the daemon, so an uninstall
+    after a wedged or already-dead daemon leaves no trace."""
     for f in (
         Path(INSTALL_DIR) / "resources" / "daemon.pid",
         Path(INSTALL_DIR) / "resources" / "daemon.state.json",
         Path(INSTALL_DIR) / "logs" / "daemon.log",
+        Path(INSTALL_DIR) / "logs" / "daemon.log.1",
     ):
         try:
             f.unlink(missing_ok=True)
         except OSError:
             pass
+    shutil.rmtree(Path(INSTALL_DIR) / "tmp", ignore_errors=True)
 
 
 # ----------------------------------------------------------------------
@@ -344,16 +338,14 @@ def _cleanup_runtime_files() -> None:
 class Service:
     def __init__(self) -> None:
         self.cfw = detect_cfw()
-        # Persistent location after extraction. Survives Pharos exit /
-        # _MEIPASS cleanup / reboots — that's the whole point.
+        # Persistent path - survives Pharos exit, _MEIPASS cleanup, and reboots.
         self.daemon_path = DAEMON_EXTRACTED_PATH
 
     def _extract_daemon(self) -> bool:
         """Copy the bundled daemon out of _MEIPASS to a persistent location.
-        Idempotent on hash, not just on existence — a previous extraction
-        that was truncated, corrupted, or left over from a different Pharos
-        version is detected and replaced rather than silently kept. Returns
-        True on success (fresh copy, replacement, or hash-matching no-op)."""
+        Idempotent on hash, not just existence - a truncated, corrupted, or
+        stale-version extraction is detected and replaced. Returns True on
+        success (fresh copy, replacement, or hash-matching no-op)."""
         if not DAEMON_BUNDLED_PATH.exists():
             print(f"[Service] ERROR: bundled daemon missing at {DAEMON_BUNDLED_PATH}")
             return False
@@ -394,37 +386,45 @@ class Service:
         return False, UNSUPPORTED_MSG.format(cfw=self._cfw_display_name())
 
     def _cfw_display_name(self) -> str:
-        """Friendly CFW name for user-facing strings. Pulls $CFW_NAME from
-        PortMaster's exported env (preserves casing — 'AmberELEC', 'muOS',
-        'TrimUI'). Falls back to our internal lowercase dispatch key if
-        env isn't set (daemon path, Pharos run outside PortMaster)."""
+        """Friendly CFW name for user-facing strings: $CFW_NAME preserves
+        casing ('AmberELEC', 'muOS'); falls back to the lowercase dispatch
+        key when env is unset (daemon path, Pharos outside PortMaster)."""
         return os.environ.get("CFW_NAME") or self.cfw
 
     # ------------------------------------------------------------------
     # Auto-refresh on Pharos update
     # ------------------------------------------------------------------
     def _restart_service(self) -> None:
-        """Bucket-specific service restart. Used by refresh_if_stale (twice
-        in the rollback path) so the dispatch lives in one place."""
+        """Bucket-specific service restart, centralized for refresh_if_stale."""
         if self.cfw == "systemd":
             _safe_run(["systemctl", "restart", "pharos-daemon.service"])
         elif self.cfw == "userland":
             _safe_run([str(USERLAND_SERVICE_PATH), "stop"])
             _safe_run([str(USERLAND_SERVICE_PATH), "start"])
 
-    def refresh_if_stale(self) -> bool:
-        """If the bundled daemon binary differs from the extracted on-disk
-        copy, replace it and restart the service. Verifies the new daemon
-        actually starts; rolls back to the previous binary if it doesn't.
-        Returns True if a refresh happened (including successful rollback
-        after a failed install). Called once on Pharos startup so a
-        self-update of Pharos transparently brings the daemon with it.
+    def _refresh_launch_config(self) -> None:
+        """Re-emit the per-CFW autostart artefact during a refresh so template
+        changes (e.g. the TMPDIR line) reach existing installs, not just the
+        swapped binary - otherwise updaters keep their old unit until a manual
+        reinstall. Idempotent: writes exactly what install() would. (Tied to a
+        binary refresh, so a template-only release wouldn't retrigger it.)"""
+        (self.daemon_path.parent / "tmp").mkdir(parents=True, exist_ok=True)
+        if self.cfw == "systemd":
+            _write_executable(SYSTEMD_UNIT_PATH, _systemd_unit(self.daemon_path))
+            _safe_run(["systemctl", "daemon-reload"])
+        elif self.cfw == "userland":
+            _write_executable(USERLAND_SERVICE_PATH, _userland_service(self.daemon_path))
 
-        The rollback path matters because a single bad release of Pharos
-        could otherwise brick the background daemon for everyone who
-        self-updates: previously we'd overwrite the working binary, fail
-        to restart, and leave the system without a daemon until the next
-        Pharos run shipped a fixed binary."""
+    def refresh_if_stale(self) -> bool:
+        """If the bundled daemon differs from the extracted on-disk copy,
+        swap it in and restart the service, verifying the new daemon starts
+        and rolling back to the previous binary if it doesn't. Returns True if
+        a refresh happened (including a successful rollback). Called once on
+        Pharos startup so a Pharos self-update brings the daemon with it.
+
+        Rollback matters because otherwise a single bad release would brick
+        the daemon for everyone who self-updates - the old binary is already
+        overwritten, so a failed restart leaves no working daemon."""
         if not self.installed:
             return False
         if not DAEMON_BUNDLED_PATH.exists() or not DAEMON_EXTRACTED_PATH.exists():
@@ -432,8 +432,7 @@ class Service:
         if _hash_file(DAEMON_BUNDLED_PATH) == _hash_file(DAEMON_EXTRACTED_PATH):
             return False
 
-        # Stage the new binary alongside the old so we have a recovery anchor.
-        # .new = staged candidate; .bak = old binary held for potential rollback.
+        # .new = staged candidate; .bak = old binary held for rollback.
         new_path = DAEMON_EXTRACTED_PATH.with_suffix(".new")
         bak_path = DAEMON_EXTRACTED_PATH.with_suffix(".bak")
         try:
@@ -444,16 +443,14 @@ class Service:
             new_path.unlink(missing_ok=True)
             return False
 
-        # Atomic-ish swap: move old aside, move new into place. If the second
-        # rename fails the system still has .bak as a recovery anchor.
+        # Swap: move old aside, move new into place. A failed second rename
+        # still leaves .bak as a recovery anchor.
         try:
             os.replace(DAEMON_EXTRACTED_PATH, bak_path)
             os.replace(new_path, DAEMON_EXTRACTED_PATH)
         except OSError as e:
             print(f"[Service] refresh: swap failed: {e}; attempting to restore")
-            # Best-effort restore: if the first replace succeeded, .bak holds
-            # the old binary — put it back. If the first failed, original
-            # is still in place.
+            # If the first replace succeeded, restore .bak; else original stands.
             if bak_path.exists() and not DAEMON_EXTRACTED_PATH.exists():
                 try:
                     os.replace(bak_path, DAEMON_EXTRACTED_PATH)
@@ -464,9 +461,11 @@ class Service:
             return False
 
         print(f"[Service] refresh: extracted -> {DAEMON_EXTRACTED_PATH} (old saved at {bak_path})")
+        # Update the launch config too, so the restart adopts template changes.
+        self._refresh_launch_config()
         self._restart_service()
 
-        # Verify the new daemon actually starts. If not, roll back.
+        # Verify the new daemon starts; roll back if not.
         if _daemon_alive(DAEMON_PID_FILE, timeout=5.0):
             bak_path.unlink(missing_ok=True)
             print("[Service] refresh: new daemon verified alive; backup discarded")
@@ -487,7 +486,7 @@ class Service:
         return True
 
     # ------------------------------------------------------------------
-    # Install / uninstall — per-CFW dispatch
+    # Install / uninstall - per-CFW dispatch
     # ------------------------------------------------------------------
     def install(self) -> tuple[bool, str]:
         if not self.supported:
@@ -517,9 +516,8 @@ class Service:
 
     # ---- systemd bucket (LibreELEC family) --------------------------
     def _install_systemd(self) -> tuple[bool, str]:
-        # Defensive: kill any stale daemon + state files left behind by a
-        # previous run (e.g. user updated Pharos manually so the old daemon
-        # keeps running and its pidfile blocks the new one from starting).
+        # Kill any stale daemon + state files whose pidfile would block the new
+        # one from starting (e.g. a manual Pharos update left the old daemon up).
         rc, msg = _safe_run(["systemctl", "stop", "pharos-daemon.service"])
         print(f"[Service] pre-install stop (rc={rc}) {msg}")
         _cleanup_runtime_files()
@@ -560,7 +558,7 @@ class Service:
 
     # ---- userland bucket (Batocera-family user-service) -------------
     def _install_userland(self) -> tuple[bool, str]:
-        # Defensive: stop any stale daemon + clear pid/state files first.
+        # Stop any stale daemon + clear pid/state files first.
         if USERLAND_SERVICE_PATH.exists():
             _safe_run([str(USERLAND_SERVICE_PATH), "stop"])
         _kill_pid_file(Path("/var/run/pharos-daemon.pid"))

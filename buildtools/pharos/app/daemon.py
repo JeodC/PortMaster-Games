@@ -1,22 +1,19 @@
 #!/usr/bin/env python3
 """
-pharos-daemon — background update-checker for Pharos.
+pharos-daemon - background update-checker for Pharos.
 
-Event-driven: runs an initial check on startup, then sleeps until SIGHUP
-(fired by the ES game-end script the Service installer drops). On wake,
-re-checks Pharos's manifest against each repo's docs/ports.json and fires
-a single ES notification for any outdated ports. Dedup state is
-process-local — a daemon restart yields a fresh notification, which is
-the point: ES restarts re-show the toast.
+Event-driven: initial check on startup, then sleeps until SIGHUP (fired by
+the ES game-end script). On wake, re-checks Pharos's manifest against each
+repo's docs/ports.json and fires one ES notification for outdated ports.
+Dedup state is process-local, so a restart re-shows the toast.
 
-Only the 'systemd' bucket (LibreELEC family — ROCKNIX, AmberELEC, JELOS,
-EmuELEC, UnofficialOS) and the 'userland' bucket (Batocera family —
-Knulli, Batocera, REGLinux) are supported as daemon hosts. MuOS detection
-is preserved for accurate logging but no notification backend is wired up
-(MuOS users invoke Pharos directly to check for updates).
+Supported daemon hosts: the 'systemd' bucket (LibreELEC family - ROCKNIX,
+AmberELEC, JELOS, EmuELEC, UnofficialOS) and 'userland' bucket (Batocera
+family - Knulli, Batocera, REGLinux). MuOS is detected for logging but has
+no notification backend (MuOS users invoke Pharos directly).
 
-Usage (the Pharos Service installer takes care of all this — direct
-invocation is for diagnostics only):
+Usage (the Service installer handles this; direct invocation is for
+diagnostics):
   pharos-daemon              # daemon loop
   pharos-daemon --once       # single check + exit
   pharos-daemon --verbose    # echo logs to stderr
@@ -24,7 +21,9 @@ invocation is for diagnostics only):
 from __future__ import annotations
 
 import argparse
+import ctypes
 import functools
+import gc
 import hashlib
 import json
 import os
@@ -39,17 +38,14 @@ from pathlib import Path
 from typing import Iterable
 from urllib.error import HTTPError, URLError
 
-# Minimal CFWs (Knulli) ship Python without CA certs in OpenSSL's default
-# search path, so HTTPS requests fail with CERTIFICATE_VERIFY_FAILED. Point
-# urllib + ssl at our bundled certifi store before anything tries to fetch.
+# Minimal CFWs (Knulli) lack CA certs in OpenSSL's default path, so HTTPS
+# fails with CERTIFICATE_VERIFY_FAILED. Point ssl at our bundled certifi store.
 import certifi
 os.environ.setdefault("SSL_CERT_FILE", certifi.where())
 os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
 
-# Ignore SIGHUP at import time. Python's default disposition is SIG_DFL
-# (terminate), so an ES game-end SIGHUP arriving before daemon_loop()'s
-# signal.signal(SIGHUP, _on_wake) call kills the process. daemon_loop
-# replaces this with the real handler once it's ready.
+# Ignore SIGHUP at import time: the default SIG_DFL would terminate the
+# process if a game-end SIGHUP lands before daemon_loop installs its handler.
 signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
 # ----------------------------------------------------------------------
@@ -65,10 +61,8 @@ LOG_FILE = INSTALL_DIR / "logs" / "daemon.log"
 PID_FILE.parent.mkdir(parents=True, exist_ok=True)
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-# Minimum gap between successive GitHub fetches. Keeps SIGHUP storms
-# (back-to-back game-end events on the same session) from hammering the
-# API. 5 minutes is generous enough to cover legitimate retries while
-# still rate-limiting. Hardcoded — production daemon doesn't need tuning.
+# Minimum gap between GitHub fetches; rate-limits SIGHUP storms (back-to-back
+# game-end events) from hammering the API.
 MIN_FETCH_INTERVAL_S = 300
 
 RETRY_BACKOFF_INITIAL = 5
@@ -80,9 +74,30 @@ GITHUB_HTTP_TIMEOUT = 10
 # ----------------------------------------------------------------------
 _verbose = False
 
+# Rotate daemon.log at this size, keeping a single .1 backup.
+LOG_MAX_BYTES = 256 * 1024
+
+
+def _rotate_log_if_needed() -> None:
+    """Roll LOG_FILE -> LOG_FILE.1 once it exceeds LOG_MAX_BYTES. Size-based
+    rotation (vs. truncate-on-every-start) keeps a restart storm visible instead
+    of each respawn erasing the prior crash."""
+    try:
+        if LOG_FILE.stat().st_size < LOG_MAX_BYTES:
+            return
+    except OSError:
+        return
+    backup = LOG_FILE.with_name(LOG_FILE.name + ".1")
+    try:
+        os.replace(LOG_FILE, backup)
+    except OSError:
+        pass
+
+
 def log(level: str, msg: str) -> None:
     line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] [{level}] {msg}\n"
     try:
+        _rotate_log_if_needed()
         with open(LOG_FILE, "a", encoding="utf-8") as f:
             f.write(line)
     except OSError:
@@ -93,9 +108,8 @@ def log(level: str, msg: str) -> None:
 # ----------------------------------------------------------------------
 # CFW detection + notification backends
 # ----------------------------------------------------------------------
-# CFW_NAME values (case-insensitive) PortMaster's device_info.txt may
-# export. Mirrors the family grouping used in service.py so dispatch is
-# consistent if/when env *is* set (manual --once invocation outside init).
+# CFW_NAME values PortMaster's device_info.txt may export. Mirrors the family
+# grouping in service.py.
 _LIBREELEC_FAMILY = ("rocknix", "amberelec", "jelos", "emuelec", "unofficialos")
 _BATOCERA_FAMILY = ("batocera", "knulli", "reglinux")
 _KNOWN_UNSUPPORTED = (
@@ -104,8 +118,7 @@ _KNOWN_UNSUPPORTED = (
 
 
 def _verify_systemd_capable() -> bool:
-    """The 'systemd' bucket's notify prereqs: systemd CLI + LibreELEC
-    /storage layout + batocera-ES scripts dir. Mirrors service.py."""
+    """The 'systemd' bucket's notify prereqs. Mirrors service.py."""
     return (
         shutil.which("systemctl") is not None
         and Path("/storage/.config/system.d").exists()
@@ -124,20 +137,15 @@ def _verify_userland_capable() -> bool:
 
 @functools.lru_cache(maxsize=1)
 def detect_cfw() -> str:
-    """Returns 'systemd' / 'userland' / 'muos' / 'unknown' (or a
-    known-but-unsupported lowercase name like 'arkos'). Mirrors
-    service.py.detect_cfw — duplicated rather than shared because the
+    """Returns 'systemd' / 'userland' / 'muos' / 'unknown' (or a known-but-
+    unsupported name like 'arkos'). Duplicated from service.py because the
     daemon ships as its own PyInstaller binary.
 
-    Bucket names describe install/notify mechanism, not specific CFWs:
-    'systemd' = LibreELEC family, 'userland' = Batocera family.
-
-    The env-driven branch is dead code on the normal init-launched path
-    (no $CFW_NAME inherited) but kept symmetric with service.py so a
-    `pharos-daemon --once` run from inside PortMaster's env still hits
-    the same logic. Capability verification gates the supported buckets
-    so a misidentified host downgrades to 'unknown' rather than
-    silently failing on the notify backend."""
+    Buckets name the notify mechanism: 'systemd' = LibreELEC family,
+    'userland' = Batocera family. The env branch is dead on the init-launched
+    path (no $CFW_NAME) but kept symmetric with service.py for `--once` runs
+    inside PortMaster's env. Capability checks downgrade a misidentified host
+    to 'unknown' rather than failing later on the notify backend."""
     env_name = (os.environ.get("CFW_NAME") or "").lower()
     bucket: str | None = None
 
@@ -201,19 +209,16 @@ def notify(cfw: str, message: str) -> bool:
 # ----------------------------------------------------------------------
 # Update check
 # ----------------------------------------------------------------------
-# Counts transport-level failures (URLError, socket.timeout, OSError) within
-# a single run_check pass. HTTPError is a real response and isn't counted —
-# it means the network worked but the server said no. Reset by run_check at
-# entry, read at exit so the caller can distinguish "no updates because
-# nothing changed" from "no updates because the network was down".
+# Transport-level failures (URLError/timeout/OSError) within one run_check
+# pass. HTTPError isn't counted - the network worked, the server said no. Lets
+# the caller distinguish "nothing changed" from "network was down".
 _network_errors_this_pass = 0
 
 
 def _http_get(url: str, timeout: int = GITHUB_HTTP_TIMEOUT) -> bytes | None:
-    """Fetch a URL. 200 -> bytes. 404 -> silent None (callers handle "not found"
-    semantically). Other HTTP errors -> WARN + None. Transport failures ->
-    WARN + None + bump _network_errors_this_pass so daemon_loop knows to
-    schedule a retry rather than waiting for SIGHUP."""
+    """Fetch a URL. 200 -> bytes; 404 -> silent None; other HTTP errors -> WARN
+    + None. Transport failures also bump _network_errors_this_pass so
+    daemon_loop schedules a retry."""
     global _network_errors_this_pass
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "PharosDaemon/1.0"})
@@ -232,8 +237,8 @@ def load_local_manifest() -> tuple[
     dict[str, str], dict[str, str], dict[str, str], set[str]
 ]:
     """Returns ({name: md5}, {name: title}, {name: repo}, {muted_names}) for
-    ports tracked by Pharos. Names are extensionless. `repo` is empty for
-    legacy entries; `muted` defaults to False for entries without the field."""
+    Pharos-tracked ports. Names are extensionless; `repo` is empty for legacy
+    entries; `muted` defaults False."""
     if not MANIFEST_PATH.exists():
         log("INFO", f"manifest not found at {MANIFEST_PATH}")
         return {}, {}, {}, set()
@@ -288,8 +293,8 @@ def parse_sources() -> list[tuple[str, str]]:
 
 def fetch_remote_md5s(owner: str, repo: str) -> tuple[dict[str, str], dict[str, str]]:
     """Returns ({name: md5}, {name: title}) from a repo's docs/ports.json.
-    Names stripped of .zip to match the local manifest convention. Wine bottle
-    repos (winecask.json) are out of scope: Pharos handles those itself."""
+    Names stripped of .zip to match the local manifest. Wine bottle repos
+    (winecask.json) are out of scope - Pharos handles those itself."""
     for branch in ("main", "master"):
         for path in ("docs/ports.json", "ports.json"):
             url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
@@ -321,10 +326,10 @@ def find_outdated(
     """Returns (sorted outdated names, remote-title fallback dict).
 
     Per-port:
-      - If local_repos[name] is set ("owner/name"): only that repo's
-        ports.json can mark the port outdated. Authoritative.
-      - If empty (legacy entry): match-any across every repo in .sources.
-        Outdated only when no repo currently publishes the local md5.
+      - local_repos[name] set ("owner/name"): authoritative, only that repo's
+        ports.json can mark it outdated.
+      - empty (legacy entry): match-any across every .sources repo; outdated
+        only when no repo publishes the local md5.
     """
     repos_in_sources = parse_sources()
     fetched: dict[tuple[str, str], tuple[dict[str, str], dict[str, str]]] = {}
@@ -367,9 +372,8 @@ def format_message(outdated: Iterable[str], titles: dict[str, str]) -> str:
     return f"[PHAROS] {len(items)} updates available"
 
 # ----------------------------------------------------------------------
-# Notify-state dedup (tmpfs-backed; survives in-session daemon restarts
-# but cleared on reboot — so the "reboot re-shows the toast" semantic is
-# preserved while spurious mid-session respawns stay silent)
+# Notify-state dedup (tmpfs-backed: survives in-session restarts, cleared
+# on reboot - so reboot re-shows the toast, mid-session respawns stay silent)
 # ----------------------------------------------------------------------
 def _outdated_hash(items: Iterable[str]) -> str:
     return hashlib.sha256(",".join(sorted(items)).encode("utf-8")).hexdigest()
@@ -393,21 +397,39 @@ def _save_state(state: dict) -> None:
 _state_cache: dict = _load_state()
 
 # ----------------------------------------------------------------------
+# Memory trim
+# ----------------------------------------------------------------------
+# Resolve libc once; malloc_trim lets glibc hand freed arenas back to the OS.
+# None on musl / anywhere libc.so.6 isn't loadable - trim degrades to gc only.
+try:
+    _libc = ctypes.CDLL("libc.so.6")
+except OSError:
+    _libc = None
+
+
+def _trim_memory() -> None:
+    """Return freed heap to the OS after a check. glibc holds run_check's
+    ports.json high-water mark reserved across the long idle that follows, so
+    gc.collect() drops the Python objects and malloc_trim releases the arenas."""
+    gc.collect()
+    if _libc is not None:
+        try:
+            _libc.malloc_trim(0)
+        except (AttributeError, OSError):
+            pass
+
+
+# ----------------------------------------------------------------------
 # Main check
 # ----------------------------------------------------------------------
 def run_check() -> tuple[bool, bool]:
     """One check + notify pass. Returns (settled, network_failed).
 
-      settled        — True on settled state (notify ok or nothing to do);
-                       False on notify failure (caller may retry).
-      network_failed — True if at least one HTTP fetch hit a transport
-                       error (URLError/timeout/OSError). Independent of
-                       settled — caller schedules a retry alarm so updates
+      settled        - False on notify failure (caller may retry), else True.
+      network_failed - True if any HTTP fetch hit a transport error. Independent
+                       of settled - caller schedules a retry alarm so updates
                        aren't missed when the boot-time network was down.
-
-    The two flags are independent: notify failure is a settled-state issue
-    (server returned, our notify backend choked); network failure is a
-    fetch-state issue (couldn't reach the server)."""
+    """
     global _network_errors_this_pass
     _network_errors_this_pass = 0
 
@@ -416,8 +438,8 @@ def run_check() -> tuple[bool, bool]:
         log("INFO", "manifest empty; nothing tracked")
         return True, False
 
-    # Strip muted ports up front so they're invisible to the rest of the
-    # check pipeline — including dedup (so unmuting later genuinely re-fires).
+    # Strip muted ports up front - invisible to the rest of the pipeline,
+    # including dedup, so unmuting later genuinely re-fires.
     if muted:
         log("INFO", f"{len(muted)} port(s) muted: {sorted(muted)}")
         local_md5s = {n: m for n, m in local_md5s.items() if n not in muted}
@@ -456,38 +478,67 @@ def run_check() -> tuple[bool, bool]:
 # ----------------------------------------------------------------------
 # Daemon loop + signals
 # ----------------------------------------------------------------------
-_woken = False
 _pending = False   # SIGHUP arrived inside rate-limit window; SIGALRM scheduled for window-end
 _retrying = False  # last check hit network errors; SIGALRM scheduled for ~60s retry
 
-# Network-retry interval. Shorter than MIN_FETCH_INTERVAL_S because the
-# whole point is to recover quickly from a boot-time network race rather
-# than wait the full rate-limit window.
+# Network-retry interval. Shorter than MIN_FETCH_INTERVAL_S to recover quickly
+# from a boot-time network race rather than wait the full rate-limit window.
 NETWORK_RETRY_S = 60
+
+# Which primitive backs _wait_for_wake. signal.sigsuspend (the textbook idle-
+# wait) is ABSENT in python:3.11-slim-bullseye - the image our daemon is frozen
+# in - so the old code raised AttributeError on the first wait and got respawned
+# in a tight crash-loop. sigwaitinfo / sigtimedwait ARE present and dequeue a
+# blocked signal synchronously (no handler-race). hasattr-guarded; if neither
+# exists we degrade to a periodic poll.
+_HAVE_SIGWAITINFO = hasattr(signal, "sigwaitinfo")
+_HAVE_SIGTIMEDWAIT = hasattr(signal, "sigtimedwait")
+
+# sigtimedwait re-wait quantum / poll-fallback interval.
+_WAIT_POLL_S = 3600
 
 
 def _on_wake(_signum, _frame) -> None:
-    """Shared handler for SIGHUP and SIGALRM — both just wake daemon_loop;
-    the loop body decides whether to fetch, defer, or absorb based on
-    _pending / _retrying and the rate-limit window."""
-    global _woken
-    _woken = True
+    """No-op. Wake signals are blocked and consumed synchronously by
+    _wait_for_wake, so this never runs. It exists only to give them a
+    non-SIG_IGN disposition - a blocked signal set to 'ignore' is discarded
+    rather than made pending, so the wait would never see it."""
+    # Intentionally empty.
 
 
 def _on_sigterm(_signum, _frame) -> None:
-    log("INFO", "SIGTERM — shutting down")
+    log("INFO", "SIGTERM - shutting down")
     sys.exit(0)
 
 
+def _wait_for_wake(wake_signals: set[int]) -> None:
+    """Block until a wake signal (SIGHUP/SIGALRM) arrives, then consume it.
+
+    Blocked in daemon_loop, wake signals queue as pending and are dequeued here
+    without invoking a handler - closing the race where a signal lands between a
+    'did we wake?' check and the wait. SIGTERM/SIGINT stay unblocked and
+    interrupt this call (InterruptedError)."""
+    try:
+        if _HAVE_SIGWAITINFO:
+            signal.sigwaitinfo(wake_signals)
+        elif _HAVE_SIGTIMEDWAIT:
+            # Re-wait on timeout (None) so this blocks until a real signal.
+            while signal.sigtimedwait(wake_signals, _WAIT_POLL_S) is None:
+                pass
+        else:
+            # No synchronous signal-wait on this build. SIGHUP won't wake us
+            # promptly, but the loop's periodic re-check still catches updates.
+            time.sleep(_WAIT_POLL_S)
+    except InterruptedError:
+        pass
+
+
 def _is_our_daemon(pid: int) -> bool:
-    """Best-effort cross-check that /proc/<pid> is actually a Pharos daemon
-    rather than an unrelated process the kernel happened to assign the same
-    PID after our previous instance died (rare but real on long-running
-    systems with intense PID churn). Compares /proc/<pid>/comm against
-    /proc/self/comm so we cover renamed binaries and PyInstaller temp
-    prefixes without hardcoding a name. If /proc isn't usable on this CFW,
-    returns True (preserves the conservative existing behavior of refusing
-    to start over a live PID)."""
+    """Cross-check that /proc/<pid> is actually a Pharos daemon, not an
+    unrelated process the kernel reassigned our old PID to (PID reuse).
+    Compares /proc/<pid>/comm against /proc/self/comm to cover renamed binaries
+    and PyInstaller temp prefixes. Returns True if /proc isn't usable - keeps
+    the conservative "don't start over a live PID" behavior."""
     comm_file = Path(f"/proc/{pid}/comm")
     if not comm_file.exists():
         return True
@@ -498,8 +549,7 @@ def _is_our_daemon(pid: int) -> bool:
     try:
         our_comm = Path("/proc/self/comm").read_text().strip()
     except OSError:
-        # /proc/self should always work if /proc/<pid>/comm did, but if
-        # somehow it doesn't, fall back to the literal binary name.
+        # Fall back to the literal binary name if /proc/self is unreadable.
         our_comm = "pharos-daemon"
     return their_comm == our_comm
 
@@ -509,8 +559,8 @@ def write_pidfile() -> None:
         try:
             old = int(PID_FILE.read_text().strip())
             os.kill(old, 0)
-            # Process exists. Cross-check it's actually ours before refusing
-            # to start — kernel PID reuse can otherwise lock us out forever.
+            # Process exists; cross-check it's ours before refusing to start
+            # (PID reuse could otherwise lock us out forever).
             if _is_our_daemon(old):
                 log("ERROR", f"another instance running (pid {old}); exiting")
                 sys.exit(1)
@@ -528,59 +578,49 @@ def remove_pidfile() -> None:
 
 
 def daemon_loop() -> None:
-    """Initial check on startup, then idle until SIGHUP. Each wake re-runs
-    the check pass, gated by MIN_FETCH_INTERVAL_S to keep SIGHUP storms
-    from hammering GitHub. Two deferral mechanisms keep events from being
-    silently dropped:
+    """Initial check on startup, then idle until a wake signal. Each wake
+    re-runs the check, gated by MIN_FETCH_INTERVAL_S. Two deferral mechanisms
+    keep events from being silently dropped:
 
-      _pending  — SIGHUP arrived while rate-limited. Schedule SIGALRM at
+      _pending  - SIGHUP arrived while rate-limited; schedule SIGALRM at
                   window-end so the deferred check still fires.
-      _retrying — last check hit transport errors. Schedule SIGALRM in
-                  NETWORK_RETRY_S so a boot-time network race recovers
-                  without waiting for the user to play a game. last_fetch
-                  is left stale so the rate limit doesn't block the retry.
+      _retrying - last check hit transport errors; schedule SIGALRM in
+                  NETWORK_RETRY_S so a boot-time network race recovers without
+                  waiting for a game to end. last_fetch left stale so the rate
+                  limit doesn't block the retry.
 
-    Wake signals (SIGHUP, SIGALRM) are blocked outside the wait so that
-    sigsuspend(empty_mask) atomically unblocks-and-waits — the previous
-    pause() pattern had a race window where a signal could fire after the
-    _woken check but before pause(), getting consumed by the handler while
-    pause blocked indefinitely waiting for a successor.
-
-    SIGTERM / Ctrl+C exit cleanly via _on_sigterm (left unblocked so they
-    always interrupt promptly)."""
-    global _woken, _pending, _retrying
+    Wake signals are blocked and consumed synchronously by _wait_for_wake, so a
+    signal arriving mid-check queues as pending rather than being lost. SIGTERM
+    / Ctrl+C exit cleanly via _on_sigterm (unblocked, so they interrupt
+    promptly)."""
+    global _pending, _retrying
     write_pidfile()
     try:
+        # These handlers exist only so the wake signals aren't SIG_IGN (and can
+        # go pending while blocked); they never run - _wait_for_wake dequeues.
         signal.signal(signal.SIGHUP, _on_wake)
         signal.signal(signal.SIGALRM, _on_wake)
         signal.signal(signal.SIGTERM, _on_sigterm)
         signal.signal(signal.SIGINT, _on_sigterm)
 
-        # Block wake signals so sigsuspend below is the atomic unblock+wait.
+        # Block wake signals so _wait_for_wake can dequeue them synchronously.
         # SIGTERM/SIGINT stay unblocked so they always interrupt promptly.
         wake_signals = {signal.SIGHUP, signal.SIGALRM}
         signal.pthread_sigmask(signal.SIG_BLOCK, wake_signals)
 
-        # Initial check: covers boot-time notification once ES is up.
-        # last_fetch left at 0.0 so the first post-boot SIGHUP isn't
-        # rate-limited against the boot check — that SIGHUP is the user's
-        # first chance to retry if the boot check ran before network was up.
+        # Initial check: boot-time notification once ES is up. last_fetch stays
+        # 0.0 so the first post-boot SIGHUP isn't rate-limited against it - that
+        # SIGHUP is the user's first retry if the boot check ran pre-network.
         last_fetch = 0.0
         _, network_failed = run_check()
+        _trim_memory()
         if network_failed:
             log("INFO", f"boot check hit network errors; scheduling retry in {NETWORK_RETRY_S}s")
             signal.alarm(NETWORK_RETRY_S)
             _retrying = True
 
-        empty_mask: set[int] = set()
         while True:
-            if not _woken:
-                # Atomic unblock + wait. When a signal arrives, the handler
-                # runs while signals are unblocked, then sigsuspend returns
-                # and the original (blocked) mask is restored — so any
-                # further wake signals queue cleanly until the next sigsuspend.
-                signal.sigsuspend(empty_mask)
-            _woken = False
+            _wait_for_wake(wake_signals)
 
             now = time.time()
             since = now - last_fetch
@@ -606,6 +646,7 @@ def daemon_loop() -> None:
             signal.alarm(0)
 
             _, network_failed = run_check()
+            _trim_memory()
             if network_failed:
                 log("INFO", f"network failure during check; scheduling retry in {NETWORK_RETRY_S}s")
                 signal.alarm(NETWORK_RETRY_S)
@@ -633,13 +674,6 @@ def main() -> int:
             log("WARN", "--once detected network failures; daemon mode would schedule a retry")
         return 0
 
-    # Daemon mode: rotate the log on each start so it doesn't grow unbounded
-    # across reboots. --once invocations are append-only so diagnostic runs
-    # don't clobber the running daemon's history.
-    try:
-        LOG_FILE.write_text("")
-    except OSError:
-        pass
     log("INFO", f"pharos-daemon start (pid {os.getpid()}, install_dir {INSTALL_DIR})")
 
     try:

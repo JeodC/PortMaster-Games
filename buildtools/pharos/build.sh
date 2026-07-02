@@ -68,7 +68,7 @@ pyinstaller \
 # Build Pharos, embedding the daemon binary as a bundled resource. The
 # Service module copies it out to INSTALL_DIR on user opt-in. SDL2 itself
 # is provided by the target CFW at /usr/lib (set by the launchscript via
-# PYSDL2_DLL_PATH) — we don't bundle it.
+# PYSDL2_DLL_PATH) - we don't bundle it.
 pyinstaller \
     --onefile \
     --clean \
@@ -84,7 +84,7 @@ pyinstaller \
     --specpath "$BUILD_DIR/pharos" \
     "$SOURCE_DIR/main.py"
 
-# The standalone daemon binary in dist/ has now been embedded in Pharos —
+# The standalone daemon binary in dist/ has now been embedded in Pharos -
 # remove it so only the single Pharos binary is published as the artifact.
 rm -f "$DIST_DIR/pharos-daemon"
 

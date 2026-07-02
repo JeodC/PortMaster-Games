@@ -19,7 +19,6 @@ os.environ.setdefault("REQUESTS_CA_BUNDLE", certifi.where())
 
 import sdl2
 
-# Global log file descriptor
 _log_fd = None
 
 # ----------------------------------------------------------------------

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Controller layout → button mapping
+Controller layout -> button mapping
 """
 import os
 import sys
@@ -8,12 +8,10 @@ from typing import TypedDict
 
 # ----------------------------------------------------------------------
 # Runtime paths
-#   BASE_PATH    is sys._MEIPASS, where bundled resources (fonts/) extract.
-#   DATA_DIR     comes from XDG_DATA_HOME, set by the launchscript to the
-#                install dir so writable state (manifest, logs, .sources,
-#                .pending_update.zip) lands alongside the binary.
-#   INSTALL_DIR  is where the binary itself lives on disk; used to derive
-#                the extract target for self-update apply.
+#   BASE_PATH    sys._MEIPASS - where bundled resources (fonts/) extract.
+#   DATA_DIR     XDG_DATA_HOME - writable state (manifest, logs, .sources,
+#                .pending_update.zip) beside the binary.
+#   INSTALL_DIR  where the binary lives; extract target for self-update.
 # ----------------------------------------------------------------------
 BASE_PATH = sys._MEIPASS
 DATA_DIR = os.environ["XDG_DATA_HOME"]
@@ -29,7 +27,7 @@ color_btn_y = "#d3b948"
 color_btn_shoulder = "#383838"
 
 # ----------------------------------------------------------------------
-# TypedDict definitions – only the fields that are actually read
+# TypedDict definitions - only the fields that are actually read
 # ----------------------------------------------------------------------
 class Button(TypedDict):
     key: str          # SDL key name (e.g. "A")
@@ -67,12 +65,11 @@ BUTTON_CONFIGS: dict[str, ButtonConfig] = {
 }
 
 # ----------------------------------------------------------------------
-# Public API – only the function that Pharos actually calls
+# Public API - only the function that Pharos actually calls
 # ----------------------------------------------------------------------
 def _detect_layout_from_mapping() -> str:
-    """Pick layout from SDL_GAMECONTROLLERCONFIG (set by the launchscript).
-    The mapping's `a:bN`/`b:bN` segments tell us which SDL button raw joystick
-    button 0 is bound to."""
+    """Pick layout from SDL_GAMECONTROLLERCONFIG. The `a:bN`/`b:bN` segments
+    reveal which SDL button raw joystick button 0 is bound to."""
     mapping = os.getenv("SDL_GAMECONTROLLERCONFIG", "")
     first_line = mapping.splitlines()[0] if mapping else ""
     for part in first_line.split(","):
@@ -87,7 +84,7 @@ def get_controller_layout() -> ButtonConfig:
     return BUTTON_CONFIGS[_detect_layout_from_mapping()]
 
 # ----------------------------------------------------------------------
-# Data containers – only the fields that are used elsewhere
+# Data containers - only the fields that are used elsewhere
 # ----------------------------------------------------------------------
 from dataclasses import dataclass, field
 from typing import List, Optional
@@ -107,9 +104,8 @@ class Port:
     runtime_base_url: str = ""
     repo: str = ""
     muted: bool = False
-    # Stores selling the port's underlying game; each entry is a dict with
-    # name/gameurl/developerurl as in port.json. Used purely for display in
-    # the port detail panel — no clicks/navigation.
+    # Stores selling the underlying game (name/gameurl/developerurl from
+    # port.json); display-only in the detail panel.
     store: List[dict] = field(default_factory=list)
 
 @dataclass

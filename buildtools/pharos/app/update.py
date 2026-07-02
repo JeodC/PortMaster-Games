@@ -3,17 +3,12 @@
 Pharos/update.py
 Self-update mechanism. Adapted from rommapp/muos-app's RomM/update.py.
 
-Flow:
-  1. check() compares the bundled __version__ against the same file fetched
-     from PHAROS_REPO@main, and looks up the download URL from docs/ports.json.
-  2. download() streams the new zip into DATA_DIR/.pending_update.zip with a
-     progress UI driven by Pharos's existing draw_loader/draw_log primitives.
-  3. The Pharos App.sh wrapper picks up the zip — both pre-launch (if a
-     prior run left one) and post-exit (if Pharos just downloaded one and
-     set running=False). It extracts via 7zzs into a temp dir, copies the
-     pharos/ contents to GAMEDIR and the launcher script to its actual
-     runtime location, then exec's itself to relaunch the new binary.
-     See ports/released/apps/pharos/Pharos App.sh::apply_pending_update.
+Flow: check() compares the bundled __version__ against __version__.py fetched
+from PHAROS_REPO@main and reads the download URL from docs/ports.json.
+download() streams the new zip to DATA_DIR/.pending_update.zip. The Pharos
+App.sh wrapper applies it (pre-launch if a prior run left one, or post-exit),
+extracting via 7zzs, copying pharos/ to GAMEDIR, and re-exec'ing the new binary.
+See ports/released/apps/pharos/Pharos App.sh::apply_pending_update.
 """
 import json
 import os
@@ -27,8 +22,8 @@ import __version__
 from config import DATA_DIR
 
 # ----------------------------------------------------------------------
-# Where Pharos publishes from. Hardcoded because the upgrade source is
-# inherent to the tool, not a user choice (unlike .sources for ports).
+# Where Pharos publishes from. Hardcoded: the upgrade source is inherent
+# to the tool, not a user choice (unlike .sources for ports).
 # ----------------------------------------------------------------------
 PHAROS_REPO = "JeodC/RHH-Ports"
 PHAROS_VERSION_RAW = (
@@ -60,8 +55,7 @@ def _parse_version(text: str) -> str | None:
 
 
 def _version_tuple(v: str) -> tuple[int, ...]:
-    """Lightweight semver-ish compare. We don't need full semver semantics
-    (pre-release, build metadata); three integer components is enough."""
+    """Semver-ish compare - three integer components, no pre-release/build metadata."""
     parts = re.findall(r"\d+", v)[:3]
     parts.extend(["0"] * (3 - len(parts)))
     return tuple(int(p) for p in parts)
@@ -110,8 +104,7 @@ class Update:
             print("[Update] No download URL; cannot download.")
             return False
 
-        # If a previous pending zip is still around (e.g. user cancelled
-        # mid-extract), drop it so we don't end up applying a stale build.
+        # Drop any stale pending zip (e.g. cancelled mid-extract) so we don't apply an old build.
         if os.path.exists(PENDING_ZIP):
             try:
                 os.remove(PENDING_ZIP)
@@ -146,8 +139,8 @@ class Update:
                   f"({downloaded} bytes).")
             return True
         except (HTTPError, URLError, OSError) as e:
-            # OSError covers disk-full / permission failures mid-write — without
-            # it, a failed write would propagate up and crash the input handler.
+            # OSError covers disk-full / permission mid-write failures that would
+            # otherwise propagate up and crash the input handler.
             print(f"[Update] Download failed: {e}")
             if os.path.exists(PENDING_ZIP):
                 try:

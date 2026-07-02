@@ -46,7 +46,6 @@ class Input:
         self._initialized = True
         self._input_lock = Lock()
 
-        # Track the state of all keys
         self._keys_pressed: set[str] = set()
         self._keys_held: set[str] = set()
         self._keys_held_start_time: Dict[str, float] = {}
@@ -127,15 +126,11 @@ class Input:
             self._keys_held_start_time.pop(key_name, None)
 
     def check_event(self, event=None) -> bool:
-        """
-        Check for input events and update key states
-        Returns if an event was processed
-        """
+        """Check for input events, update key states, and return whether one was processed."""
         if event:
             # Controller button press
             if event.type == sdl2.SDL_CONTROLLERBUTTONDOWN:
                 button = event.cbutton.button
-                # Map button to key name using the _key_mapping dictionary
                 if button in self._key_mapping:
                     key_name = self._key_mapping[button]
                     self._add_key_pressed(key_name)
@@ -158,7 +153,7 @@ class Input:
                 if axis in self._axis_mapping:
                     key_name = self._axis_mapping[axis]
 
-                    # Only process significant movements (ignore small values)
+                    # Past deadzone: register a direction press
                     if abs(value) > 10000:
                         dir = "+" if value > 0 else "-"
                         self._add_key_pressed(f"{key_name}{dir}")
@@ -172,13 +167,12 @@ class Input:
         return False
 
     def key(self, key_name: str) -> bool:
-        """Check if a specific key is pressed with an optional value check"""
+        """Check if a key is pressed, treating a held key as pressed past the repeat delay."""
         with self._input_lock:
             is_pressed = key_name in self._keys_pressed
             self._keys_pressed.discard(key_name)
 
             if key_name in self._keys_held and key_name in self._keys_held_start_time:
-                # Check if the key is held down
                 held_time = time.time() - self._keys_held_start_time[key_name]
                 if held_time >= self._initial_delay:
                     is_pressed = True
@@ -249,7 +243,7 @@ class Input:
             for controller in self.controllers:
                 sdl2.SDL_GameControllerClose(controller)
 
-            self.controllers = []  # Clear the list of controllers
+            self.controllers = []
             self._keys_pressed = set()
             self._keys_held = set()
             self._keys_held_start_time = {}

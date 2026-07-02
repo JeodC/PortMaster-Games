@@ -34,9 +34,8 @@ controlfolder = os.environ.get("controlfolder", "")
 LIBS_DIR = Path(controlfolder) / "libs" if controlfolder else None
 DEVICE_ARCH = os.environ.get("DEVICE_ARCH", "")
 
-# Standalone CLI binary needed by every GameMaker port at patch time.
-# /releases/latest/download/<asset> auto-redirects to the newest non-prerelease
-# asset, so this URL doesn't need to be bumped per release.
+# CLI binary every GameMaker port needs at patch time. /releases/latest/download
+# auto-redirects to the newest non-prerelease asset, so this URL never needs bumping.
 GMTOOLKIT_RELEASE_URL = "https://github.com/JeodC/gmtoolkit/releases/latest/download"
 GMTOOLKIT_API_URL = "https://api.github.com/repos/JeodC/gmtoolkit/releases/latest"
 
@@ -63,9 +62,10 @@ class Downloader:
         self.installer = AutoInstaller(self.autoinstall_dir)
 
     # ------------------------------------------------------------------
-    # Main loop – autoinstall runs as soon as the queue is empty
+    # Main loop - autoinstall runs as soon as the queue is empty
     # ------------------------------------------------------------------
     def run(self) -> None:
+        self._sweep_stale_partials()
         while True:
             item = self.dl_queue.get()
             if item is None:
@@ -81,6 +81,11 @@ class Downloader:
 
             self.dl_queue.task_done()
 
+    def _sweep_stale_partials(self) -> None:
+        for part in self.autoinstall_dir.glob("*.part"):
+            with suppress(OSError):
+                part.unlink()
+
     # ------------------------------------------------------------------
     # Autoinstall phase
     # ------------------------------------------------------------------
@@ -89,7 +94,7 @@ class Downloader:
         if not zip_files:
             return
 
-        self.progress_q.put((0, 1, "Installing packages…", "phase"))
+        self.progress_q.put((0, 1, "Installing packages...", "phase"))
         for zip_file in zip_files:
             name = zip_file.name
             self.progress_q.put((0, 1, f"Installing {name}", "install"))
@@ -109,14 +114,12 @@ class Downloader:
         images_dir.mkdir(parents=True, exist_ok=True)
         metadata_path = images_dir / "images.json"
 
-        # Load existing metadata
         local_meta = {}
         if metadata_path.exists():
             with suppress(Exception):
                 with open(metadata_path, "r", encoding="utf-8") as f:
                     local_meta = json.load(f)
 
-        # Query release
         try:
             parts = urllib.parse.urlparse(repo.images_zip_url).path.split("/")
             owner, repo_name, _, _, tag = parts[1:6]
@@ -142,7 +145,6 @@ class Downloader:
             with open(img_zip, "wb") as f:
                 f.write(data)
 
-            # Clean old files
             for item in images_dir.iterdir():
                 if item not in (metadata_path, img_zip):
                     if item.is_dir():
@@ -186,7 +188,7 @@ class Downloader:
                 if manifest_runtimes.get(rt_name, {}).get("md5"):
                     print(f"[RUNTIME] {rt_name} present, skipping")
                     continue
-                # On disk but not in manifest – record its md5 so we skip next time
+                # On disk but not in manifest - record its md5 so we skip next time
                 print(f"[RUNTIME] {rt_name} found on disk, recording md5")
                 manifest_runtimes[rt_name] = {"md5": self._md5_file(rt_path)}
                 self._save_runtime_manifest(manifest_runtimes)
@@ -254,20 +256,18 @@ class Downloader:
 
         if dest.exists():
             if not remote:
-                # Can't reach the release API – keep whatever is on disk rather
-                # than break an offline / rate-limited install.
+                # Release API unreachable: keep the on-disk copy (don't break offline installs).
                 print("[GMTOOLKIT] Present, version check skipped (release query failed)")
                 return
             if (local_meta.get("id") == remote["id"]
                     and local_meta.get("size") == remote["size"]):
                 print("[GMTOOLKIT] Present and up to date")
                 return
-            # No recorded version → treat as stale; otherwise a newer build exists.
+            # No recorded version -> treat as stale; otherwise a newer build exists.
             reason = "no version recorded" if not local_meta else "newer build available"
             print(f"[GMTOOLKIT] Updating ({reason})")
 
-        # Prefer the API-provided asset URL; fall back to the latest/download
-        # redirect when the API was unreachable but the binary is missing.
+        # Prefer the API asset URL; fall back to the latest/download redirect if the API failed.
         url = remote["url"] if remote and remote.get("url") else f"{GMTOOLKIT_RELEASE_URL}/{zip_name}"
         print(f"[GMTOOLKIT] Downloading {zip_name}")
         self.progress_q.put((0, 1, f"gmtoolkit: {zip_name}", "download"))
@@ -290,18 +290,18 @@ class Downloader:
                         pct = (downloaded / total * 100) if total else 0
                         self.progress_q.put((
                             downloaded, total or downloaded,
-                            f"gmtoolkit ({pct:.1f}%) – {speed:.2f} MB/s",
+                            f"gmtoolkit ({pct:.1f}%) - {speed:.2f} MB/s",
                             "download",
                         ))
 
-            # Extract the binary + license bundle directly into $controlfolder.
+            # Extract binary + license bundle into $controlfolder.
             with zipfile.ZipFile(zip_tmp) as zf:
                 zf.extractall(controlfolder)
             zip_tmp.unlink()
 
             with suppress(OSError):
                 os.chmod(dest, 0o755)
-            # Record the version we just installed so future runs detect staleness.
+            # Record installed version so future runs detect staleness.
             if remote:
                 self._save_gmtoolkit_meta({"id": remote["id"], "size": remote["size"]})
             self.progress_q.put((1, 1, "gmtoolkit installed", "download"))
@@ -396,6 +396,7 @@ class Downloader:
     def _download_port(self, port: Port, kind: str) -> None:
         print(f"[DOWNLOAD] Starting: {port.name} from {port.download_url!r}")
         zip_path = self.autoinstall_dir / f"{port.name}.zip"
+        tmp_path = zip_path.with_suffix(".part")
         try:
             req = urllib.request.Request(
                 port.download_url,
@@ -408,7 +409,7 @@ class Downloader:
                 chunk = 64 * 1024
                 start = time.time()
 
-                with open(zip_path, "wb") as f:
+                with open(tmp_path, "wb") as f:
                     while True:
                         data = resp.read(chunk)
                         if not data:
@@ -423,29 +424,29 @@ class Downloader:
                         self.progress_q.put((
                             downloaded,
                             total or downloaded,
-                            f"{port.title} ({pct:.1f}%) – {speed:.2f} MB/s",
+                            f"{port.title} ({pct:.1f}%) - {speed:.2f} MB/s",
                             "download"
                         ))
 
-            # Final sticky message
+            os.replace(tmp_path, zip_path)
+
             self.progress_q.put((
                 downloaded, downloaded,
                 f"Downloaded: {port.title}",
                 "download"
             ))
 
-            # Manifest update
             port.md5 = self._md5_file(zip_path)
             port.size = zip_path.stat().st_size
             self._update_manifest(port, kind)
-            
+
             print(f"[DOWNLOAD] Complete: {zip_path} ({downloaded} bytes, {time.time()-start:.1f}s)")
 
         except Exception as e:
             print(f"[DOWNLOAD ERROR] {port.name}: {type(e).__name__}: {e}")
             self._fail(port, f"{type(e).__name__}: {e}")
             with suppress(OSError):
-                zip_path.unlink()
+                tmp_path.unlink()
 
     # ------------------------------------------------------------------
     # Helpers
@@ -464,8 +465,7 @@ class Downloader:
         key = "ports" if kind == "port" else "bottles"
         other_key = "bottles" if kind == "port" else "ports"
 
-        # Preserve user-set fields that don't come from remote ports.json
-        # (currently just `muted`) so a re-download doesn't wipe them.
+        # Preserve user-set fields (currently `muted`) so a re-download doesn't wipe them.
         existing = next(
             (d for d in data.get(key, [])
              if d.get("name", "").lower() == port.name.lower()),

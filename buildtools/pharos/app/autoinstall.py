@@ -14,9 +14,8 @@ import xml.etree.ElementTree as ET
 # Basenames of the GameMaker data file inside a .port archive.
 GAME_DATA_NAMES = ("game.droid", "data.win")
 
-# DATA_DIR holds the autoinstall queue. INSTALL_DIR is the binary's install
-# dir on disk; PORTS_DIR / WINDOWS_DIR derive from its siblings (where
-# PortMaster keeps the ports/ and windows/ trees).
+# DATA_DIR holds the autoinstall queue; INSTALL_DIR is the binary's dir. PORTS_DIR /
+# WINDOWS_DIR derive from its siblings (PortMaster's ports/ and windows/ trees).
 from config import DATA_DIR as _DATA_DIR_STR, INSTALL_DIR as _INSTALL_DIR_STR
 DATA_DIR = Path(_DATA_DIR_STR)
 AUTOINSTALL_DIR = DATA_DIR / "autoinstall"
@@ -37,62 +36,72 @@ class AutoInstaller:
 
         print(f"[INSTALL] Installing {zip_name}...")
         try:
-            with zipfile.ZipFile(zip_path, "r") as zf:
-                print(f"[EXTRACT] Zip contents: {zf.namelist()}")
-                # Find port.json or bottle.json
-                target_json = None
-                for file in zf.namelist():
-                    if file.endswith(("port.json", "bottle.json")):
-                        target_json = file
-                        break
-                if not target_json:
-                    print(f"[ERROR] No port.json or bottle.json in {zip_name}")
-                    return 255
-
-                is_port = target_json.endswith("port.json")
-                base_dir = PORTS_DIR if is_port else WINDOWS_DIR
-                gamelist_path = base_dir / "gamelist.xml"
-                
-                if not is_port and not WINDOWS_DIR.exists():
-                    print(f"[ERROR] {WINDOWS_DIR} system folder is missing. Aborting bottle install.")
-                    return 255
-
-                base_dir.mkdir(parents=True, exist_ok=True)
-
-                print(f"[EXTRACT] Extracting {zip_name} → {base_dir}/ (flat)")
-                self._extract_preserving_ports(zf, base_dir)
-
-                # Clean macOS junk
-                for junk in base_dir.rglob("__MACOSX"):
-                    if junk.is_dir():
-                        shutil.rmtree(junk, ignore_errors=True)
-                for junk in base_dir.rglob("*.DS_Store"):
-                    junk.unlink(missing_ok=True)
-
-                # Find gameinfo.xml in extracted files
-                gameinfo_file = None
-                for file in zf.namelist():
-                    if file.endswith("gameinfo.xml"):
-                        candidate = base_dir / file
-                        if candidate.is_file():
-                            gameinfo_file = candidate
-                            break
-
-                if gameinfo_file:
-                    print(f"[GAMELIST] Found {gameinfo_file}")
-                    self.gamelist_add(gameinfo_file, gamelist_path)
-                else:
-                    print(f"[WARN] No gameinfo.xml found in {zip_name}")
-
+            result = self._extract_and_register(zip_path, zip_name)
         except zipfile.BadZipFile:
             print(f"[ERROR] {zip_name} is not a valid zip")
-            return 255
+            result = 255
         except Exception as e:
             print(f"[ERROR] Failed to install {zip_name}: {e}")
-            return 255
+            result = 255
+        finally:
+            # Always consume the zip, success or failure. A left-behind zip is
+            # re-globbed every batch and, if corrupt, fails forever - the
+            # "autoinstall never clears" symptom. A real retry re-downloads it anyway.
+            zip_path.unlink(missing_ok=True)
 
-        zip_path.unlink(missing_ok=True)
-        print(f"[OK] Installed {zip_name}")
+        if result == 0:
+            print(f"[OK] Installed {zip_name}")
+        return result
+
+    def _extract_and_register(self, zip_path: Path, zip_name: str) -> int:
+        """Extract one autoinstall zip into the ports/windows tree and merge its
+        gameinfo.xml into gamelist.xml. Returns 0, or 255 when the zip lacks
+        port.json/bottle.json or a bottle can't install. May raise; install_zip maps that to 255."""
+        with zipfile.ZipFile(zip_path, "r") as zf:
+            print(f"[EXTRACT] Zip contents: {zf.namelist()}")
+            target_json = None
+            for file in zf.namelist():
+                if file.endswith(("port.json", "bottle.json")):
+                    target_json = file
+                    break
+            if not target_json:
+                print(f"[ERROR] No port.json or bottle.json in {zip_name}")
+                return 255
+
+            is_port = target_json.endswith("port.json")
+            base_dir = PORTS_DIR if is_port else WINDOWS_DIR
+            gamelist_path = base_dir / "gamelist.xml"
+
+            if not is_port and not WINDOWS_DIR.exists():
+                print(f"[ERROR] {WINDOWS_DIR} system folder is missing. Aborting bottle install.")
+                return 255
+
+            base_dir.mkdir(parents=True, exist_ok=True)
+
+            print(f"[EXTRACT] Extracting {zip_name} -> {base_dir}/ (flat)")
+            self._extract_preserving_ports(zf, base_dir)
+
+            # Clean macOS junk
+            for junk in base_dir.rglob("__MACOSX"):
+                if junk.is_dir():
+                    shutil.rmtree(junk, ignore_errors=True)
+            for junk in base_dir.rglob("*.DS_Store"):
+                junk.unlink(missing_ok=True)
+
+            gameinfo_file = None
+            for file in zf.namelist():
+                if file.endswith("gameinfo.xml"):
+                    candidate = base_dir / file
+                    if candidate.is_file():
+                        gameinfo_file = candidate
+                        break
+
+            if gameinfo_file:
+                print(f"[GAMELIST] Found {gameinfo_file}")
+                self.gamelist_add(gameinfo_file, gamelist_path)
+            else:
+                print(f"[WARN] No gameinfo.xml found in {zip_name}")
+
         return 0
 
     def _extract_preserving_ports(self, zf: zipfile.ZipFile, base_dir: Path) -> None:
@@ -105,11 +114,8 @@ class AutoInstaller:
             zf.extract(member, base_dir)
 
     def _merge_port(self, zf: zipfile.ZipFile, member: zipfile.ZipInfo, target: Path) -> bool:
-        """Reconcile an incoming .port with the one already on disk.
-
-        Returns True if the member was handled here (caller must skip the
-        normal extract), or False to fall back to a plain overwrite.
-        """
+        """Reconcile an incoming .port with the one on disk. Returns True if handled
+        here (caller skips the normal extract), False to fall back to a plain overwrite."""
         try:
             incoming = zipfile.ZipFile(io.BytesIO(zf.read(member)))
             incoming_infos = incoming.infolist()
@@ -117,10 +123,10 @@ class AutoInstaller:
             print(f"[PORT][WARN] {member.filename}: unreadable incoming .port ({e}); overwriting")
             return False
 
-        # Complete, self-contained game; overwrite to deliver updates. Such a
-        # .port carries no user data (saves are kept in a separate save_dir).
+        # Ships a complete game -> overwrite to deliver updates. Carries no user
+        # data (saves live in a separate save_dir).
         if any(os.path.basename(i.filename) in GAME_DATA_NAMES for i in incoming_infos):
-            print(f"[PORT] {member.filename}: ships game data → overwriting")
+            print(f"[PORT] {member.filename}: ships game data -> overwriting")
             return False
 
         # Runtime-only base: the on-device copy has the user's game packed in.
@@ -141,8 +147,8 @@ class AutoInstaller:
             if not runtime_changed:
                 return True
 
-            # Runtime updated: splice the new runtime libs into the user's .port
-            # while preserving every entry the base does not provide (game data).
+            # Runtime changed: splice new runtime libs into the user's .port,
+            # preserving every entry the base doesn't provide (their game data).
             incoming_names = {i.filename for i in incoming_infos}
             fd, tmp = tempfile.mkstemp(dir=str(target.parent), suffix=".porttmp")
             os.close(fd)
@@ -181,7 +187,6 @@ class AutoInstaller:
             print(f"[ERROR] Bad gameinfo.xml ({gameinfo_file.name}): {e}")
             return
 
-        # Load or create gamelist.xml
         if gamelist_path.exists():
             try:
                 tree = ET.parse(gamelist_path)
@@ -189,7 +194,7 @@ class AutoInstaller:
                 if root.tag.lower() != "gamelist":
                     root.tag = "gameList"
             except ET.ParseError:
-                print(f"[WARN] Corrupted gamelist.xml — creating new")
+                print(f"[WARN] Corrupted gamelist.xml - creating new")
                 root = ET.Element("gameList")
                 tree = ET.ElementTree(root)
         else:
@@ -197,7 +202,6 @@ class AutoInstaller:
             tree = ET.ElementTree(root)
             print(f"[CREATE] Creating {gamelist_path}")
 
-        # Map existing games by <path> for easy lookup
         existing_games = {
             game.find("path").text: game
             for game in root.findall("game")
@@ -237,6 +241,6 @@ class AutoInstaller:
                 xml_declaration=True,
                 short_empty_elements=False
             )
-            print(f"[GAMELIST] Added {count_added} new game(s), updated {count_updated} existing game(s) → {gamelist_path.name}")
+            print(f"[GAMELIST] Added {count_added} new game(s), updated {count_updated} existing game(s) -> {gamelist_path.name}")
         else:
             print(f"[INFO] No changes from {gameinfo_file.name}")

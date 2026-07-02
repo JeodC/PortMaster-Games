@@ -98,7 +98,7 @@ apply_pending_update() {
     launcher_name="${SCRIPT_NAME}"
     if [ -n "${launcher_in_zip}" ] && [ -f "${launcher_in_zip}" ]; then
         launcher_name="$(basename "${launcher_in_zip}")"
-        # Stage to a sibling .new then rename — atomic on the same FS,
+        # Stage to a sibling .new then rename - atomic on the same FS,
         # so the in-flight `exec` below never sees a half-written script.
         if cp -f "${launcher_in_zip}" "${SCRIPT_DIR}/${launcher_name}.new" >>"${RUN_LOG}" 2>&1 \
            && chmod +x "${SCRIPT_DIR}/${launcher_name}.new" >>"${RUN_LOG}" 2>&1 \

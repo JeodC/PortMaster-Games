@@ -58,12 +58,11 @@ BODY_MARGIN_TOP = 0
 BUTTON_AREA_HEIGHT = 50
 MAX_TEXTURE_CACHE = 48
 
-# Height reserved at the bottom of the port detail area for the store-icon
-# row (above the button area). Set to 0 when a port has no store data.
+# Reserved height for the store-icon row above the button area; 0 if no store data.
 STORE_ROW_HEIGHT = 36
 
-# Store name (as it appears in port.json) → icon filename under
-# resources/stores/. Filenames downloaded by buildtools/pharos/download_store_icons.py.
+# port.json store name -> icon filename in resources/stores/
+# (populated by buildtools/pharos/download_store_icons.py).
 STORE_ICON_FILES = {
     "Steam":        "steam.png",
     "GOG":          "gog.png",
@@ -74,7 +73,7 @@ STORE_ICON_FILES = {
 }
 STORE_ICONS_DIR = os.path.join(BASE_PATH, "resources", "stores")
 STORE_ICON_SIZE = 24
-# Steam's classic discount green pair, matching the website.
+# Steam discount green.
 c_discount_text = sdl2.SDL_Color(190, 238, 17, 255)
 
 # ----------------------------------------------------------------------
@@ -96,9 +95,8 @@ class UserInterface:
         if getattr(self, "_initialized", False):
             return
 
-        # Track what this instance initialized so cleanup is safe.
-        # main.py inits SDL_INIT_VIDEO before constructing this class, so we
-        # never have to init it ourselves.
+        # Track what this instance initialized so cleanup only tears down its own.
+        # main.py already inited SDL_INIT_VIDEO, so we never touch it.
         self._inited_ttf = False
         self._inited_img_flags = 0
 
@@ -108,7 +106,6 @@ class UserInterface:
         if (current_img & desired_img_flags) != desired_img_flags:
             got = img.IMG_Init(desired_img_flags)
             if (got & desired_img_flags) != desired_img_flags:
-                # only fail if we couldn't init necessary formats
                 raise RuntimeError("Failed to init SDL_image for PNG/JPG")
             self._inited_img_flags = got & desired_img_flags
 
@@ -124,14 +121,14 @@ class UserInterface:
                 ttf.TTF_Init()
                 self._inited_ttf = True
             except Exception:
-                # Non-fatal: we can continue without fonts (text drawing will be skipped)
+                # Non-fatal: continue fontless, text drawing is skipped.
                 self._inited_ttf = False
 
         # --- Create window, renderer, and render target texture ---
         self.window = self._create_window()
         self.renderer = self._create_renderer()
 
-        # Create a target texture used as main drawing surface
+        # Render-target texture used as the main drawing surface.
         self.screen_texture = sdl2.SDL_CreateTexture(
             self.renderer,
             sdl2.SDL_PIXELFORMAT_RGBA8888,
@@ -142,7 +139,6 @@ class UserInterface:
         if not self.screen_texture:
             raise RuntimeError("Failed to create render target texture")
 
-        # instance font
         self.font = None
         if self._inited_ttf:
             try:
@@ -153,7 +149,6 @@ class UserInterface:
                 self.font = None
                 print("[UI] Warning: exception opening font.")
 
-        # state
         self.draw_clear()
 
         self._scroll_speed = 1
@@ -219,7 +214,6 @@ class UserInterface:
     # Top-level code should call SDL_Quit() once for the process.
     # ------------------------------------------------------------------
     def cleanup(self):
-        # Destroy cached textures
         for tex in list(self.texture_cache.values()):
             try:
                 sdl2.SDL_DestroyTexture(tex)
@@ -227,7 +221,6 @@ class UserInterface:
                 pass
         self.texture_cache.clear()
 
-        # Destroy render target texture
         try:
             if getattr(self, "screen_texture", None):
                 sdl2.SDL_DestroyTexture(self.screen_texture)
@@ -235,7 +228,6 @@ class UserInterface:
         except Exception:
             pass
 
-        # Destroy renderer and window
         try:
             if getattr(self, "renderer", None):
                 sdl2.SDL_DestroyRenderer(self.renderer)
@@ -250,7 +242,6 @@ class UserInterface:
         except Exception:
             pass
 
-        # Close font
         try:
             if getattr(self, "font", None):
                 ttf.TTF_CloseFont(self.font)
@@ -258,8 +249,7 @@ class UserInterface:
         except Exception:
             pass
 
-        # Quit TTF/IMG only if this instance initialized them.
-        # If other parts of program rely on these subsystems, they should manage lifetime.
+        # Quit TTF/IMG only if we inited them; other owners manage their own lifetime.
         try:
             if self._inited_img_flags:
                 img.IMG_Quit()
@@ -278,7 +268,6 @@ class UserInterface:
     # Text rendering helpers
     # ------------------------------------------------------------------
     def _render_text(self, text: str, color: sdl2.SDL_Color):
-        # if font unavailable return None
         if not getattr(self, "font", None):
             return None
         try:
@@ -474,7 +463,6 @@ class UserInterface:
 
         path = getattr(port, "image_path", None)
         if not path or not os.path.exists(path):
-            # benign skip
             return
 
         texture = self.texture_cache.get(path)
@@ -490,7 +478,7 @@ class UserInterface:
                     return
                 self._cache_texture(path, texture)
             except Exception:
-                # on failure, ensure no half-created texture remains
+                # drop any half-created texture on failure
                 try:
                     if texture:
                         sdl2.SDL_DestroyTexture(texture)
@@ -504,7 +492,6 @@ class UserInterface:
                 except Exception:
                     pass
 
-        # Query original size
         w = ctypes.c_int()
         h = ctypes.c_int()
         sdl2.SDL_QueryTexture(texture, None, None, ctypes.byref(w), ctypes.byref(h))
@@ -512,9 +499,8 @@ class UserInterface:
         if tex_w == 0 or tex_h == 0:
             return
 
-        # Anchor on the same center the description text uses (pharos.py
-        # passes screen_width*3//4 - 20). Clamp max_w symmetrically so the
-        # image stays within the screen on both sides.
+        # Anchor on the same center as the description text; clamp max_w
+        # symmetrically so the image stays on-screen on both sides.
         desc_center_x = self.screen_width * 3 // 4 - 20
         right_margin = 10
         left_margin = 10
@@ -614,11 +600,8 @@ class UserInterface:
                          max_width: int, bottom_y: int):
         """Render the store-icon row for a port.
 
-        stores          list of {name, gameurl, ...} dicts from port.json
-        discount_lookup callable(store_name) -> int discount percent, or 0/None
-        center_x        horizontal center of the row
-        max_width       maximum row width before clipping
-        bottom_y        y-coordinate of the bottom edge of the reserved area
+        discount_lookup: callable(store_name) -> discount percent (0/None if none).
+        bottom_y: y of the bottom edge of the reserved area.
         """
         if not stores:
             return
