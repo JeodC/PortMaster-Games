@@ -23,8 +23,12 @@ PATCHES="$TMPDIR/patches"
 PATCHED="$TMPDIR/patchedFiles"
 PATCHES_URL="https://raw.githubusercontent.com/BigheadSMZ/Zelda-LA-DX-HD-Updated/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources/patches_linux_arm64.zip"
 FUNCTIONS_CS_URL="https://raw.githubusercontent.com/BigheadSMZ/Zelda-LA-DX-HD-Updated/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Program/Functions.cs"
+ACHIEVEMENTS_URL="https://raw.githubusercontent.com/BigheadSMZ/Zelda-LA-DX-HD-Updated/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources/achievements.zip"
 PATCHES_ZIP="$TMPDIR/patches_linux_arm64.zip"
+ACHIEVEMENTS_ZIP="$TMPDIR/achievements.zip"
+ACHIEVEMENTS_DIR="$DATADIR/Data/Achievements"
 TARGETS_FILE="$TMPDIR/file_targets.txt"
+DERIVED_SET="$TMPDIR/derived_targets.txt"
 PARSE_TARGETS_AWK="$GAMEDIR/../tools/parse_targets.awk"
 PATCH_VERSION_FILE="$GAMEDIR/.patch_version"
 UPDATE_CHECK_FILE="$GAMEDIR/.update_check"
@@ -57,6 +61,18 @@ is_linux_elf() {
 get_derived_files() {
     [ -f "$TARGETS_FILE" ] || return
     awk -F'\t' -v s="$1" '$1==s {print $2; exit}' "$TARGETS_FILE"
+}
+
+# Build the set of every derived target filename from the live mapping.
+build_derived_set() {
+    [ -f "$TARGETS_FILE" ] || return
+    awk -F'\t' '{ n=split($2, a, " "); for (i=1;i<=n;i++) print a[i] }' \
+        "$TARGETS_FILE" | sort -u > "$DERIVED_SET"
+}
+
+is_derived_target() {
+    [ -f "$DERIVED_SET" ] || return 1
+    grep -qFx -- "$1" "$DERIVED_SET"
 }
 
 prepare_system() {
@@ -96,10 +112,13 @@ prepare_system() {
 }
 
 extract_game() {
-    # Find the zip if not already set
+    # Find the game zip if not already set.
     if [ -z "$ZIPFILE" ]; then
         for f in "$DATADIR/"*.zip; do
             [ -f "$f" ] || continue
+            case "$(basename "$f")" in
+                patches_linux_arm64.zip|achievements.zip) continue ;;
+            esac
             ZIPFILE="$f"
             break
         done
@@ -207,6 +226,31 @@ download_patches() {
     rm -f "$PATCHES_ZIP"
 }
 
+extract_achievements() {
+    mkdir -p "$ACHIEVEMENTS_DIR"
+
+    local manual_zip="$DATADIR/achievements.zip"
+    if [ -f "$manual_zip" ]; then
+        echo "Using manually-placed achievements.zip from data/."
+        cp -f "$manual_zip" "$ACHIEVEMENTS_ZIP"
+    else
+        echo "Downloading achievement icons..."
+        if ! $FETCH "$ACHIEVEMENTS_ZIP" "$ACHIEVEMENTS_URL"; then
+            echo "  WARN: could not download achievements.zip - achievement icons will be missing."
+            return 0
+        fi
+    fi
+
+    if "$SEVENZIP" x -aoa -bso0 -bsp0 -o"$ACHIEVEMENTS_DIR" "$ACHIEVEMENTS_ZIP"; then
+        local n
+        n=$(find "$ACHIEVEMENTS_DIR" -type f -name '*.png' | wc -l)
+        echo "Extracted $n achievement icon(s)."
+    else
+        echo "  WARN: could not extract achievements.zip - achievement icons will be missing."
+    fi
+    rm -f "$ACHIEVEMENTS_ZIP"
+}
+
 download_file_targets() {
     local cs_file="$TMPDIR/Functions.cs"
     local manual_cs="$DATADIR/Functions.cs"
@@ -268,13 +312,13 @@ report_unmapped_patches() {
 
         out_name="${pname%.vcdiff}"
         # 1:1 patches (output filename exists as a v1.0.0 source) are handled
-        # by the main loop — they're not "unmapped."
+        # by the main loop - they're not "unmapped."
         if [ -n "$(find "$DATADIR" -type f -name "$out_name" ! -path "*/tmp/*" ! -path "*/Mods/*" -print -quit 2>/dev/null)" ]; then
             continue
         fi
 
         if [ "$count" -eq 0 ]; then
-            echo "WARN: patches with no static mapping found — upstream may have added new derivatives:"
+            echo "WARN: patches with no static mapping found - upstream may have added new derivatives:"
         fi
         echo "  - $pname"
         count=$((count + 1))
@@ -283,7 +327,7 @@ report_unmapped_patches() {
     if [ "$count" -eq 0 ]; then
         echo "All patches accounted for by static mapping."
     else
-        echo "($count unmapped patch(es) skipped — auto-match disabled without checksums.)"
+        echo "($count unmapped patch(es) skipped - auto-match disabled without checksums.)"
     fi
 }
 
@@ -321,6 +365,7 @@ handle_multi_file_patches() {
 patch_game_files() {
     : > "$CONSUMED_FILE"
     prepare_linux_files
+    build_derived_set
 
     # Pass 1: derived files via the live upstream mapping. Sources still v1.0.0.
     local files_list="$TMPDIR/datadir_files.txt"
@@ -339,7 +384,7 @@ patch_game_files() {
 
     # Pass 2: log any patches the static mapping didn't cover. We can't safely
     # auto-match them (upstream encodes without checksums; vcdiff won't reject
-    # wrong sources) — surface them so Functions.cs parsing can be updated.
+    # wrong sources) - surface them so Functions.cs parsing can be updated.
     report_unmapped_patches
 
     # Pass 3: 1:1 patches. Now we mutate sources. Re-run find since the derived
@@ -353,6 +398,8 @@ patch_game_files() {
             */~temp/*|*/tmp/*|*/Mods/*) continue ;;
         esac
         filename=$(basename "$file")
+
+        is_derived_target "$filename" && continue
 
         vcdiff_file="$PATCHES/$filename.vcdiff"
         [ -f "$vcdiff_file" ] || continue
@@ -384,13 +431,13 @@ patch_game_files() {
 
     if [ "$FAILED_PATCHES" -gt 0 ]; then
         emit_fail_msg "Some patches failed to apply. See patcherr.txt for details."
-        echo "ERROR: $FAILED_PATCHES patch(es) failed to decode — game would be incomplete."
+        echo "ERROR: $FAILED_PATCHES patch(es) failed to decode - game would be incomplete."
         return 1
     fi
 
     if ! is_linux_elf "$EXECUTABLE"; then
         emit_fail_msg "The game binary was not converted to the Linux version. Patching is incomplete - reinstall with an internet connection (offline installs also need Functions.cs in the data folder)."
-        echo "ERROR: '$EXECUTABLE' is not a Linux ELF after patching — the binary patch did not apply."
+        echo "ERROR: '$EXECUTABLE' is not a Linux ELF after patching - the binary patch did not apply."
         return 1
     fi
 
@@ -428,7 +475,7 @@ cleanup() {
 record_patch_version() {
     # Store the upstream release tag we patched against so the launch script
     # can detect future releases and trigger a re-patch. Offline installs
-    # get a "manual" sentinel — the launchscript will detect it as a tag
+    # get a "manual" sentinel - the launchscript will detect it as a tag
     # mismatch the next time the device comes online and re-patch from
     # upstream automatically.
     if [ -n "$UPSTREAM_TAG" ]; then
@@ -457,6 +504,8 @@ process_game() {
     download_file_targets || return 1
     echo "Patching game files..."
     patch_game_files || return 1
+    echo "Extracting achievement icons..."
+    extract_achievements
     echo "Recording patch version..."
     record_patch_version
     record_update_preference

@@ -32,22 +32,31 @@ BEGIN {
     }
 }
 
-# Parse the fileTargets dictionary, which sits in a single statement
-# of the form `{ "SOURCE", arrayName }, { "SOURCE", arrayName }, ...`
+# Parse the fileTargets dictionary, which sits in a single statement of the
+# form `{ "SOURCE", <expr> }, { "SOURCE", <expr> }, ...` where <expr> is a
+# bare array name or a combination like `langFiles.Concat(langAchiev).ToArray()`
+# (introduced upstream in v1.9.5). Every identifier in <expr> that names a
+# known array contributes its files; unknown identifiers (Concat, ToArray)
+# are ignored.
 /Dictionary<string,[ \t]*string\[\]>[ \t]+fileTargets/ {
     body = $0
-    while (match(body, /[{][ \t\n]*"[^"]+"[ \t\n]*,[ \t\n]*[A-Za-z_][A-Za-z0-9_]*[ \t\n]*[}]/)) {
+    while (match(body, /[{][ \t\n]*"[^"]+"[^{}]*[}]/)) {
         pair = substr(body, RSTART, RLENGTH)
         body = substr(body, RSTART + RLENGTH)
         if (match(pair, /"[^"]+"/)) {
             source = substr(pair, RSTART + 1, RLENGTH - 2)
             rest = substr(pair, RSTART + RLENGTH)
-            if (match(rest, /[A-Za-z_][A-Za-z0-9_]*/)) {
+            files = ""
+            while (match(rest, /[A-Za-z_][A-Za-z0-9_]*/)) {
                 aname = substr(rest, RSTART, RLENGTH)
-                if (source != "" && (aname in arrays)) {
-                    print source "\t" arrays[aname]
-                    count++
+                rest = substr(rest, RSTART + RLENGTH)
+                if (aname in arrays) {
+                    files = (files == "") ? arrays[aname] : files " " arrays[aname]
                 }
+            }
+            if (source != "" && files != "") {
+                print source "\t" files
+                count++
             }
         }
     }

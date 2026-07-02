@@ -21,8 +21,12 @@ If your device has no internet connection, you can pre-stage the patcher files o
    ```
    https://raw.githubusercontent.com/BigheadSMZ/Zelda-LA-DX-HD-Updated/<tag>/ladxhd_patcher_source_code/Program/Functions.cs
    ```
-4. Place your v1.0.0 zip in `zelda-ladxhd/data/` (same as a normal install).
-5. Launch. The patcher uses the local files instead of downloading.
+4. (Optional) Download `achievements.zip` from the same tag and place it at `zelda-ladxhd/data/achievements.zip`. This holds the achievement icons; without it the achievements still work and show their text, but their icons will be missing:
+   ```
+   https://raw.githubusercontent.com/BigheadSMZ/Zelda-LA-DX-HD-Updated/<tag>/ladxhd_patcher_source_code/Resources/achievements.zip
+   ```
+5. Place your v1.0.0 zip in `zelda-ladxhd/data/` (same as a normal install).
+6. Launch. The patcher uses the local files instead of downloading.
 
 The version is stamped as `manual` after an offline patch, so the port will re-patch from upstream the next time the device comes online (unless you've turned off the update check).
 
