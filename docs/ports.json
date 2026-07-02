@@ -2629,12 +2629,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip",
-      "date_updated": "2026-07-02T17:33",
+      "date_updated": "2026-07-02T17:36",
       "first_seen": "2026-01-29",
-      "md5": "8d691002c31b10e154aa509ea7002207",
-      "size": 21665271,
+      "md5": "27ae5cf1216bb8e45ff5586ae48b7d14",
+      "size": 21748762,
       "lifetime_downloads": 1134,
-      "last_commit": "[PHAROS] Fix daemon and autoinstall cleanup issues, trim comments"
+      "last_commit": "[Pharos] Update to v1.1.5"
     }
   },
   {
