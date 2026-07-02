@@ -3867,68 +3867,6 @@
   },
   {
     "version": 4,
-    "name": "theforceengine.zip",
-    "items": [
-      "Star Wars - The Force Engine.sh",
-      "theforceengine"
-    ],
-    "items_opt": [],
-    "attr": {
-      "title": "Star Wars : Dark Forces (TFE)",
-      "porter": [
-        "Jeod"
-      ],
-      "desc": "Dark Forces with The Force Engine to enable widescreen support, custom settings, and mods!",
-      "desc_md": null,
-      "inst": "Copy your `Star Wars: Dark Forces` .GOB files and `LFD` folder to `theforceengine/darkforces`. You can also copy `enhanced.gob` from the remaster.",
-      "inst_md": null,
-      "genres": [
-        "fps"
-      ],
-      "image": null,
-      "rtr": false,
-      "exp": false,
-      "runtime": [],
-      "store": [
-        {
-          "name": "Steam",
-          "gameurl": "https://store.steampowered.com/app/2292260/STAR_WARS_Dark_Forces_Remaster/",
-          "developerurl": ""
-        },
-        {
-          "name": "GOG",
-          "gameurl": "https://www.gog.com/en/game/star_wars_dark_forces_remaster",
-          "developerurl": ""
-        },
-        {
-          "name": "Humble Store",
-          "gameurl": "https://www.humblebundle.com/store/star-wars-dark-forces-remaster",
-          "developerurl": ""
-        }
-      ],
-      "availability": "paid",
-      "reqs": [
-        "opengl"
-      ],
-      "arch": [
-        "aarch64"
-      ],
-      "min_glibc": ""
-    },
-    "source": {
-      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/theforceengine/theforceengine/screenshot.png",
-      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/theforceengine/theforceengine/README.md",
-      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/theforceengine.zip",
-      "date_updated": "2026-05-14T18:18",
-      "first_seen": "2025-12-29",
-      "md5": "1eb6b61b8540ce1371240f5ccd3d953f",
-      "size": 9713835,
-      "lifetime_downloads": 52,
-      "last_commit": "Add discounts and more stores"
-    }
-  },
-  {
-    "version": 4,
     "name": "valleycore.zip",
     "items": [
       "Stardew Valley (Valleycore).sh",
