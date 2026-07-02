@@ -13,7 +13,7 @@
       "JohnnyOnFlame",
       "BinaryCounter"
     ],
-    "desc": "Dive into the parallel story to UNDERTALE! Fight or spare your way through action-packed battles as you explore a mysterious world alongside an endearing cast of new and familiar characters. Chapters 1-4 will be available on launch, with more planned as free updates!",
+    "desc": "Dive into the parallel story to UNDERTALE! Fight or spare your way through action-packed battles as you explore a mysterious world alongside an endearing cast of new and familiar characters.",
     "desc_md": null,
     "inst": "Choose where to download the game from and add all files to `ports/deltarune/assets/install`.",
     "inst_md": null,

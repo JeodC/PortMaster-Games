@@ -234,6 +234,7 @@ process_assets() {
         mkdir -p "$SAVEDIR/vid"
         mv "$INSTALLDIR/assets/vid"/* "$SAVEDIR/vid/" 2>/dev/null
         rmdir "$INSTALLDIR/assets/vid" 2>/dev/null
+        rm -f "$SAVEDIR/vid/.transcoded"
     fi
     zip_archive || return 1
     rm -rf "$INSTALLDIR/assets"
@@ -254,6 +255,28 @@ process_launcher() {
         mv "$SAVEDIR/textures/$GAMEFILE"/* "$SAVEDIR/textures/"
         rm -rf "$SAVEDIR/textures/$GAMEFILE"
     fi
+}
+
+# Re-encode the ch5 intro to cheap-to-decode MPEG-4 via gmtoolkit; the
+# .transcoded marker keeps it a one-time cost across re-runs.
+compress_video() {
+    [ -f "$SAVEDIR/vid/.transcoded" ] && return 0
+    local gmtoolkit="$controlfolder/gmtoolkit.${DEVICE_ARCH}"
+    local failed=0
+    for name in ch5_intro_en ch5_intro_jp; do
+        local src="$SAVEDIR/vid/$name.mp4"
+        [ -f "$src" ] || continue
+        echo "Re-encoding $name.mp4 for smooth playback..."
+        if "$gmtoolkit" --transcode-video "$src" "$SAVEDIR/vid/$name-lite.mp4" --video-scale 640x360; then
+            mv -f "$SAVEDIR/vid/$name-lite.mp4" "$src"
+        else
+            rm -f "$SAVEDIR/vid/$name-lite.mp4"
+            echo "WARNING: could not re-encode $name.mp4; leaving original."
+            failed=1
+        fi
+    done
+    # Only mark done on success, so a device with an older gmtoolkit retries later.
+    [ "$failed" -eq 0 ] && touch "$SAVEDIR/vid/.transcoded"
 }
 
 process_game() {
@@ -280,6 +303,8 @@ process_game() {
         mv "$subfolder" "$INSTALLDIR/assets"
         process_assets || return 1
     done
+
+    [ -d "$SAVEDIR/vid" ] && compress_video
 }
 
 if ! process_game; then

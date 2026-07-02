@@ -1,7 +1,7 @@
 {
     "compress_audio": {
         "bitrate":        64,
-        "recompress_ogg": true
+        "recompress_ogg": false
     },
     "externalize_textures": "textures",
     "code_patches": [
