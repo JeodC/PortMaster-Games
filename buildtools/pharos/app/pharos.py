@@ -899,7 +899,7 @@ class Pharos:
                 self.running = False
             else:
                 self.ui.draw_log(
-                    text="Update download failed. Continuing with current version.",
+                    text="Update not ready (still publishing?) - try again in a few minutes.",
                     background=True,
                 )
                 self.ui.render_to_screen()

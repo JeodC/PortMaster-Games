@@ -4,12 +4,14 @@ Pharos/update.py
 Self-update mechanism. Adapted from rommapp/muos-app's RomM/update.py.
 
 Flow: check() compares the bundled __version__ against __version__.py fetched
-from PHAROS_REPO@main and reads the download URL from docs/ports.json.
-download() streams the new zip to DATA_DIR/.pending_update.zip. The Pharos
-App.sh wrapper applies it (pre-launch if a prior run left one, or post-exit),
-extracting via 7zzs, copying pharos/ to GAMEDIR, and re-exec'ing the new binary.
+from PHAROS_REPO@main and reads the download URL + md5 from docs/ports.json.
+download() streams the new zip to DATA_DIR/.pending_update.zip and verifies its
+md5 against ports.json before accepting it. The Pharos App.sh wrapper applies it
+(pre-launch if a prior run left one, or post-exit), extracting via 7zzs, copying
+pharos/ to GAMEDIR, and re-exec'ing the new binary.
 See ports/released/apps/pharos/Pharos App.sh::apply_pending_update.
 """
+import hashlib
 import json
 import os
 import re
@@ -67,6 +69,7 @@ class Update:
         self.current_version = __version__.version
         self.latest_version: str | None = None
         self.download_url: str | None = None
+        self.expected_md5: str | None = None
         self.download_percent = 0.0
 
     # ------------------------------------------------------------------
@@ -88,7 +91,9 @@ class Update:
                 data = json.loads(raw_ports.decode("utf-8"))
                 for entry in data:
                     if entry.get("name") == PHAROS_PORT_NAME:
-                        self.download_url = entry.get("source", {}).get("download_url")
+                        src = entry.get("source", {}) or {}
+                        self.download_url = src.get("download_url")
+                        self.expected_md5 = src.get("md5")
                         break
             except json.JSONDecodeError as e:
                 print(f"[Update] ports.json parse failed: {e}")
@@ -117,6 +122,7 @@ class Update:
                 total = int(resp.getheader("Content-Length", 0)) or 1
                 downloaded = 0
                 chunk_size = 8192
+                md5 = hashlib.md5()
 
                 with open(PENDING_ZIP, "wb") as out:
                     while True:
@@ -124,6 +130,7 @@ class Update:
                         if not chunk:
                             break
                         out.write(chunk)
+                        md5.update(chunk)
                         downloaded += len(chunk)
                         self.download_percent = min(100.0, downloaded / total * 100.0)
 
@@ -135,8 +142,24 @@ class Update:
                         self.ui.render_to_screen()
                         sdl2.SDL_Delay(16)
 
+            # Verify the bytes match what ports.json advertises. GitHub's rolling
+            # release CDN can serve a stale cached zip for a few minutes after a
+            # new build publishes, so a version-only check would install the OLD
+            # binary and re-prompt on every launch. Reject the mismatch so we stay
+            # on the current build until the correct zip is actually reachable.
+            got = md5.hexdigest()
+            if self.expected_md5 and got != self.expected_md5:
+                print(f"[Update] md5 mismatch: expected {self.expected_md5}, got {got}; "
+                      "release still propagating - not applying.")
+                if os.path.exists(PENDING_ZIP):
+                    try:
+                        os.remove(PENDING_ZIP)
+                    except OSError:
+                        pass
+                return False
+
             print(f"[Update] Saved pending update to {PENDING_ZIP} "
-                  f"({downloaded} bytes).")
+                  f"({downloaded} bytes, md5 {got}).")
             return True
         except (HTTPError, URLError, OSError) as e:
             # OSError covers disk-full / permission mid-write failures that would
