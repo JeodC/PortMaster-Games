@@ -1,0 +1,156 @@
+:root[data-theme] { background: var(--bg); }
+
+/* New Year */
+:root[data-theme="newyear"] {
+	--primary: #8b6a23; --primary-hover: #6e541c;
+	--bg: #14141b; --card-bg: #24242e; --accent-bg: #1c1c25; --text: #ece7da;
+	--accent-text: #e9cd77;
+}
+/* Easter */
+:root[data-theme="easter"] {
+	--primary: #7c51b8; --primary-hover: #68419f;
+	--bg: #a592bf; --card-bg: #d4cae2; --accent-bg: #e8e2ce; --text: #282032;
+}
+/* Midsummer */
+:root[data-theme="midsummer"] {
+	--primary: #90641d; --primary-hover: #724f17;
+	--bg: #75a5c7; --card-bg: #ecdfbb; --accent-bg: #e7e6c4; --text: #23301c;
+}
+/* Independence Day */
+:root[data-theme="independence"] {
+	--primary: #a63a49; --primary-hover: #88303b;
+	--bg: #7e8ea9; --card-bg: #b2bac7; --accent-bg: #d1d7e0; --text: #171c26;
+}
+/* Halloween */
+:root[data-theme="halloween"] {
+	--primary: #ae5713; --primary-hover: #8e4710;
+	--bg: #17121d; --card-bg: #29212f; --accent-bg: #1f1926; --text: #efe6f2;
+	--accent-text: #f0a24a;
+}
+/* Obon */
+:root[data-theme="obon"] {
+	--primary: #b8442c; --primary-hover: #97371f;
+	--bg: #16212f; --card-bg: #27313f; --accent-bg: #1d2733; --text: #ece3d2;
+	--accent-text: #f2b45e;
+}
+/* Autumn */
+:root[data-theme="autumn"] {
+	--primary: #b65020; --primary-hover: #98421b;
+	--bg: #ac8c6c; --card-bg: #dac9b4; --accent-bg: #e8dbc9; --text: #2c1f16;
+}
+/* Christmas */
+:root[data-theme="christmas"] {
+	--primary: #ae3247; --primary-hover: #8e293a;
+	--bg: #0f241d; --card-bg: #1e3229; --accent-bg: #16281f; --text: #eaf1ea;
+	--accent-text: #e7c46a;
+}
+
+/* Secondary text */
+:root[data-night] .recent-tile-date,
+:root[data-night] .devlog-post time,
+:root[data-night] .devlog-empty { color: rgba(255, 255, 255, 0.58); }
+
+/* Body-ish text */
+:root[data-night] .recent-tile-commit,
+:root[data-night] .devlog-excerpt,
+:root[data-night] .devlog-rendered blockquote,
+:root[data-night] .port-commit-banner { color: rgba(255, 255, 255, 0.8); }
+
+/* Faint black wash panels */
+:root[data-night] .recent-tile-commit,
+:root[data-night] .port-commit-banner,
+:root[data-night] .devlog-rendered code,
+:root[data-night] .devlog-rendered pre { background: rgba(255, 255, 255, 0.08); }
+
+/* Accent links/labels */
+:root[data-night] .summary h2 small,
+:root[data-night] .devlog-body > summary,
+:root[data-night] .devlog-older a { color: var(--accent-text); }
+
+/* Nav hover */
+:root[data-night] .nav-trigger:hover,
+:root[data-night] .nav-trigger:focus-visible,
+:root[data-night] .nav-dropdown.open .nav-trigger {
+	background: rgba(255, 255, 255, 0.16);
+	color: var(--text);
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Separators */
+:root[data-night] details[open] summary,
+:root[data-night] .filters-panel-header,
+:root[data-night] .devlog details[open] > summary { border-color: rgba(255, 255, 255, 0.12); }
+
+/* Give the dark cards/tiles a faint light edge for definition. */
+:root[data-night] .port-card,
+:root[data-night] .recent-tile { border-color: rgba(255, 255, 255, 0.14); }
+
+/* Fixed light popovers */
+:root[data-night] .nav-menu a { color: #20202a; }
+:root[data-night] .readme-modal-header { background: #ebe7d9; }
+
+/* Search/filter fields */
+:root[data-night] #search-bar,
+:root[data-night] .filters-container select {
+	background: rgba(255, 255, 255, 0.08);
+	color: var(--text);
+	border-color: rgba(255, 255, 255, 0.2);
+}
+
+#holiday-fx {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 40;
+	overflow: hidden;
+}
+
+#holiday-canvas {
+	position: absolute;
+	inset: 0;
+}
+
+/* Top decoration strip */
+.hx-top {
+	position: absolute;
+	top: 0; left: 0; right: 0;
+	height: 48px;
+}
+
+/* Christmas string lights */
+.hx-lights::before {
+	content: "";
+	position: absolute;
+	top: 6px; left: 0; right: 0;
+	height: 2px;
+	background: rgba(255, 255, 255, 0.28);
+}
+.hx-bulb {
+	position: absolute;
+	width: 9px; height: 13px;
+	border-radius: 50% 50% 45% 45%;
+	box-shadow: 0 0 8px 1px currentColor;
+	animation: hx-twinkle 1.8s ease-in-out infinite;
+}
+@keyframes hx-twinkle {
+	0%, 100% { opacity: 1; filter: brightness(1.25); }
+	50%      { opacity: 0.4; filter: brightness(0.65); }
+}
+
+/* Midsummer sun glow */
+:root[data-theme="midsummer"] #holiday-fx::before {
+	content: "";
+	position: absolute;
+	top: -8%;
+	right: -4%;
+	width: min(42vw, 380px);
+	height: min(42vw, 380px);
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(255, 246, 200, 0.85), rgba(255, 224, 130, 0.4) 42%, rgba(255, 224, 130, 0) 70%);
+}
+
+/* Respect reduced motion: no twinkle, no canvas is created. */
+.hx-static .hx-bulb { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+	.hx-bulb { animation: none; }
+}
