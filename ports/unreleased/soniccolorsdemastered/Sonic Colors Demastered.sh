@@ -36,12 +36,9 @@ else
     exit 1
 fi
 
-export GMLOADER_LIB_PATH="$GMLOADER/lib"
-
-export LD_LIBRARY_PATH="$GMLOADER/lib:$LD_LIBRARY_PATH"
-
-
 # Exports
+export GMLOADER_LIB_PATH="$GMLOADER/lib"
+export LD_LIBRARY_PATH="$GMLOADER/lib:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 
 # Check if we need to patch the game
@@ -52,6 +49,7 @@ if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/data.win" ]; then
         export PATCHER_TIME="20 to 30 minutes"
         export controlfolder
         export ESUDO
+        export DEVICE_ARCH
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb)
     else

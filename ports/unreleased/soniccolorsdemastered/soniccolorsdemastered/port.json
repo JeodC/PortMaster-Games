@@ -13,10 +13,11 @@
     ],
     "desc": "Sonic Colors Demastered is a 2D reimagining of Sonic Colors for the Nintendo Wii and Nintendo DS. The game features gameplay inspired by the Sonic Rush series and fully original level design. The game also features a fully original soundtrack produced by Randomocity Remixes, KITSUN3POWR, Mr_Shoemonster, and David Johnson.",
     "desc_md": null,
-    "inst": "Download the game from itch.io: https://randomocity-gaming.itch.io/sonic-colors-demastered and unzip the files to `ports/soniccolorsdemastered/gamedata`.",
+    "inst": "Download the game from itch.io: https://randomocity-gaming.itch.io/sonic-colors-demastered and unzip the files to `ports/soniccolorsdemastered/assets`.",
     "inst_md": null,
     "genres": [
-      "other"
+      "action",
+      "platformer"
     ],
     "image": null,
     "rtr": false,
@@ -24,8 +25,14 @@
     "runtime": [
       "gmloadernext.squashfs"
     ],
-    "store": [],
-    "availability": "",
+    "store": [
+      {
+        "name": "Itch.io",
+        "gameurl": "https://randomocity-gaming.itch.io/sonic-colors-demastered",
+        "developerurl": ""
+      }
+    ],
+    "availability": "free",
     "reqs": [
       "ultra"
     ],

@@ -24,7 +24,13 @@
     "rtr": false,
     "exp": false,
     "runtime": [],
-    "store": [],
+    "store": [
+      {
+        "name": "Steam",
+        "gameurl": "https://store.steampowered.com/app/3216340/Tearscape/",
+        "developerurl": ""
+      }
+    ],
     "availability": "paid",
     "reqs": [],
     "arch": [
