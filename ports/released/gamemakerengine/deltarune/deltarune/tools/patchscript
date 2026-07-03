@@ -231,9 +231,20 @@ process_assets() {
     [ "$rc" -ne 0 ] && return 1
     if [ -d "$INSTALLDIR/assets/vid" ]; then
         mkdir -p "$SAVEDIR/vid"
-        mv "$INSTALLDIR/assets/vid"/* "$SAVEDIR/vid/" 2>/dev/null
+        local _vid _vname _vmarker
+        for _vid in "$INSTALLDIR/assets/vid"/*; do
+            [ -f "$_vid" ] || continue
+            _vname="$(basename "$_vid")"
+            _vmarker="$SAVEDIR/vid/.$_vname.transcoded"
+            if [ -f "$_vmarker" ] && [ "$(md5sum "$_vid" | cut -c1-32)" = "$(cat "$_vmarker")" ]; then
+                echo "Video $_vname unchanged; keeping transcoded copy."
+                rm -f "$_vid"
+            else
+                mv -f "$_vid" "$SAVEDIR/vid/$_vname"
+                rm -f "$_vmarker"
+            fi
+        done
         rmdir "$INSTALLDIR/assets/vid" 2>/dev/null
-        rm -f "$SAVEDIR/vid/.transcoded"
     fi
     zip_archive || return 1
     rm -rf "$INSTALLDIR/assets"
@@ -256,26 +267,25 @@ process_launcher() {
     fi
 }
 
-# Re-encode the ch5 intro to cheap-to-decode MPEG-4 via gmtoolkit; the
-# .transcoded marker keeps it a one-time cost across re-runs.
 compress_video() {
-    [ -f "$SAVEDIR/vid/.transcoded" ] && return 0
     local gmtoolkit="$controlfolder/gmtoolkit.${DEVICE_ARCH}"
-    local failed=0
+    local name src marker sum
+
     for name in ch5_intro_en ch5_intro_jp; do
-        local src="$SAVEDIR/vid/$name.mp4"
+        src="$SAVEDIR/vid/$name.mp4"
+        marker="$SAVEDIR/vid/.$name.mp4.transcoded"
         [ -f "$src" ] || continue
-        echo "Re-encoding $name.mp4 for smooth playback..."
+        [ -f "$marker" ] && continue
+        sum="$(md5sum "$src" | cut -c1-32)"
+        echo "Re-encoding $name.mp4..."
         if "$gmtoolkit" --transcode-video "$src" "$SAVEDIR/vid/$name-lite.mp4" --video-scale 640x360; then
             mv -f "$SAVEDIR/vid/$name-lite.mp4" "$src"
+            echo "$sum" > "$marker"
         else
             rm -f "$SAVEDIR/vid/$name-lite.mp4"
-            echo "WARNING: could not re-encode $name.mp4; leaving original."
-            failed=1
+            echo "WARNING: could not re-encode $name.mp4"
         fi
     done
-    # Only mark done on success, so a device with an older gmtoolkit retries later.
-    [ "$failed" -eq 0 ] && touch "$SAVEDIR/vid/.transcoded"
 }
 
 process_game() {
