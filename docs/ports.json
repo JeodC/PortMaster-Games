@@ -702,12 +702,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/deltarune/deltarune/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/deltarune/deltarune/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/deltarune.zip",
-      "date_updated": "2026-07-02T19:06",
+      "date_updated": "2026-07-03T16:32",
       "first_seen": "2025-05-18",
-      "md5": "1c39a7ffbe04c21198ce1081fede4607",
-      "size": 4313083,
-      "lifetime_downloads": 195,
-      "last_commit": "[DELTARUNE] Bump texture block size for weak devices"
+      "md5": "08327683922601426918d74d5dff3a14",
+      "size": 4312430,
+      "lifetime_downloads": 199,
+      "last_commit": "[DELTARUNE] Fix Ch3 crash"
     }
   },
   {
