@@ -1,0 +1,42 @@
+{
+  "version": 4,
+  "name": "digitaltamers2.zip",
+  "items": [
+    "Digital Tamers 2.sh",
+    "digitaltamers2"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Digital Tamers 2",
+    "porter": [
+      "Jeod"
+    ],
+    "desc": "The sequel to Digital Tamers: ReBorn. Raise, train, and evolve your partner across more than 150 challenges, almost 100 unique quests, and over 600 different Digimon to collect, with dynamic combat, rich map exploration, and engaging stories.",
+    "desc_md": null,
+    "inst": "Download the Android version from https://dragonrod342.itch.io/digital-tamers-2 and add the .apk to `digitaltamers2/assets`.",
+    "inst_md": null,
+    "genres": [
+      "action",
+      "rpg"
+    ],
+    "image": null,
+    "rtr": false,
+    "exp": false,
+    "runtime": [
+      "gmloadernext.squashfs"
+    ],
+    "store": [
+      {
+        "name": "Itch.io",
+        "gameurl": "https://dragonrod342.itch.io/digital-tamers-2",
+        "developerurl": ""
+      }
+    ],
+    "availability": "free",
+    "reqs": [],
+    "arch": [
+      "aarch64"
+    ],
+    "min_glibc": ""
+  }
+}

@@ -23,6 +23,7 @@ echo "GAMEDIR is set to: $GAMEDIR"
 # Exports
 export DATADIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
+export WORKDIR="$GAMEDIR/apkwork"
 export DATAFILE="dt2.port"
 
 # Tight-RAM devices can't sustain a parallel astcenc / vorbis workload.
@@ -64,31 +65,37 @@ thermal_restore() {
     IFS=$OLDIFS
 }
 
-unzip_installer() {
-    EXE="$DATADIR/DigitalTamers02 - Installer.exe"
-    if [ ! -f "$EXE" ]; then
-        emit_fail_msg "Did not find $(basename "$EXE")!"
+extract_apk() {
+    APK=$(ls "$DATADIR"/*.apk 2>/dev/null | head -1)
+    if [ -z "$APK" ] || [ ! -f "$APK" ]; then
+        emit_fail_msg "No APK found. Add the Android APK to the assets folder."
         return 1
     fi
-    if ! "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$EXE" -o"$DATADIR" >/dev/null; then
-        emit_fail_msg "Failed to unzip installer."
+
+    rm -rf "$WORKDIR"
+    mkdir -p "$WORKDIR"
+    if ! "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$APK" -o"$WORKDIR" \
+            "assets/*" "lib/arm64-v8a/libyoyo.so" >/dev/null; then
+        emit_fail_msg "Failed to extract APK."
         return 1
     fi
-    rm -f "$EXE"
+    rm -f "$APK"
 }
 
 prepare_files() {
     mkdir -p "$SAVEDIR"
 
-    # Delete NSIS scaffolding + Windows-only assets
-    find "$DATADIR" -type f \( \
-        -name "*.bin" -o -name "*.arsc" -o -name "*.dex" -o -name "*.txt" -o \
-        -name "*.xml" -o -name "*.exe" -o -name "*.dll" -o -name "*.gitkeep" \
+    rm -rf "$WORKDIR/assets/dexopt"
+    find "$WORKDIR/assets" -type f \( \
+        -name "*.dex" -o -name "*.arsc" -o -name "*.xml" -o -name "*.gitkeep" \
     \) -exec rm -f {} \;
-    rm -rf "${DATADIR}/\$PLUGINSDIR" "${DATADIR}/\$TEMP"
 
-    if [ ! -f "$DATADIR/data.win" ]; then
-        emit_fail_msg "No data.win after unpacking installer!"
+    if [ ! -f "$WORKDIR/assets/game.droid" ]; then
+        emit_fail_msg "No game.droid inside the APK."
+        return 1
+    fi
+    if [ ! -f "$WORKDIR/lib/arm64-v8a/libyoyo.so" ]; then
+        emit_fail_msg "No arm64 runner inside the APK."
         return 1
     fi
 
@@ -97,19 +104,27 @@ prepare_files() {
     fi
 }
 
+# Confirm the APK is actually Digital Tamers 2 before we spend time patching it.
+verify_game() {
+    if ! "$controlfolder/gmtoolkit.${DEVICE_ARCH}" --info "$WORKDIR/assets/game.droid" 2>&1 \
+            | grep -qi "GEN8.FileName:[[:space:]]*DigitalTamers02"; then
+        emit_fail_msg "That APK is not Digital Tamers 2. Please add the correct game."
+        return 1
+    fi
+}
+
 patch_datafile() {
-    if ! "$controlfolder/gmtoolkit.${DEVICE_ARCH}" --config "$GAMEDIR/tools/digitaltamers2.json" $THREADS_FLAG $BLOCK_FLAGS "$DATADIR/data.win"; then
+    if ! "$controlfolder/gmtoolkit.${DEVICE_ARCH}" --config "$GAMEDIR/tools/digitaltamers2.json" $THREADS_FLAG $BLOCK_FLAGS "$WORKDIR/assets/game.droid"; then
         emit_fail_msg "gmtoolkit patch failed."
         return 1
     fi
 }
 
-# Zip it all into the .port file
 zip_archive() {
-    [ -f "$DATADIR/data.win" ] && mv "$DATADIR/data.win" "$DATADIR/game.droid"
+    rm -f "$GAMEDIR/$DATAFILE"
     local zip_out
-    if zip_out=$("$controlfolder/7zzs.${DEVICE_ARCH}" a -tzip -aoa -mx=0 "$GAMEDIR/$DATAFILE" "$DATADIR" 2>&1); then
-        rm -rf "$DATADIR"/*
+    if zip_out=$(cd "$WORKDIR" && "$controlfolder/7zzs.${DEVICE_ARCH}" a -tzip -aoa -mx=0 "$GAMEDIR/$DATAFILE" lib assets 2>&1); then
+        rm -rf "$WORKDIR" "$DATADIR"/*
     else
         echo "$zip_out"
         emit_fail_msg "Failed to create $DATAFILE."
@@ -118,10 +133,12 @@ zip_archive() {
 }
 
 process_game() {
-    echo "Unpacking installer..."
-    unzip_installer || return 1
+    echo "Unpacking APK..."
+    extract_apk || return 1
     echo "Preparing game..."
     prepare_files || return 1
+    echo "Verifying game..."
+    verify_game || return 1
     thermal_setup
     echo "Applying patches..."
     patch_datafile

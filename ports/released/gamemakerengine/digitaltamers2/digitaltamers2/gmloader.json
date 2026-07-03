@@ -2,11 +2,13 @@
     "save_dir" : "saves",
     "apk_path" : "dt2.port",
     "show_cursor" : false,
+    "software_cursor" : true,
+    "cursor_scale" : 1.0,
     "disable_controller" : false,
     "disable_depth" : false,
     "disable_extensions" : false,
     "disable_rumble" : false,
-    "disable_texhack" : true,
+    "disable_texhack" : false,
     "rumble_scale" : 4.0,
     "force_platform" : "os_windows"
 }

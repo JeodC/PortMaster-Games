@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gamelist>
+	<game>
+		<path>./Digital Tamers 2.sh</path>
+		<name>Digital Tamers 2</name>
+		<desc>The sequel to Digital Tamers: ReBorn. Raise, train, and evolve your partner across more than 150 challenges, almost 100 unique quests, and over 600 different Digimon to collect.</desc>
+		<image>./digitaltamers2/cover.png</image>
+		<thumbnail>./digitaltamers2/thumb.png</thumbnail>
+		<releasedate>2024</releasedate>
+		<developer>dragonrod342</developer>
+		<genre>Action, RPG</genre>
+	</game>
+</gamelist>

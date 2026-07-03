@@ -1,0 +1,11 @@
+{
+    "repack":      true,
+    "page_size":   1024,
+    "block":       "4x4",
+    "quality":     "medium",
+    "externalize_textures": "../../saves/textures",
+    "compress_audio": {
+        "bitrate":        64,
+        "recompress_ogg": true
+    }
+}

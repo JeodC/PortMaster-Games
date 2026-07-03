@@ -36,26 +36,21 @@ else
     exit 1
 fi
 
-export GMLOADER_LIB_PATH="$GMLOADER/lib"
-
-export LD_LIBRARY_PATH="$GMLOADER/lib:$LD_LIBRARY_PATH"
-
-
 # Exports
+export GMLOADER_LIB_PATH="$GMLOADER/lib"
+export LD_LIBRARY_PATH="$GMLOADER/lib:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 
-# START + D-PAD LEFT to enter
-export TEXTINPUTPRESET="DigiLover"
-
 # Check if we need to patch the game
-if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/"*.exe ]; then
+if [ ! -f patchlog.txt ] || ls "$GAMEDIR/assets/"*.apk >/dev/null 2>&1; then
     if [ -f "$controlfolder/utils/patcher.txt" ]; then
         export PATCHER_FILE="$GAMEDIR/tools/patchscript"
         export PATCHER_GAME="$(basename "${0%.*}")"
-        export PATCHER_TIME="2 to 5 minutes"
+        export PATCHER_TIME="5 to 15 minutes"
         export controlfolder
         export ESUDO
         export DEVICE_ARCH
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb)
     else
@@ -63,6 +58,17 @@ if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/"*.exe ]; then
     fi
 fi
 
+# On sway compositors (e.g. ROCKNIX) hide the OS mouse cursor
+HID_CURSOR=0
+if command -v swaymsg >/dev/null 2>&1 && swaymsg -t get_version >/dev/null 2>&1; then
+    CURSOR_THEME_DIR="$HOME/.icons/hidden/cursors"
+    mkdir -p "$CURSOR_THEME_DIR"
+    for _c in left_ptr default arrow top_left_arrow pointer left_ptr_watch; do
+        cp -f "$GAMEDIR/tools/hidden_cursor" "$CURSOR_THEME_DIR/$_c" 2>/dev/null
+    done
+    printf '[Icon Theme]\nName=hidden\n' > "$HOME/.icons/hidden/index.theme"
+    swaymsg seat '*' xcursor_theme hidden 24 >/dev/null 2>&1 && HID_CURSOR=1
+fi
 
 # Assign gptokeyb and load the game
 $GPTOKEYB "gmloadernext.aarch64" -c "dt2.gptk" &
@@ -70,7 +76,6 @@ pm_platform_helper "$GMLOADER/gmloadernext.aarch64" >/dev/null
 "$GMLOADER/gmloadernext.aarch64" -c gmloader.json
 
 # Cleanup
-# Unmount gmloadernext runtime
+[ "$HID_CURSOR" = "1" ] && swaymsg seat '*' xcursor_theme default 24 >/dev/null 2>&1
 $ESUDO umount "$GMLOADER" 2>/dev/null || true
-
 pm_finish
