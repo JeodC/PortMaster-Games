@@ -1,8 +1,0 @@
-{
-    "set_flags":   ["Fullscreen"],
-    "clear_flags": ["Scale"],
-    "compress_audio": {
-        "bitrate":        64,
-        "recompress_ogg": true
-    }
-}

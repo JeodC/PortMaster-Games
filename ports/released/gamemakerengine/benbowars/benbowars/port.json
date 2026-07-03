@@ -13,7 +13,7 @@
     ],
     "desc": "A brand new Indie Adventure. The War on Videogames Rages on. It's the Brand New Game. The Only and Only....The BenboWARS",
     "desc_md": null,
-    "inst": "Download the game and add all files to `benbowars/assets/`.",
+    "inst": "Download the BenboWARS demo from Steam and add all files to `benbowars/assets/`.",
     "inst_md": null,
     "genres": [
       "action",

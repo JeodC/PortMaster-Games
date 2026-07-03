@@ -1,0 +1,24 @@
+{
+    "set_flags":   ["Fullscreen"],
+    "clear_flags": ["Scale"],
+    "repack":      true,
+    "page_size":   1024,
+    "block":       "4x4",
+    "quality":     "medium",
+    "externalize_textures": "../saves/textures",
+    "compress_audio": {
+        "bitrate":        64,
+        "recompress_ogg": true
+    },
+    "code_patches": [
+        { "entry": "gml_Object_obj_gmlive_Create_0",    "gml": "gml/obj_gmlive_Create_0.gml" },
+        { "entry": "gml_Object_obj_gmlive_Step_0",      "gml": "gml/obj_gmlive_stub.gml" },
+        { "entry": "gml_Object_obj_gmlive_Draw_0",      "gml": "gml/obj_gmlive_stub.gml" },
+        { "entry": "gml_Object_obj_gmlive_Other_62",    "gml": "gml/obj_gmlive_stub.gml" },
+        { "entry": "gml_Object_prop_wallback_Draw_0",   "gml": "gml/prop_wallback_draw.gml" },
+        { "entry": "gml_Object_prop_wallback_2_Draw_0", "gml": "gml/prop_wallback_draw.gml" },
+        { "entry": "gml_Object_prop_wallback_3_Draw_0", "gml": "gml/prop_wallback_draw.gml" },
+        { "entry": "gml_Object_obj_camera_Create_0",    "gml": "gml/obj_camera_Create_0.gml" },
+        { "entry": "gml_Object_obj_camera_Step_2",      "gml": "gml/obj_camera_Step_2.gml" }
+    ]
+}

@@ -36,12 +36,9 @@ else
     exit 1
 fi
 
-export GMLOADER_LIB_PATH="$GMLOADER/lib"
-
-export LD_LIBRARY_PATH="$GMLOADER/lib:$LD_LIBRARY_PATH"
-
-
 # Exports
+export GMLOADER_LIB_PATH="$GMLOADER/lib"
+export LD_LIBRARY_PATH="$GMLOADER/lib:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 
 # Check if we need to patch the game
@@ -49,7 +46,7 @@ if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/data.win" ]; then
     if [ -f "$controlfolder/utils/patcher.txt" ]; then
         export PATCHER_FILE="$GAMEDIR/tools/patchscript"
         export PATCHER_GAME="$(basename "${0%.*}")"
-        export PATCHER_TIME="2 to 5 minutes"
+        export PATCHER_TIME="5 to 15 minutes"
         export controlfolder
         export ESUDO
         export DEVICE_ARCH
@@ -62,7 +59,7 @@ fi
 
 
 # Assign gptokeyb and load the game
-$GPTOKEYB "gmloadernext.aarch64" -c "game.gptk" &
+$GPTOKEYB "gmloadernext.aarch64" -c "benbo.gptk" &
 pm_platform_helper "$GMLOADER/gmloadernext.aarch64" >/dev/null
 "$GMLOADER/gmloadernext.aarch64" -c gmloader.json
 
