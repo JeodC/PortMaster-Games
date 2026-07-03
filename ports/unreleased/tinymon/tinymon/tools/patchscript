@@ -22,62 +22,58 @@ echo "GAMEDIR is set to: $GAMEDIR"
 
 # Exports
 export DATADIR="$GAMEDIR/assets"
+export SAVEDIR="$GAMEDIR/saves"
 export DATAFILE="tinymon.port"
-export TMPDIR="$GAMEDIR/tmp"
+
+# Tight-RAM devices can't sustain a parallel astcenc / vorbis workload.
+THREADS_FLAG=""
+if [ "${DEVICE_RAM:-0}" -le 2 ]; then
+    THREADS_FLAG="--threads 1"
+fi
 
 prepare_files() {
-    # Attempt to get SAVEDIR from gmloader.json using jq
-    if command -v jq >/dev/null 2>&1; then
-        SAVEDIR=$(jq -r '.save_dir // empty' "$GAMEDIR/gmloader.json" 2>/dev/null)
-    else
-        SAVEDIR="$GAMEDIR/saves"
-    fi
-    
     mkdir -p "$SAVEDIR"
-    
+
     # Delete excess files
     find "$DATADIR" -type f \( \
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \
         -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
     \) -exec rm -f {} \;
+}
 
-    # Rename data.win
-    if [ -f "$DATADIR/data.win" ]; then
-        mv "$DATADIR/data.win" "$DATADIR/game.droid"
+patch_datafile() {
+    if ! "$controlfolder/gmtoolkit.${DEVICE_ARCH}" --config "$GAMEDIR/tools/tinymon.json" $THREADS_FLAG "$DATADIR/data.win"; then
+        emit_fail_msg "gmtoolkit patch failed."
+        return 1
     fi
 }
 
 # Zip it all into the .port file
 zip_archive() {
-    if "$controlfolder/7zzs.${DEVICE_ARCH}" a -tzip -aoa -mx=0 "$GAMEDIR/$DATAFILE" "$DATADIR"; then
+    [ -f "$DATADIR/data.win" ] && mv "$DATADIR/data.win" "$DATADIR/game.droid"
+    local zip_out
+    if zip_out=$("$controlfolder/7zzs.${DEVICE_ARCH}" a -tzip -aoa -mx=0 "$GAMEDIR/$DATAFILE" "$DATADIR" 2>&1); then
         rm -rf "$DATADIR"/*
     else
+        echo "$zip_out"
         emit_fail_msg "Failed to create $DATAFILE."
         return 1
     fi
 }
 
-# Cleanup
-cleanup() {
-    rm -rf "$TMPDIR"
-    $ESUDO umount "$TOOLKIT" 2>/dev/null || true
-}
-
 process_game() {
     echo "Preparing game..."
-    prepare_files || { cleanup; return 1; }
+    prepare_files || return 1
+    echo "Applying patches..."
+    patch_datafile || return 1
     echo "Finishing up..."
-    zip_archive || { cleanup; return 1; }
+    zip_archive || return 1
 }
 
-# Call the function
 if ! process_game; then
     [ -z "$FAIL_MSG_SET" ] && emit_fail_msg "Patching failed. Report on the RHH-Ports GitHub with patcherr.txt."
     echo "Patching process failed!"
     mv "$LOGFILE" "$LOGERR"
-else
-    echo "Patching process complete!"
+    exit 1
 fi
-
-# Always run cleanup at the end
-cleanup
+echo "Patching process complete!"

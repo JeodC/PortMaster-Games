@@ -1,0 +1,42 @@
+{
+  "version": 4,
+  "name": "tinymon.zip",
+  "items": [
+    "Tinymon.sh",
+    "tinymon"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Tinymon",
+    "porter": [
+      "Jeod"
+    ],
+    "desc": "Delve into an isekai world full of tiny monsters ready to battle, learn a new language on the way, and explore the land of Tinymon! A refreshing but retro take on the monster-taming genre.",
+    "desc_md": null,
+    "inst": "Add the game files to `tinymon/assets`.",
+    "inst_md": null,
+    "genres": [
+      "adventure",
+      "rpg"
+    ],
+    "image": null,
+    "rtr": false,
+    "exp": false,
+    "runtime": [
+      "gmloadernext.squashfs"
+    ],
+    "store": [
+      {
+        "name": "Steam",
+        "gameurl": "https://store.steampowered.com/app/3306960/Tinymon_RPG/",
+        "developerurl": ""
+      }
+    ],
+    "availability": "paid",
+    "reqs": [],
+    "arch": [
+      "aarch64"
+    ],
+    "min_glibc": ""
+  }
+}
