@@ -3498,12 +3498,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.1/sonic.1/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.1/sonic.1/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonic.1.zip",
-      "date_updated": "2026-05-14T16:48",
+      "date_updated": "2026-07-05T21:30",
       "first_seen": "2025-11-10",
-      "md5": "fd1b1876ebf231cd10ca37b8c8707b2e",
-      "size": 3222242,
-      "lifetime_downloads": 27,
-      "last_commit": "Remove old ports and fix all storefronts in port.json files"
+      "md5": "604fc54e9027c8aed6923fa7edd6f802",
+      "size": 3222243,
+      "lifetime_downloads": 51,
+      "last_commit": "[SONICS] Update readme for new build paths"
     }
   },
   {
@@ -3549,12 +3549,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.2/sonic.2/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.2/sonic.2/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonic.2.zip",
-      "date_updated": "2026-05-14T16:48",
+      "date_updated": "2026-07-05T21:30",
       "first_seen": "2025-11-10",
-      "md5": "9cbf2fdda1f042f370e176b371c5d4bc",
+      "md5": "de4091eac90c5599752ae8b93f388431",
       "size": 3305258,
-      "lifetime_downloads": 21,
-      "last_commit": "Remove old ports and fix all storefronts in port.json files"
+      "lifetime_downloads": 45,
+      "last_commit": "[SONICS] Update readme for new build paths"
     }
   },
   {
@@ -3654,12 +3654,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.cd/sonic.cd/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.cd/sonic.cd/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonic.cd.zip",
-      "date_updated": "2026-05-14T18:18",
+      "date_updated": "2026-07-05T21:30",
       "first_seen": "2025-11-10",
-      "md5": "396a60e16bf5a0be850eee31cb879a73",
-      "size": 2977190,
-      "lifetime_downloads": 29,
-      "last_commit": "Add discounts and more stores"
+      "md5": "39fb00e241b899f87ab98623df78879f",
+      "size": 2977191,
+      "lifetime_downloads": 57,
+      "last_commit": "[SONICS] Update readme for new build paths"
     }
   },
   {
