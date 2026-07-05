@@ -937,9 +937,14 @@ details[open] summary {
 	width: 100%;
 }
 
-/* ---------- Right rail: devlog + install ---------- */
-.page-right .devlog,
-.page-right .instructions-accordion {
+/* ---------- Right rail: devlog ---------- */
+.page-right .devlog {
+	max-width: none;
+	margin: 0 0 1rem;
+}
+
+/* ---------- Left rail: install accordion ---------- */
+.page-left .instructions-accordion {
 	max-width: none;
 	margin: 0 0 1rem;
 }
@@ -957,22 +962,22 @@ details[open] summary {
 	font-size: 1.1rem;
 }
 
-.page-right .instructions-accordion summary {
+.page-left .instructions-accordion summary {
 	padding: 0.7rem 1rem;
 }
 
-.page-right .instructions-accordion summary h2 {
+.page-left .instructions-accordion summary h2 {
 	font-size: 1.05rem;
 }
 
-.page-right .instructions-content {
+.page-left .instructions-content {
 	padding: 0 1rem 1rem 1.25rem;
 	text-align: left;
 	font-size: 0.9rem;
 }
 
 /* Long autoinstall path lines: scroll horizontally rather than wrap-and-break */
-.page-right .path-list {
+.page-left .path-list {
 	overflow-x: auto;
 	white-space: nowrap;
 	margin: 0.5rem 0;
@@ -1180,7 +1185,7 @@ details[open] summary {
 		padding: 0 0.75rem 0.75rem 1rem;
 	}
 	.instructions-content,
-	.page-right .instructions-content {
+	.page-left .instructions-content {
 		padding: 0 0.75rem 0.75rem 1rem;
 	}
 

@@ -91,7 +91,33 @@
 		<div class="page-layout">
 			<!-- LEFT RAIL: search, filters, sort wrapped in a styled panel
 			     matching the right-rail node style -->
-			<aside class="page-left" aria-label="Filters and search">
+			<aside class="page-left" aria-label="Install instructions, filters and search">
+				<section id="autoinstall" class="instructions-accordion">
+					<details>
+						<summary>
+							<h2>Installing Ports <small>(Click to expand)</small></h2>
+						</summary>
+						<div class="instructions-content">
+							<p>
+								Clicking a download button will download a zip archive of the port, which
+								you can then copy to the PortMaster <code>autoinstall</code> folder for your platform.
+							</p>
+							<div class="path-list">
+								AmberELEC, ROCKNIX, uOS, Jelos: <code>/roms/ports/PortMaster/autoinstall/</code><br>
+								muOS: <code>/mmc/MUOS/PortMaster/autoinstall/</code><br>
+								ArkOS: <code>/roms/tools/PortMaster/autoinstall/</code><br>
+								Knulli: <code>/userdata/system/.local/share/PortMaster/autoinstall/</code><br>
+							</div>
+							<p>
+								Once copied, running the PortMaster application will install the port for you. For ports requiring external data, please see the port's README.md by clicking on the blue Details button for the port in question.
+							</p>
+							<p>
+								Tip: For a more modern, user-friendly experience, consider using <a href="https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip">Pharos</a>. Pharos automatically handles repository parsing, downloads, and installation.
+							</p>
+						</div>
+					</details>
+				</section>
+
 				<section class="filters-panel">
 					<div class="filters-panel-header">
 						<h2>Filter Ports</h2>
@@ -146,40 +172,14 @@
 				<section id="ports-container" aria-live="polite">Loading ports...</section>
 			</section>
 
-			<!-- RIGHT RAIL: devlog + install instructions -->
-			<aside class="page-right" aria-label="Devlog and install instructions">
+			<!-- RIGHT RAIL: devlog -->
+			<aside class="page-right" aria-label="Developer's log">
 				<section class="devlog">
 					<details open>
 						<summary>
 							<h2>Developer's Log</h2>
 						</summary>
 						<div class="devlog-content" id="devlog-content">Loading…</div>
-					</details>
-				</section>
-
-				<section id="autoinstall" class="instructions-accordion">
-					<details>
-						<summary>
-							<h2>Installing Ports <small>(Click to expand)</small></h2>
-						</summary>
-						<div class="instructions-content">
-							<p>
-								Clicking a download button will download a zip archive of the port, which
-								you can then copy to the PortMaster <code>autoinstall</code> folder for your platform.
-							</p>
-							<div class="path-list">
-								AmberELEC, ROCKNIX, uOS, Jelos: <code>/roms/ports/PortMaster/autoinstall/</code><br>
-								muOS: <code>/mmc/MUOS/PortMaster/autoinstall/</code><br>
-								ArkOS: <code>/roms/tools/PortMaster/autoinstall/</code><br>
-								Knulli: <code>/userdata/system/.local/share/PortMaster/autoinstall/</code><br>
-							</div>
-							<p>
-								Once copied, running the PortMaster application will install the port for you. For ports requiring external data, please see the port's README.md by clicking on the blue Details button for the port in question.
-							</p>
-							<p>
-								Tip: For a more modern, user-friendly experience, consider using <a href="https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip">Pharos</a>. Pharos automatically handles repository parsing, downloads, and installation.
-							</p>
-						</div>
 					</details>
 				</section>
 			</aside>
