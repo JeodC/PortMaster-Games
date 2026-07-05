@@ -38,7 +38,7 @@ A port group whose ports all need the **same** deps can drop a single `Dockerfil
 
 | Field | Purpose |
 |---|---|
-| `port_dir` | Path to the build-scratch dir (e.g. `buildtools/sonic/rsdkv5/rsdkv5`) |
+| `port_dir` | Path to the build-scratch dir (e.g. `buildtools/ports/sonic/rsdkv5/rsdkv5`) |
 | `target_dirs` | List of payload dirs to receive the build output. Usually one (e.g. `["ports/released/sonic-collection/sonic.mania/sonic.mania"]`). Multiple entries fan one build out to several ports — used when a single decomp produces a binary consumed by two or more port folders (e.g. RSDKv4 feeding both sonic.1 and sonic.2). |
 | `upstream_repo` | GitHub `owner/repo` to poll for new commits |
 | `track` | Optional. `"branch"` (default) = rebuild when `upstream_branch` HEAD moves. `"release"` = rebuild when a new release tag is published. Pick `release` for projects with a stable release cadence; `branch` for rolling-main decomp projects. |
@@ -64,7 +64,7 @@ If one port's build fails, subsequent ports still run. Failures are surfaced as 
 ### Adding a new port
 
 1. Drop the build recipe in `buildtools/<id>/<id>/src/`:
-   - `Dockerfile` — starts with `FROM rhh-base` and installs only port-specific apt deps. Optional when the port's group ships a shared `Dockerfile` one or more levels up (e.g. `buildtools/harbourmasters/Dockerfile`); `build_port.sh` uses the nearest ancestor `Dockerfile` when `src/` has none.
+   - `Dockerfile` — starts with `FROM rhh-base` and installs only port-specific apt deps. Optional when the port's group ships a shared `Dockerfile` one or more levels up (e.g. `buildtools/ports/harbourmasters/Dockerfile`); `build_port.sh` uses the nearest ancestor `Dockerfile` when `src/` has none.
    - `build.txt` — clones upstream, builds, stages libs into `build/libs/`
    - `retrieve-products.txt` — copies artifacts from the build tree into the port dir
 2. Create `buildtools/<id>/<id>/.gitignore` with exactly this content, which keeps the inner `<id>/` dir tracked only for `src/` and lets the rest serve as build scratch:

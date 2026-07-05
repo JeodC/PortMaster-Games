@@ -2,7 +2,7 @@
 
 # Shared build driver for RHH-Ports buildtools/
 # Usage: ./build_port.sh <portdir>
-# where <portdir> is e.g. buildtools/sonic/rsdkv4/rsdkv4
+# where <portdir> is e.g. buildtools/ports/sonic/rsdkv4/rsdkv4
 
 set -e
 
@@ -19,7 +19,7 @@ BUILDSCRIPT=$SRCDIR/build.txt
 
 # Resolve the Dockerfile. Prefer the port's own src/Dockerfile; if absent, fall
 # back to the nearest shared Dockerfile in an ancestor dir. This lets a port
-# group (e.g. buildtools/harbourmasters/) keep one shared Dockerfile instead of
+# group (e.g. buildtools/ports/harbourmasters/) keep one shared Dockerfile instead of
 # an identical copy per port. Groups with port-specific deps just keep their own
 # src/Dockerfile and hit the fast path unchanged.
 DOCKERFILE=$SRCDIR/Dockerfile

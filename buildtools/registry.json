@@ -1,7 +1,7 @@
 {
   "ports": {
     "rsdkv3": {
-      "port_dir": "buildtools/sonic/rsdkv3/rsdkv3",
+      "port_dir": "buildtools/ports/sonic/rsdkv3/rsdkv3",
       "target_dirs": ["ports/released/sonic-collection/sonic.cd/sonic.cd"],
       "upstream_repo": "RSDKModding/RSDKv3-Decompilation",
       "upstream_branch": "master",
@@ -9,7 +9,7 @@
       "artifacts": ["RSDKv3", "libs"]
     },
     "rsdkv4": {
-      "port_dir": "buildtools/sonic/rsdkv4/rsdkv4",
+      "port_dir": "buildtools/ports/sonic/rsdkv4/rsdkv4",
       "target_dirs": [
         "ports/released/sonic-collection/sonic.1/sonic.1",
         "ports/released/sonic-collection/sonic.2/sonic.2"
@@ -20,7 +20,7 @@
       "artifacts": ["RSDKv4", "libs"]
     },
     "rsdkv5": {
-      "port_dir": "buildtools/sonic/rsdkv5/rsdkv5",
+      "port_dir": "buildtools/ports/sonic/rsdkv5/rsdkv5",
       "target_dirs": ["ports/released/sonic-collection/sonic.mania/sonic.mania"],
       "upstream_repo": "RSDKModding/Sonic-Mania-Decompilation",
       "upstream_branch": "master",
@@ -28,7 +28,7 @@
       "artifacts": ["sonicmania", "Game.so", "libs"]
     },
     "sonic3air": {
-      "port_dir": "buildtools/sonic/sonic3air/sonic3air",
+      "port_dir": "buildtools/ports/sonic/sonic3air/sonic3air",
       "target_dirs": ["ports/released/sonic-collection/sonic3air/sonic3air"],
       "upstream_repo": "Eukaryot/sonic3air",
       "track": "release",
@@ -36,7 +36,7 @@
       "artifacts": ["sonic3air_linux", "config.json", "doc/license.txt", "doc/license-thirdparty", "data", "audioremaster.7z.*"]
     },
     "dusklight": {
-      "port_dir": "buildtools/dusklight",
+      "port_dir": "buildtools/ports/dusklight",
       "target_dirs": ["ports/released/zelda-dusklight/zelda-dusklight"],
       "upstream_repo": "TwilitRealm/dusklight",
       "track": "release",
@@ -45,7 +45,7 @@
       "base": "self"
     },
     "soh": {
-      "port_dir": "buildtools/harbourmasters/soh/soh",
+      "port_dir": "buildtools/ports/harbourmasters/soh/soh",
       "target_dirs": ["ports/released/harbourmasters/soh/soh"],
       "upstream_repo": "HarbourMasters/Shipwright",
       "track": "release",
@@ -53,7 +53,7 @@
       "artifacts": ["soh.elf", "soh.o2r", "libs", "assets/extractor.zip"]
     },
     "soh2": {
-      "port_dir": "buildtools/harbourmasters/soh2/soh2",
+      "port_dir": "buildtools/ports/harbourmasters/soh2/soh2",
       "target_dirs": ["ports/released/harbourmasters/soh2/soh2"],
       "upstream_repo": "HarbourMasters/2ship2harkinian",
       "track": "release",
@@ -61,7 +61,7 @@
       "artifacts": ["*.elf", "2ship.o2r", "libs", "assets/extractor.zip"]
     },
     "starship": {
-      "port_dir": "buildtools/harbourmasters/starship/starship",
+      "port_dir": "buildtools/ports/harbourmasters/starship/starship",
       "target_dirs": ["ports/released/harbourmasters/starship/starship"],
       "upstream_repo": "HarbourMasters/Starship",
       "track": "release",
@@ -69,7 +69,7 @@
       "artifacts": ["Starship", "starship.o2r", "gamecontrollerdb.txt", "libs", "tools/torch", "tools/assets.zip", "tools/config.yml"]
     },
     "spaghettikart": {
-      "port_dir": "buildtools/harbourmasters/spaghettikart/spaghettikart",
+      "port_dir": "buildtools/ports/harbourmasters/spaghettikart/spaghettikart",
       "target_dirs": ["ports/released/harbourmasters/spaghettikart/spaghettikart"],
       "upstream_repo": "HarbourMasters/SpaghettiKart",
       "track": "release",
@@ -77,7 +77,7 @@
       "artifacts": ["Spaghettify", "spaghetti.o2r", "gamecontrollerdb.txt", "libs", "tools/torch", "tools/assets.zip", "tools/config.yml"]
     },
     "sm64-ghostship": {
-      "port_dir": "buildtools/harbourmasters/sm64-ghostship/sm64-ghostship",
+      "port_dir": "buildtools/ports/harbourmasters/sm64-ghostship/sm64-ghostship",
       "target_dirs": ["ports/released/harbourmasters/sm64-ghostship/sm64-ghostship"],
       "upstream_repo": "HarbourMasters/Ghostship",
       "track": "release",
@@ -85,7 +85,7 @@
       "artifacts": ["Ghostship", "ghostship.o2r", "gamecontrollerdb.txt", "libs", ".tcc", "tools/torch", "tools/assets.zip", "tools/config.yml"]
     },
     "paperboat": {
-      "port_dir": "buildtools/harbourmasters/paperboat/paperboat",
+      "port_dir": "buildtools/ports/harbourmasters/paperboat/paperboat",
       "target_dirs": ["ports/released/harbourmasters/paperboat/paperboat"],
       "upstream_repo": "HarbourMasters/paperboat",
       "track": "release",
@@ -95,7 +95,7 @@
   },
   "runtimes": {
     "gmloadernext": {
-      "build_dir": "buildtools/gmloadernext",
+      "build_dir": "buildtools/runtimes/gmloadernext",
       "target_dir": "runtimes",
       "upstream_repo": "JeodC/gmloader-next",
       "upstream_branch": "master",
@@ -103,7 +103,7 @@
       "artifact": "gmloadernext.squashfs"
     },
     "rlvm": {
-      "build_dir": "buildtools/rlvm",
+      "build_dir": "buildtools/runtimes/rlvm",
       "target_dir": "runtimes",
       "upstream_repo": "JeodC/SuperEngine",
       "upstream_branch": "feat/sdl2",
