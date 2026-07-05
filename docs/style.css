@@ -39,8 +39,19 @@ body {
 	Header
 ========================= */
 .site-header {
+	display: grid;
+	grid-template-columns:
+		clamp(180px, 16%, 320px)
+		minmax(0, 1fr)
+		clamp(220px, 22%, 460px);
+	gap: 0 1.5rem;
 	text-align: center;
 	margin-bottom: 2rem;
+}
+
+.site-header > * {
+	grid-column: 2;
+	min-width: 0;
 }
 
 .site-header h1 {
@@ -1095,9 +1106,11 @@ details[open] summary {
 
 /* ---------- Tablet / narrow: stack the three columns ---------- */
 @media (max-width: 1000px) {
+	.site-header,
 	.above-grid {
 		grid-template-columns: 1fr;
 	}
+	.site-header > *,
 	.above-grid > * {
 		grid-column: 1;
 	}
