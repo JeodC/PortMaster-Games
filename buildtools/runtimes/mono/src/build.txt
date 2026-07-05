@@ -1,0 +1,26 @@
+set -e
+
+# Mono runtime build courtesy [JohnnyOnFlame](https://gist.github.com/JohnnyonFlame/df7ba61a5559de293680789e7f01fbdc#file-bonus2_readme-md),
+# which produces the same runtime PortMaster hosts
+
+VERSION="${MONO_VERSION:-6.12.0.122}"
+ARCH=aarch64
+
+wget "https://download.mono-project.com/sources/mono/mono-${VERSION}.tar.xz"
+tar xf "mono-${VERSION}.tar.xz"
+cp Makefile.optm "mono-${VERSION}/Makefile.optm"
+cd "mono-${VERSION}"
+
+./autogen.sh \
+    --with-ikvm-native=no \
+    --with-csc=mcs \
+    --enable-llvm \
+    --disable-dependency-tracking \
+    --with-mcs-build \
+    --prefix="$(pwd)/built"
+make -j"$(nproc)"
+make install
+
+cd built
+PATH="$(pwd)/bin:$(pwd)/../llvm/usr/bin:$PATH" MONO_PATH="$(pwd)/lib/mono" \
+    make -f Makefile.optm -j"$(nproc)"

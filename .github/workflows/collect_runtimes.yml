@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'runtimes/*.squashfs'
+      - 'runtimes/*.squashfs.md5'
   workflow_dispatch:
   workflow_run:
     # The push trigger above doesn't fire for pushes made by the default
@@ -45,6 +46,14 @@ jobs:
           declare -A LOCAL_SET
           for f in "${LOCAL[@]}"; do
             LOCAL_SET[$(basename "$f")]=1
+          done
+
+          for m in $(find runtimes -maxdepth 1 -name '*.squashfs.md5' -type f | sort); do
+            base=$(basename "$m" .md5)     # <name>.squashfs.md5 -> <name>.squashfs
+            if [ ! -f "runtimes/$base" ]; then
+              echo "Release-hosted runtime (marker only, exempt from purge): $base"
+              LOCAL_SET[$base]=1
+            fi
           done
 
           # Snapshot remote assets (name → size, name → id)
