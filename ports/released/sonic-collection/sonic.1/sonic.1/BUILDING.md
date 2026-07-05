@@ -11,7 +11,7 @@ The shipped `RSDKv4` binary is built with Plus disabled. This guide covers rebui
 | `RETRO_DISABLE_PLUS` | `ON` | Four-character classic set (Sonic / Tails / Knuckles / Sonic & Tails) |
 
 The build runs inside an aarch64 Debian chroot (or WSL2 equivalent).
-Build automation lives in `buildtools/sonic/rsdkv4/` in the RHH-Ports repo.
+Build automation lives in `buildtools/ports/sonic/rsdkv4/` in the RHH-Ports repo.
 
 ## Enabling Plus characters (Amy, extra sidekicks)
 

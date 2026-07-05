@@ -9,7 +9,7 @@ The shipped `RSDKv3` binary is built with Plus disabled. This guide covers rebui
 | `RETRO_USE_HW_RENDER` | `OFF` | Retro handheld devices use gl4es; GLEW's GL 1.x/2.x path can have issues there |
 | `RETRO_DISABLE_PLUS` | `ON` | Ships with the base three-character set (Sonic / Tails / Knuckles-via-mod) |
 
-The build runs inside an aarch64 Debian chroot (or WSL2 equivalent). Build automation lives in `buildtools/sonic/rsdkv3/` in the RHH-Ports repo.
+The build runs inside an aarch64 Debian chroot (or WSL2 equivalent). Build automation lives in `buildtools/ports/sonic/rsdkv3/` in the RHH-Ports repo.
 
 ## Enabling Plus characters (Amy, selectable Knuckles)
 
