@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+FFVER="${FFMPEG_VERSION:-6.0}"
+
+wget -O ffmpeg.tar.xz "https://ffmpeg.org/releases/ffmpeg-${FFVER}.tar.xz"
+tar xf ffmpeg.tar.xz
+cd "ffmpeg-${FFVER}"
+
+./configure \
+    --disable-gpl --disable-nonfree --disable-version3 \
+    --disable-everything --disable-autodetect --disable-programs --enable-ffmpeg \
+    --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+    --disable-network --disable-debug --disable-asm \
+    --enable-small --enable-static --disable-shared \
+    --pkg-config-flags=--static --extra-ldexeflags=-static \
+    --enable-swscale --enable-swresample --enable-libtheora \
+    --enable-protocol=file \
+    --enable-demuxer=ogg --enable-muxer=ogg \
+    --enable-decoder=theora --enable-decoder=vorbis --enable-encoder=libtheora \
+    --enable-parser=vorbis --enable-parser=theora \
+    --enable-filter=scale --enable-filter=format --enable-filter=null \
+    --enable-filter=copy --enable-filter=aformat --enable-filter=anull
+
+make -j"$(nproc)"
+strip ffmpeg
+cp -f ffmpeg ../ffmpeg
+echo "built LGPL ffmpeg ${FFVER} -> ../ffmpeg ($(stat -c%s ../ffmpeg) bytes)"
+
+# Sanity: must be LGPL (no gpl/nonfree/version3 below) and include libtheora.
+./ffmpeg -version | sed -n '1,3p'
+./ffmpeg -version | grep -oE '\-\-enable-(gpl|nonfree|version3|libtheora)' | sort -u || true

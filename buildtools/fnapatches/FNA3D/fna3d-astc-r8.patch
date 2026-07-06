@@ -1,0 +1,138 @@
+diff --git a/include/FNA3D.h b/include/FNA3D.h
+index dbedf54..26f1dcd 100644
+--- a/include/FNA3D.h
++++ b/include/FNA3D.h
+@@ -143,6 +143,11 @@ typedef enum FNA3D_SurfaceFormat
+ 	FNA3D_SURFACEFORMAT_DXT5SRGB_EXT,
+ 	FNA3D_SURFACEFORMAT_BC7_EXT,
+ 	FNA3D_SURFACEFORMAT_BC7SRGB_EXT,
++	FNA3D_SURFACEFORMAT_ASTC4X4_EXT,
++	FNA3D_SURFACEFORMAT_ASTC5X5_EXT,
++	FNA3D_SURFACEFORMAT_ASTC6X6_EXT,
++	FNA3D_SURFACEFORMAT_ASTC8X8_EXT,
++	FNA3D_SURFACEFORMAT_R8_EXT,
+ } FNA3D_SurfaceFormat;
+ 
+ typedef enum FNA3D_DepthFormat
+diff --git a/src/FNA3D_Driver.h b/src/FNA3D_Driver.h
+index 6034316..2295720 100644
+--- a/src/FNA3D_Driver.h
++++ b/src/FNA3D_Driver.h
+@@ -105,6 +105,15 @@ static inline int32_t Texture_GetBlockSize(
+ 	case FNA3D_SURFACEFORMAT_BC7_EXT:
+ 	case FNA3D_SURFACEFORMAT_BC7SRGB_EXT:
+ 		return 4;
++	case FNA3D_SURFACEFORMAT_ASTC4X4_EXT:
++		return 4;
++	case FNA3D_SURFACEFORMAT_ASTC5X5_EXT:
++		return 5;
++	case FNA3D_SURFACEFORMAT_ASTC6X6_EXT:
++		return 6;
++	case FNA3D_SURFACEFORMAT_ASTC8X8_EXT:
++		return 8;
++	case FNA3D_SURFACEFORMAT_R8_EXT:
+ 	case FNA3D_SURFACEFORMAT_ALPHA8:
+ 	case FNA3D_SURFACEFORMAT_BGR565:
+ 	case FNA3D_SURFACEFORMAT_BGRA4444:
+@@ -146,6 +155,12 @@ static inline int32_t Texture_GetFormatSize(
+ 		case FNA3D_SURFACEFORMAT_BC7_EXT:
+ 		case FNA3D_SURFACEFORMAT_BC7SRGB_EXT:
+ 			return 16;
++		case FNA3D_SURFACEFORMAT_ASTC4X4_EXT:
++		case FNA3D_SURFACEFORMAT_ASTC5X5_EXT:
++		case FNA3D_SURFACEFORMAT_ASTC6X6_EXT:
++		case FNA3D_SURFACEFORMAT_ASTC8X8_EXT:
++			return 16;
++		case FNA3D_SURFACEFORMAT_R8_EXT:
+ 		case FNA3D_SURFACEFORMAT_ALPHA8:
+ 			return 1;
+ 		case FNA3D_SURFACEFORMAT_BGR565:
+diff --git a/src/FNA3D_Driver_OpenGL.c b/src/FNA3D_Driver_OpenGL.c
+index 96066da..f0f2425 100644
+--- a/src/FNA3D_Driver_OpenGL.c
++++ b/src/FNA3D_Driver_OpenGL.c
+@@ -29,6 +29,17 @@
+ #include "FNA3D_Driver.h"
+ #include "FNA3D_Driver_OpenGL.h"
+ 
++/* RHH additions: ASTC + R8 surface format support */
++#ifndef GL_R8
++#define GL_R8				0x8229
++#endif
++#ifndef GL_TEXTURE_SWIZZLE_R
++#define GL_TEXTURE_SWIZZLE_R		0x8E42
++#define GL_TEXTURE_SWIZZLE_G		0x8E43
++#define GL_TEXTURE_SWIZZLE_B		0x8E44
++#define GL_TEXTURE_SWIZZLE_A		0x8E45
++#endif
++
+ #ifdef USE_SDL3
+ #include <SDL3/SDL.h>
+ #else
+@@ -356,6 +367,11 @@ static int32_t XNAToGL_TextureFormat[] =
+ 	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Dxt5SrgbEXT */
+ 	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Bc7EXT */
+ 	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Bc7SrgbEXT */
++	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Astc4x4EXT */
++	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Astc5x5EXT */
++	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Astc6x6EXT */
++	GL_COMPRESSED_TEXTURE_FORMATS,	/* SurfaceFormat.Astc8x8EXT */
++	GL_RED,				/* SurfaceFormat.R8EXT (RHH) */
+ };
+ 
+ static int32_t XNAToGL_TextureInternalFormat[] =
+@@ -385,6 +401,11 @@ static int32_t XNAToGL_TextureInternalFormat[] =
+ 	GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT,	/* SurfaceFormat.Dxt5SrgbEXT */
+ 	GL_COMPRESSED_RGBA_BPTC_UNORM_EXT,	/* SurfaceFormat.BC7EXT */
+ 	GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT,/* SurfaceFormat.BC7SrgbEXT */
++	0x93B0,					/* SurfaceFormat.Astc4x4EXT = GL_COMPRESSED_RGBA_ASTC_4x4_KHR */
++	0x93B2,					/* SurfaceFormat.Astc5x5EXT = GL_COMPRESSED_RGBA_ASTC_5x5_KHR */
++	0x93B4,					/* SurfaceFormat.Astc6x6EXT = GL_COMPRESSED_RGBA_ASTC_6x6_KHR */
++	0x93B7,					/* SurfaceFormat.Astc8x8EXT = GL_COMPRESSED_RGBA_ASTC_8x8_KHR */
++	GL_R8,					/* SurfaceFormat.R8EXT (RHH) */
+ };
+ 
+ static int32_t XNAToGL_TextureDataType[] =
+@@ -414,6 +435,11 @@ static int32_t XNAToGL_TextureDataType[] =
+ 	GL_ZERO,			/* NOPE */
+ 	GL_ZERO,			/* NOPE */
+ 	GL_ZERO,			/* NOPE */
++	GL_ZERO,			/* NOPE (Astc4x4EXT) */
++	GL_ZERO,			/* NOPE (Astc5x5EXT) */
++	GL_ZERO,			/* NOPE (Astc6x6EXT) */
++	GL_ZERO,			/* NOPE (Astc8x8EXT) */
++	GL_UNSIGNED_BYTE,		/* SurfaceFormat.R8EXT (RHH) */
+ };
+ 
+ static int32_t XNAToGL_BlendMode[] =
+@@ -1721,6 +1747,12 @@ static void OPENGL_SetViewport(FNA3D_Renderer *driverData, FNA3D_Viewport *viewp
+ {
+ 	OpenGLRenderer *renderer = (OpenGLRenderer*) driverData;
+ 	int32_t bbw, bbh;
++
++	/* Run queued worker-thread resource commands here too, so a
++	 * loading-screen pump (GraphicsDevice.Viewport = ...) can drain the
++	 * queue at sleep-cadence instead of vsync-cadence. No-op when empty.
++	 */
++	ExecuteCommands(renderer);
+ 	FNA3D_Viewport vp = *viewport;
+ 
+ 	/* Flip viewport when target is not bound */
+@@ -3556,6 +3588,17 @@ static inline OpenGLTexture* OPENGL_INTERNAL_CreateTexture(
+ 		GL_TEXTURE_BASE_LEVEL,
+ 		result->maxMipmapLevel
+ 	);
++	if (format == FNA3D_SURFACEFORMAT_R8_EXT)
++	{
++		/* Single-channel palette-index/font textures replicate
++		 * R into all four channels so shaders sampling .y/.z/.w see
++		 * the same value they would have read from the RGBA original.
++		 */
++		renderer->glTexParameteri(result->target, GL_TEXTURE_SWIZZLE_R, GL_RED);
++		renderer->glTexParameteri(result->target, GL_TEXTURE_SWIZZLE_G, GL_RED);
++		renderer->glTexParameteri(result->target, GL_TEXTURE_SWIZZLE_B, GL_RED);
++		renderer->glTexParameteri(result->target, GL_TEXTURE_SWIZZLE_A, GL_RED);
++	}
+ 	if (!renderer->useES3)
+ 	{
+ 		renderer->glTexParameterf(

@@ -1,0 +1,3 @@
+libFNA3D.so.0 and libFAudio.so.0 are built from FNA3D/FAudio (https://github.com/FNA-XNA),
+distributed under the zlib license. This libFNA3D is an altered version with
+local ASTC surface-format additions; it is not an official FNA3D build.

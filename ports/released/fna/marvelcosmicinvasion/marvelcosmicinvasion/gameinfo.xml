@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gamelist>
+	<game>
+		<path>./Marvel Cosmic Invasion.sh</path>
+		<name>MARVEL Cosmic Invasion</name>
+		<desc>A cosmic battle awaits! Choose between 15 Marvel Super Heroes in this frenetic action beat ‘em up to fight against the deadly Annihilation Wave threatening the galaxy. From New York City to the depths of the Negative Zone, the future of the Marvel Universe will be fought for across the stars!</desc>
+		<image>./marvelcosmicinvasion/cover.png</image>
+		<thumbnail>./marvelcosmicinvasion/thumb.png</thumbnail>
+		<releasedate>20251201</releasedate>
+		<developer>Tribute Games Inc.</developer>
+		<genre>Action, Arcade</genre>
+	</game>
+</gamelist>
