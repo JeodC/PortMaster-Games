@@ -20,31 +20,6 @@ get_controls
 GAMEDIR="/$directory/ports/zelda-dusklight"
 GAME="$GAMEDIR/dusklight"
 
-# Vulkan check
-check_vulkan() {
-    if command -v vulkaninfo >/dev/null 2>&1; then
-        vulkaninfo --summary 2>/dev/null | grep -q deviceName && return 0
-        return 1
-    fi
-    # No vulkaninfo: fall back to loader + ICD JSON existence.
-    if ! ldconfig -p 2>/dev/null | grep -q libvulkan.so.1 \
-        && [ ! -e /usr/lib/aarch64-linux-gnu/libvulkan.so.1 ] \
-        && [ ! -e /usr/lib/libvulkan.so.1 ]; then
-        return 1
-    fi
-    for d in /usr/share/vulkan/icd.d /etc/vulkan/icd.d /usr/local/share/vulkan/icd.d; do
-        ls "$d"/*.json >/dev/null 2>&1 && return 0
-    done
-    return 1
-}
-
-if ! check_vulkan; then
-    pm_message "Dusklight requires Vulkan, which is not available on this device. The port cannot run."
-    sleep 5
-    pm_finish
-    exit 1
-fi
-
 # CD and set log
 cd "$GAMEDIR"
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
@@ -73,11 +48,7 @@ if [ -z "$DVD" ]; then
     exit 1
 fi
 
-# Patch the disc image path into the config. Upstream renamed the AppName
-# from "Dusk" to "Dusklight" in PR #1064 (v1.0.2+), with a built-in legacy-
-# path migration so old saves move on first launch. Prefer Dusklight/ when
-# it exists (post-migration or fresh v1.0.2+ install), else fall back to
-# Dusk/ (v1.0.1 or pre-migration first-run).
+# Patch the disc image path into the config
 CONFIG_DIR="$GAMEDIR/config/TwilitRealm/Dusklight"
 [ -d "$CONFIG_DIR" ] || CONFIG_DIR="$GAMEDIR/config/TwilitRealm/Dusk"
 CONFIG="$CONFIG_DIR/config.json"
@@ -92,6 +63,6 @@ $GPTOKEYB "dusklight" -c "zelda-dusklight.gptk" &
 pm_platform_helper "$GAME" >/dev/null
 "$GAME" --backend vulkan
 
-# Cleanup -- we already have log.txt, purge the rest to prevent bloat
+# Cleanup
 rm -rf "$CONFIG_DIR/logs/"*
 pm_finish
