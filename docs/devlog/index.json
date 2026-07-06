@@ -1,6 +1,12 @@
 {
   "posts": [
     {
+      "slug": "2026-07-06-cosmicinvasion",
+      "title": "MARVEL Cosmic Invasion: a beat-em-up for butt-kickers",
+      "date": "2026-07-06",
+      "excerpt": "As a parent, kids can motivate you like no other. Here's how a Spongebob episode (The Bully) led to Marvel Cosmic Invasion."
+    },
+    {
       "slug": "2026-05-27-gmtoolkit",
       "title": "gmtoolkit: a single binary instead of a .NET runtime",
       "date": "2026-05-27",
