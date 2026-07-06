@@ -5070,53 +5070,6 @@
   },
   {
     "version": 4,
-    "name": "simpsons_hnr.zip",
-    "items": [
-      "The Simpsons Hit and Run.sh",
-      "simpsons_hnr"
-    ],
-    "items_opt": [],
-    "attr": {
-      "title": "The Simpsons : Hit and Run",
-      "porter": [
-        "R36SWiki.com",
-        "Jeod"
-      ],
-      "desc": "There are strange happenings in Springfield. People are missing, very mysterious crop circles are appearing, and hidden cameras are being exposed. When Homer notices a black van with a satellite dish parked outside the Simpsons house, he decides to investigate further into these odd events.\n The source code for Simpsons: Hit and Run is known to be leaked, not officially released. As such, *YOU* the *USER* are responsible for using this port and obtaining the game executable and game assets required for it to run. PortMaster has not endorsed this port. I am not affiliated with PortMaster, and I personally see no problem with hosting a cleaned up launchscript and a shim. That said, I will not offer support for issues with this port and I also have no problems removing this wrapper.",
-      "desc_md": null,
-      "inst": "See readme for installation details.",
-      "inst_md": null,
-      "genres": [
-        "action",
-        "adventure",
-        "racing"
-      ],
-      "image": null,
-      "rtr": false,
-      "exp": false,
-      "runtime": [],
-      "store": [],
-      "availability": "paid",
-      "reqs": [],
-      "arch": [
-        "aarch64"
-      ],
-      "min_glibc": null
-    },
-    "source": {
-      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/simpsons_hnr/simpsons_hnr/screenshot.png",
-      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/simpsons_hnr/simpsons_hnr/README.md",
-      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/simpsons_hnr.zip",
-      "date_updated": "2026-02-24T22:43",
-      "first_seen": "2026-01-19",
-      "md5": "848504e1fdaeb35498c980df3ea1b7c8",
-      "size": 323393,
-      "lifetime_downloads": 0,
-      "last_commit": "[SIMPSONS] Use expected block size for maths"
-    }
-  },
-  {
-    "version": 4,
     "name": "triga.zip",
     "items": [
       "Triga.sh",
