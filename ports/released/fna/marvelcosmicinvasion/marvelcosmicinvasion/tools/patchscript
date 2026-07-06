@@ -95,7 +95,7 @@ aot_one() {
     local asm="$1" step="$2" start now pid
     echo "Optimizing $asm ($step)..."
     start=$(date +%s)
-    "$MONO" --ffast-math -O=all --aot "$asm" &
+    "$MONO" -O=all --aot=llvm "$asm" &
     pid=$!
     while kill -0 "$pid" 2>/dev/null; do
         sleep 30
