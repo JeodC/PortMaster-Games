@@ -2177,7 +2177,7 @@
       ],
       "desc": "A cosmic battle awaits! Choose between 15 Marvel Super Heroes in this frenetic action beat ‘em up to fight against the deadly Annihilation Wave threatening the galaxy. From New York City to the depths of the Negative Zone, the future of the Marvel Universe will be fought for across the stars!",
       "desc_md": null,
-      "inst": "Buy MARVEL Cosmic Invasion on Steam and copy the entire game folder into marvelcosmicinvasion/gamedata.",
+      "inst": "Buy MARVEL Cosmic Invasion on Steam and copy the entire game folder (Windows install) into marvelcosmicinvasion/gamedata.",
       "inst_md": null,
       "genres": [
         "action"
@@ -2206,12 +2206,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-06T01:58",
+      "date_updated": "2026-07-06T13:50",
       "first_seen": "2026-07-06",
-      "md5": "990d63ee0072155bc06766150aa7795a",
-      "size": 5046360,
-      "lifetime_downloads": 0,
-      "last_commit": "[MCI] Yes, really"
+      "md5": "ccfdf7073cb9e657a07e16fb49d15fe6",
+      "size": 5047557,
+      "lifetime_downloads": 9,
+      "last_commit": "[MCI] Hotfix for no audio on muos, add a devlog, make swapabxy optional-manual"
     }
   },
   {
