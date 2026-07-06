@@ -2206,10 +2206,10 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-06T01:42",
+      "date_updated": "2026-07-06T01:58",
       "first_seen": "2026-07-06",
-      "md5": "c57f31746c9cf129a9dc6154e2847f85",
-      "size": 5046364,
+      "md5": "990d63ee0072155bc06766150aa7795a",
+      "size": 5046360,
       "lifetime_downloads": 0,
       "last_commit": "[MCI] Yes, really"
     }
