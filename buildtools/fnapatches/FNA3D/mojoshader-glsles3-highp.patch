@@ -1,0 +1,14 @@
+--- a/MojoShader/profiles/mojoshader_profile_glsl.c
++++ b/MojoShader/profiles/mojoshader_profile_glsl.c
+@@ -552,10 +552,7 @@
+         output_line(ctx, "#define texture2DRect texture");
+         output_line(ctx, "#define texture2DRectProj textureProj");
+         output_line(ctx, "#define texture2DRectLod textureLod");
+-        if (shader_is_vertex(ctx))
+-            output_line(ctx, "precision highp float;");
+-        else
+-            output_line(ctx, "precision mediump float;");
++        output_line(ctx, "precision highp float;");
+         output_line(ctx, "precision mediump int;");
+         pop_output(ctx);
+     } // else if

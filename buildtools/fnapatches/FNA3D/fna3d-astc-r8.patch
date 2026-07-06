@@ -55,7 +55,6 @@ index 96066da..f0f2425 100644
  #include "FNA3D_Driver.h"
  #include "FNA3D_Driver_OpenGL.h"
  
-+/* RHH additions: ASTC + R8 surface format support */
 +#ifndef GL_R8
 +#define GL_R8				0x8229
 +#endif
@@ -101,7 +100,7 @@ index 96066da..f0f2425 100644
 +	GL_ZERO,			/* NOPE (Astc5x5EXT) */
 +	GL_ZERO,			/* NOPE (Astc6x6EXT) */
 +	GL_ZERO,			/* NOPE (Astc8x8EXT) */
-+	GL_UNSIGNED_BYTE,		/* SurfaceFormat.R8EXT (RHH) */
++	GL_UNSIGNED_BYTE,	/* SurfaceFormat.R8EXT */
  };
  
  static int32_t XNAToGL_BlendMode[] =

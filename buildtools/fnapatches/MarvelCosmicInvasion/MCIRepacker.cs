@@ -1,11 +1,12 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+// Re-encodes MCI's RGBA textures in place for low-memory devices
+// R8 for palette-indexed art and small fonts, ASTC for everything else
 namespace MCIRepacker
 {
     class SkippedAssetFile : Exception
@@ -39,8 +40,6 @@ namespace MCIRepacker
 
         [DllImport("astcUtil.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int convert_texture(int w, int h, int len, uint blk_w, uint blk_h, IntPtr in_tex, IntPtr out_tex);
-
-        /* ------------------------- XNB reading ------------------------- */
 
         static int Read7Bit(BinaryReader r)
         {
@@ -99,7 +98,7 @@ namespace MCIRepacker
             t.format = r.ReadInt32();
             t.width  = r.ReadInt32();
             t.height = r.ReadInt32();
-            int mips = r.ReadInt32();
+            r.ReadInt32();                      /* mip count */
             if (t.format != FMT_COLOR)
                 throw new SkippedAssetFile("Texture already encoded.");
             uint len = r.ReadUInt32();
@@ -109,10 +108,8 @@ namespace MCIRepacker
             return t;
         }
 
-        /* ------------------------- XNB writing ------------------------- */
         // Same layout FNARepacker emits: XNB v5, 'w' platform, uncompressed,
-        // one Texture2DReader, single mip.
-
+        // one Texture2DReader, single mip
         static void WriteTextureXNB(Stream output, int format, int width, int height, byte[] payload)
         {
             var w = new BinaryWriter(output);
@@ -137,8 +134,6 @@ namespace MCIRepacker
             w.Write(size);
             w.Flush();
         }
-
-        /* ------------------------- encoders ------------------------- */
 
         static byte[] EncodeR8(TextureData t)
         {
@@ -166,8 +161,8 @@ namespace MCIRepacker
             return astc;
         }
 
-        /* ------------------------- classification ------------------------- */
-
+        // Classification: a directory is "indexed" when a palette strip lives there
+        // and some animation blob references it (the engine's real is-indexed signal)
         static bool IsPaletteStrip(string file)
         {
             string n = Path.GetFileName(file);
@@ -259,8 +254,6 @@ namespace MCIRepacker
                 return 6;
             return 4;
         }
-
-        /* ------------------------- driver ------------------------- */
 
         static void ProcessFile(string file, bool indexDir)
         {
@@ -377,7 +370,7 @@ namespace MCIRepacker
                 }
                 catch (SkippedAssetFile)
                 {
-                    /* kept as-is by design */
+                    // kept as-is by design
                 }
                 catch (Exception e)
                 {

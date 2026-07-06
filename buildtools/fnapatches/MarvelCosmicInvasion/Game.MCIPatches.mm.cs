@@ -4,6 +4,7 @@ using Paris.Engine;
 using Paris.Engine.Context;
 using Paris.Engine.Helper;
 
+// Ignore empty context switches instead of crashing on them
 namespace Paris.Game
 {
 	class patch_GameContextManager
@@ -20,6 +21,7 @@ namespace Paris.Game
 	}
 }
 
+// Run the preloadables our engine-side preload split no longer reaches, then release the game
 namespace Paris
 {
 	class patch_Paris : Paris
@@ -36,6 +38,7 @@ namespace Paris
 				}
 			}
 
+			// Reflection because MCI_FinishPreload only exists after the engine mixin is applied
 			ContextManager ctx = ContextManager.Singleton;
 			MethodInfo m = ctx.GetType().GetMethod("MCI_FinishPreload");
 			if (m != null)

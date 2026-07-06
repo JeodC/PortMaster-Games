@@ -6,7 +6,7 @@ Buy MARVEL Cosmic Invasion on [Steam](https://store.steampowered.com/app/2753970
 
 DLC is packaged with the base game and is enabled with an entitlement check. Therefore, this port **cannot** distinguish between game data with dlc purchased vs not purchased. In accordance, DLC is left disabled.
 
-This port has been tested from first run patching to playable runtime on a H700 device with a Mali-G31 GPU. There is only a single temporary slowdown in the first level of the game at a specific point, which you will only witness if you're playing on a H700 or weaker handheld. As always with ports, for the best experience, play with a stronger device.
+This port has been tested from first run patching to playable runtime on a H700 device with a Mali-G31 GPU. As always with ports, for the best experience, play with a stronger device.
 
 ## Thanks
 

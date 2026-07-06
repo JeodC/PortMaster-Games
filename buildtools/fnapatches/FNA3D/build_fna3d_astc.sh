@@ -24,10 +24,13 @@ cd FNA3D
 
 git apply /host/fna3d-astc-r8.patch
 
+(cd MojoShader && git apply -p2 /host/mojoshader-glsles3-highp.patch)
+grep -A2 '"#define texture2DRectLod textureLod"' MojoShader/profiles/mojoshader_profile_glsl.c \
+    | grep -q 'precision highp float' || { echo "highp patch did not apply"; exit 1; }
+
 # GL/GLES-only build: drop the Vulkan driver. MCI forces FNA3D_FORCE_DRIVER=
 # OpenGL so the Vulkan path never instantiates, and FNA3D_Driver_Vulkan.c is
-# fully guarded by #if FNA3D_DRIVER_VULKAN — undefining the macro compiles the
-# driver out and drops it from the registration, leaving just OpenGL.
+# fully guarded by #if FNA3D_DRIVER_VULKAN
 sed -i '/-DFNA3D_DRIVER_VULKAN/d' CMakeLists.txt
 
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release >/dev/null

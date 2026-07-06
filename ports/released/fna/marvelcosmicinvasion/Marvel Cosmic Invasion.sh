@@ -95,6 +95,7 @@ if [ ! -f "$GAMEDIR/gamedata/.mci_patched" ]; then
 fi
 
 # Display loading splash
+chmod +x "$GAMEDIR/tools/splash"
 [ "$CFW_NAME" == "muOS" ] && $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 1 
 $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 80000 &
 
@@ -123,7 +124,7 @@ fi
 # Run it
 $GPTOKEYB "mono" -c "$GAMEDIR/mci.gptk" &
 pm_platform_helper "$MONO" >/dev/null
-$TASKSET "$MONO" --ffast-math -O=all "Game.exe"
+$TASKSET "$MONO" --ffast-math -O=all "Game.exe" -forcedraw
 
 # Cleanup
 [ "$MCI_ASOUNDRC" = "1" ] && rm -f "$HOME/.asoundrc"

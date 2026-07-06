@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -12,6 +11,8 @@ using Paris.Engine.Localisation;
 using Paris.Engine.Leaderboards;
 using Paris.Engine.Stats;
 
+// Split asset preloading so GL work stays on the main thread
+// Stock marshals it through workers, which deadlocks under GLES
 namespace Paris.Engine.Context
 {
 	class patch_ContextManager : ContextManager
@@ -57,6 +58,7 @@ namespace Paris.Engine.Context
 	}
 }
 
+// Redirect the intro video to the compressed version
 namespace Paris.Engine.Cutscenes
 {
 	class patch_VideoContext : VideoContext
@@ -71,19 +73,13 @@ namespace Paris.Engine.Cutscenes
 				string patched = (slash < 0)
 					? "PATCH_" + p
 					: p.Substring(0, slash + 1) + "PATCH_" + p.Substring(slash + 1);
-				try
+				string rel = patched.Replace('\\', System.IO.Path.DirectorySeparatorChar)
+									 .Replace('/', System.IO.Path.DirectorySeparatorChar);
+				string file = System.IO.Path.Combine(
+					System.AppDomain.CurrentDomain.BaseDirectory, "Content", rel + ".ogv");
+				if (System.IO.File.Exists(file))
 				{
-					string rel = patched.Replace('\\', System.IO.Path.DirectorySeparatorChar)
-										 .Replace('/', System.IO.Path.DirectorySeparatorChar);
-					string file = System.IO.Path.Combine(
-						System.AppDomain.CurrentDomain.BaseDirectory, "Content", rel + ".ogv");
-					if (System.IO.File.Exists(file))
-					{
-						VideoContext.VideoPath = patched;
-					}
-				}
-				catch (Exception)
-				{
+					VideoContext.VideoPath = patched;
 				}
 			}
 			orig_Init();
@@ -91,6 +87,7 @@ namespace Paris.Engine.Cutscenes
 	}
 }
 
+// Disable Steam Input so the game can see the controller
 namespace Paris.Engine.Input
 {
 	class patch_InputManager : InputManager
@@ -107,7 +104,8 @@ namespace Paris.Engine.Input
 		}
 	}
 
-	// Force Nintendo-style button glyphs.
+	// Force Nintendo-style button glyphs
+	// This gets around some firmwares that use a PSX controller id
 	class patch_InputManagerBase : InputManagerBase
 	{
 		public extern GamePadButtonType orig_GetButtonType(ParisInputType i_controllerType);
@@ -124,14 +122,12 @@ namespace Paris.Engine.Input
 
 namespace Paris.Engine.Audio
 {
-	// FMOD sample-data reclamation.
 	class patch_SoundEventInstance : SoundEventInstance
 	{
 		private FMOD.Studio.EventInstance _instance;
 		private int _soundEventID;
 		private FMOD.Studio.EVENT_CALLBACK _eventCallback;
 
-		// Added by MonoMod onto SoundEventInstance.
 		private bool mci_released;
 		private float mci_idle;
 
@@ -181,9 +177,9 @@ namespace Paris.Engine.Audio
 	}
 }
 
+// Halt stats reporting since Steam is stubbed
 namespace Paris.Engine.Stats
 {
-	// Steam is stubbed; never push stats through it.
 	public class patch_Stat : Stat
 	{
 		patch_Stat(string id, StatType type) : base(id, type) { }
@@ -192,8 +188,6 @@ namespace Paris.Engine.Stats
 			return false;
 		}
 	}
-
-	// No analytics without Steam/network.
 	class patch_GameAnalytics : GameAnalytics
 	{
 		public new void Init()
@@ -203,9 +197,9 @@ namespace Paris.Engine.Stats
 	}
 }
 
+// Halt networking, EOSSDK is stubbed
 namespace Paris.Engine.Networking
 {
-	// Offline: neutralize the online lobby/disconnect paths that crash without Steam.
 	class patch_NetworkManager : NetworkManager
 	{
 		public new void Disconnect(bool transition = false)
@@ -218,12 +212,129 @@ namespace Paris.Engine.Networking
 	}
 }
 
-// Offline: leaderboards never initialise.
 [MonoModPatch("Paris.Engine.Leaderboards.Leaderboard")]
 public class patch_Leaderboard
 {
 	[MonoModConstructor]
 	public patch_Leaderboard(LocID name, string key, LeaderboardBase.SortMode sortMode, LeaderboardBase.DisplayType displayType)
 	{
+	}
+}
+
+// The CRT filter's phosphor mask degenerates below 3x display scale
+// Fix it here
+namespace Paris.Engine.Graphics.Shaders
+{
+	class patch_CRTShader : CRTShader
+	{
+		public patch_CRTShader(string path) : base(path) { }
+
+		public extern void orig_ApplyData(Renderer renderer, CRTShaderData data);
+		public override void ApplyData(Renderer renderer, CRTShaderData data)
+		{
+			if (data.GameScale < 3f)
+			{
+				data.GameScale = 3f;
+			}
+			orig_ApplyData(renderer, data);
+		}
+	}
+}
+
+// Grow exhausted pools by one object on demand
+// The stock path builds a 20% batch inline mid-frame, stalling heavy scenes
+namespace Paris.Engine.Scene
+{
+	class patch_GameObjectPoolManager : GameObjectPoolManager
+	{
+		public extern GameObject2d orig_SpawnObject(string actorTemplate, Vector3 position, Guid forceGuid, bool sendToNetwork, bool reliable, bool global, int indexAuthority);
+		public new GameObject2d SpawnObject(string actorTemplate, Vector3 position, Guid forceGuid, bool sendToNetwork, bool reliable, bool global = true, int indexAuthority = -1)
+		{
+			if (!Paris.Engine.Context.ContextManager.Singleton.EditorMode)
+			{
+				this.MCI_EnsureAvailable(actorTemplate, forceGuid, global);
+			}
+			return this.orig_SpawnObject(actorTemplate, position, forceGuid, sendToNetwork, reliable, global, indexAuthority);
+		}
+
+		private void MCI_EnsureAvailable(string actorTemplate, Guid forceGuid, bool global)
+		{
+			bool needOne = true;
+			int count = 0;
+			Monitor.Enter(this._lock);
+			List<Paris.Engine.Graphics.Playfield.GameObjectData> list;
+			if (this._pools.TryGetValue(actorTemplate, out list))
+			{
+				count = list.Count;
+				foreach (Paris.Engine.Graphics.Playfield.GameObjectData d in list)
+				{
+					// A disposed object satisfies the spawn; so does a live
+					// object already carrying the forced guid (stock reuses it)
+					if (d.GameObject.Disposed || (forceGuid != Guid.Empty && d.GameObject.Id == forceGuid))
+					{
+						needOne = false;
+						break;
+					}
+				}
+			}
+			Monitor.Exit(this._lock);
+			if (!needOne)
+			{
+				return;
+			}
+			System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			this.MCI_ConstructOne(actorTemplate, global);
+			Console.WriteLine(string.Concat(new string[]
+			{
+				"[MCI] Pool '", actorTemplate, "' exhausted at ", count.ToString(),
+				"; built 1 in ", stopwatch.ElapsedMilliseconds.ToString(), "ms."
+			}));
+		}
+
+		// Mirrors AddPoolInternal's per-object steps, minus _poolStack so the stock
+		// exhaustion branch can't recurse
+		private void MCI_ConstructOne(string actorTemplate, bool global)
+		{
+			bool disableInvalidate = Paris.Engine.Physic.CollisionManager.DisableInvalidate;
+			Paris.Engine.Physic.CollisionManager.DisableInvalidate = true;
+			bool useGlobalContentManager = Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager;
+			Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager = global;
+			try
+			{
+				string text = actorTemplate.StartsWith("SceneInstance:")
+					? actorTemplate
+					: PathManager.NormalizePath("Actor2d\\" + actorTemplate);
+				Paris.Engine.Graphics.Playfield.GameObjectData gameObjectData = new Paris.Engine.Graphics.Playfield.GameObjectData(text, false);
+				Monitor.Enter(this._lock);
+				List<Paris.Engine.Graphics.Playfield.GameObjectData> list;
+				if (!this._pools.TryGetValue(actorTemplate, out list))
+				{
+					list = new List<Paris.Engine.Graphics.Playfield.GameObjectData>();
+					this._pools[actorTemplate] = list;
+				}
+				int num = list.Count;
+				Monitor.Exit(this._lock);
+				gameObjectData.GameObject.Name = "POOLED_MCI_" + System.IO.Path.GetFileNameWithoutExtension(actorTemplate) + "_" + num.ToString("D3");
+				gameObjectData.GameObject.PoolObject = true;
+				gameObjectData.GameObject.Init();
+				gameObjectData.GameObject.Disposed = true;
+				gameObjectData.GameObject.Active = false;
+				gameObjectData.PoolObject = true;
+				gameObjectData.Saveable = false;
+				Monitor.Enter(this._lock);
+				list.Add(gameObjectData);
+				this._poolMaxes[actorTemplate] = list.Count;
+				Monitor.Exit(this._lock);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("[MCI] Emergency pool construct failed for " + actorTemplate + ": " + e.Message);
+			}
+			finally
+			{
+				Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager = useGlobalContentManager;
+				Paris.Engine.Physic.CollisionManager.DisableInvalidate = disableInvalidate;
+			}
+		}
 	}
 }

@@ -1,9 +1,8 @@
-// Rewrites an assembly with all types/methods/fields public, for use as a
-// compile-time reference only (MonoMod merges patch types into the target
-// assembly, so private access is legal at runtime).
 using System;
 using Mono.Cecil;
 
+// Rewrites an assembly with all types/methods/fields public, for use as a
+// compile-time reference only
 class Publicize
 {
 	static void Main(string[] args)
