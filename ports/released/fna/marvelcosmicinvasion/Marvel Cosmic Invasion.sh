@@ -98,14 +98,26 @@ fi
 [ "$CFW_NAME" == "muOS" ] && $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 1 
 $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 80000 &
 
-# Normalize face buttons
-chmod +x "$GAMEDIR/tools/swapabxy.py"
-if [ -n "$SDL_GAMECONTROLLERCONFIG_FILE" ] && [ -f "$SDL_GAMECONTROLLERCONFIG_FILE" ]; then
-    cat "$SDL_GAMECONTROLLERCONFIG_FILE" | "$GAMEDIR/tools/swapabxy.py" --auto > "$GAMEDIR/gamecontrollerdb_swapped.txt"
-    export SDL_GAMECONTROLLERCONFIG_FILE="$GAMEDIR/gamecontrollerdb_swapped.txt"
+# Face-button layout
+if [ -f "$GAMEDIR/swapabxy.txt" ]; then
+    chmod +x "$GAMEDIR/tools/swapabxy.py"
+    if [ -n "$SDL_GAMECONTROLLERCONFIG_FILE" ] && [ -f "$SDL_GAMECONTROLLERCONFIG_FILE" ]; then
+        cat "$SDL_GAMECONTROLLERCONFIG_FILE" | "$GAMEDIR/tools/swapabxy.py" > "$GAMEDIR/gamecontrollerdb_swapped.txt"
+        export SDL_GAMECONTROLLERCONFIG_FILE="$GAMEDIR/gamecontrollerdb_swapped.txt"
+    fi
+    if [ -n "$SDL_GAMECONTROLLERCONFIG" ]; then
+        export SDL_GAMECONTROLLERCONFIG="`echo "$SDL_GAMECONTROLLERCONFIG" | "$GAMEDIR/tools/swapabxy.py"`"
+    fi
 fi
-if [ -n "$SDL_GAMECONTROLLERCONFIG" ]; then
-    export SDL_GAMECONTROLLERCONFIG="`echo "$SDL_GAMECONTROLLERCONFIG" | "$GAMEDIR/tools/swapabxy.py" --auto`"
+
+# Audio enumeration fallback
+MCI_ASOUNDRC=""
+if command -v aplay >/dev/null 2>&1 \
+   && ! aplay -L 2>/dev/null | grep -qx default \
+   && pidof pipewire >/dev/null 2>&1 \
+   && [ ! -e "$HOME/.asoundrc" ]; then
+    cp -f "$GAMEDIR/tools/asound-default.conf" "$HOME/.asoundrc" && MCI_ASOUNDRC="1"
+    echo "Audio: exposed a hinted pipewire 'default' via ~/.asoundrc"
 fi
 
 # Run it
@@ -114,5 +126,6 @@ pm_platform_helper "$MONO" >/dev/null
 $TASKSET "$MONO" --ffast-math -O=all "Game.exe"
 
 # Cleanup
+[ "$MCI_ASOUNDRC" = "1" ] && rm -f "$HOME/.asoundrc"
 $ESUDO umount "$MONODIR" 2>/dev/null
 pm_finish

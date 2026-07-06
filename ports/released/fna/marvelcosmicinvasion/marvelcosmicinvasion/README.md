@@ -1,6 +1,6 @@
 # Installation
 
-Buy MARVEL Cosmic Invasion on [Steam](https://store.steampowered.com/app/2753970/) and copy the **entire** game folder into `marvelcosmicinvasion/gamedata/`.
+Buy MARVEL Cosmic Invasion on [Steam](https://store.steampowered.com/app/2753970/) and copy the **entire** game folder (Windows install) into `marvelcosmicinvasion/gamedata/`.
 
 ## Notes
 
