@@ -14,43 +14,6 @@ using Paris.Engine.Stats;
 
 namespace Paris.Engine.Context
 {
-	// Boot deadlock + blank sprites, both rooted in the same thing.
-	//
-	// FNA moved GL resource creation into native FNA3D: a worker-thread
-	// FNA3D_CreateTexture2D / CreateEffect is queued (ForceToMainThread) and
-	// only runs when the main thread next drains the queue, inside SwapBuffers.
-	// Stock ParisEngine preloads global assets on background worker threads, so
-	// during boot those GL calls pile up behind a Present that the loading state
-	// suppresses: a preloader parks in the queued call holding an engine lock and
-	// boot deadlocks. And because the texture upload runs (or would run) in a
-	// worker's GL context, on Panfrost/GLES the main context can't sample it -
-	// the portraits came up blank even when it didn't hang. Neither bit Vulkan or
-	// D3D11 (they don't marshal), which is why upstream never saw it.
-	//
-	// Fix: mirror the TMNT: Shredder's Revenge port's split (which runs on the
-	// H700). The non-GL work - audio, json, reflection, AND pool objects (pool
-	// objects carry no texture data) - stays on background threads. The GL-
-	// creating work runs synchronously on the main/render thread so the textures
-	// are created directly in the main GL context (no worker marshaling, so no
-	// queued-command deadlock and no pump/drain plumbing; and the sprites live in
-	// the context that samples them). Keeping PreloadPoolObjects on a background
-	// thread (rather than pulling it onto main) keeps the synchronous burst small
-	// enough to fit low-memory devices - pulling it on OOM-hardlocked a Mali GPU.
-	//
-	// The GL work is split across two patches because MCI's structure differs
-	// from TMNT's:
-	//   - LoadGlobalContent runs here (main), in StartPreLoadingGlobalAssets.
-	//   - The IPreloadable loop (AttackListPreload etc., the portraits) runs in
-	//     the Game.exe StartInit patch instead. Those preloaders spin-wait on
-	//     game-side lists (AttackList/SpawnSequenceList/CharacterManager) which,
-	//     in MCI, live in Game.exe and load only later in Paris.StartInit - so
-	//     they cannot run here without deadlocking. Game.exe runs them after the
-	//     lists load, then calls MCI_FinishPreload() below. (In TMNT those lists
-	//     were in ParisEngine, so Johnny could do it all in one patch.)
-	//
-	// CacheJsonFiles MUST stay on a background thread: PreloadPoolObjects and
-	// LoadGlobalContent both spin-wait on its JsonFiles bit, so running it inline
-	// would livelock.
 	class patch_ContextManager : ContextManager
 	{
 		private volatile ContextManager.PreloadingState _preloadingState;
@@ -65,11 +28,7 @@ namespace Paris.Engine.Context
 			{
 				return;
 			}
-			// No texture data, so these are safe to load in parallel on background
-			// threads - PreloadPoolObjects included (pool objects carry no GL data).
-			// This is exactly the TMNT: Shredder's Revenge port's split, which runs
-			// on the H700. CacheJsonFiles MUST stay here: PreloadPoolObjects and
-			// LoadGlobalContent both spin-wait on the JsonFiles bit it sets.
+			// No texture data, so these are safe to load in parallel on background threads
 			foreach (Action action in new Action[]
 			{
 				new Action(this.PreloadAudio),
@@ -88,22 +47,9 @@ namespace Paris.Engine.Context
 			// Global content creates GL, so it runs on the main/render thread -
 			// created directly in the main context, no worker marshaling.
 			this.LoadGlobalContent();
-			// The IPreloadable loop (AttackListPreload etc.) is deliberately NOT
-			// run here. Those preloaders spin-wait on game-side lists
-			// (AttackList/SpawnSequenceList/CharacterManager), which in MCI live in
-			// Game.exe and only load later in Paris.StartInit - unreachable from
-			// this ParisEngine patch. Running them here on the main thread would
-			// deadlock waiting for a list that can't load until this returns. The
-			// Game.exe StartInit patch runs them (and calls MCI_FinishPreload)
-			// once those lists are up. See Game.MCIPatches.mm.cs.
 		}
 
-		// Bridge for the Game.exe StartInit patch: it runs the IPreloadables on
-		// the main thread after the game-side lists have loaded, then calls this
-		// to mark preload complete. Lives here because _preloadingState is private
-		// to ContextManager. Forcing Finished (as TMNT does) also guarantees
-		// WaitUntilPoolManagerIsInitialized completes if a background cache thread
-		// is still winding down.
+		// Bridge for the Game.exe StartInit patch
 		public void MCI_FinishPreload()
 		{
 			this._preloadingState = ContextManager.PreloadingState.Finished;
@@ -113,15 +59,6 @@ namespace Paris.Engine.Context
 
 namespace Paris.Engine.Cutscenes
 {
-	// The stock intro movie (Content/Videos/MCI_IntroAnimation.ogv) is a ~147 MB
-	// Theora file; FNA decodes Theora in software, so it crawls on weak GPUs/CPUs.
-	// The first-run patchscript can transcode it to a half-resolution PATCH_
-	// sibling (smooth), or, if the player opts to skip the intro, drop a tiny stub
-	// PATCH_ file in its place (a near-instant blip) - matching the TMNT: Shredder's
-	// Revenge port. Here we redirect VideoContext to that PATCH_ sibling when it
-	// exists. We fall back to the original path if it does not, because
-	// ParisContentManager.Load throws on a missing file - so this must never point
-	// the player at a video that is not on disk.
 	class patch_VideoContext : VideoContext
 	{
 		public extern void orig_Init();
@@ -156,12 +93,9 @@ namespace Paris.Engine.Cutscenes
 
 namespace Paris.Engine.Input
 {
-	// Setting _disabled = true makes Ready true WITHOUT _initialized,
-	// so every input read falls through to the native FNA GamePad path
-	// (the Steam Input path never initializes when Steam is stubbed).
 	class patch_InputManager : InputManager
 	{
-		private bool _disabled; // mapped by MonoMod onto InputManager._disabled
+		private bool _disabled;
 		public extern void orig_Init();
 		public override void Init()
 		{
@@ -191,36 +125,6 @@ namespace Paris.Engine.Input
 namespace Paris.Engine.Audio
 {
 	// FMOD sample-data reclamation.
-	//
-	// MCI's AudioManager pre-creates one live FMOD EventInstance for EVERY event
-	// across all four banks (Master/MUS/SFX/SFX_DLC01) at startup and never
-	// releases any (SoundEventInstance.Init -> Description.createInstance; there is
-	// no release()/unloadSampleData anywhere in the engine). FMOD Studio keeps a
-	// sound's sample data resident while any instance references it, so with one
-	// permanent instance per event the resident audio set only ever grows -
-	// converging toward the whole ~131 MB SFX bank pinned in anonymous process
-	// heap. On a ~1 GB device that heap can't be evicted, only swapped, so it walks
-	// straight into thrash/lockup as more unique sounds fire over a session (the
-	// "plays fine a while, then hard-locks and the audio cuts out last").
-	//
-	// Fix: once a non-music sound has been STOPPED for MCI_GRACE seconds, release
-	// its FMOD instance - dropping the sample-data reference so FMOD unloads it on
-	// the next Studio update - and lazily recreate the instance on the next Play.
-	// Sounds replayed within the grace window keep their instance, so hot combat
-	// SFX never churn; sounds that go quiet get reclaimed. This bounds the resident
-	// SFX/VO set to "recently active" rather than "everything ever played", the way
-	// a well-behaved FMOD title (e.g. the TMNT: Shredder's Revenge port, same FMOD
-	// 2.02) lets sample data unload. Music (one song plays at a time) is untouched.
-	//
-	// Play/Tick are non-virtual and are always called through SoundEventInstance
-	// references (AudioManager's List<SoundEventInstance>), so these patches also
-	// cover the GameSoundEventInstance subclass. GameSoundEventInstance.Init only
-	// adds VO name parsing (no FMOD-instance state), so recreating the bare
-	// instance here is complete. NOTE: this adds instance fields to
-	// SoundEventInstance, so Game.exe (which holds the GameSoundEventInstance
-	// subclass) MUST be re-AOT'd alongside ParisEngine or the AOT field offsets
-	// mismatch - the patchscript already AOTs both. FMOD types are fully qualified
-	// to avoid pulling FMOD.System into scope alongside System.
 	class patch_SoundEventInstance : SoundEventInstance
 	{
 		private FMOD.Studio.EventInstance _instance;
@@ -231,7 +135,7 @@ namespace Paris.Engine.Audio
 		private bool mci_released;
 		private float mci_idle;
 
-		private const float MCI_GRACE = 10f;
+		private const float MCI_GRACE = 10f; // Tunable
 
 		public patch_SoundEventInstance(int soundEventID) : base(soundEventID) { }
 
@@ -279,7 +183,7 @@ namespace Paris.Engine.Audio
 
 namespace Paris.Engine.Stats
 {
-	// Steam is stubbed; never push stats through it (avoids story-mode crashes).
+	// Steam is stubbed; never push stats through it.
 	public class patch_Stat : Stat
 	{
 		patch_Stat(string id, StatType type) : base(id, type) { }
@@ -301,7 +205,7 @@ namespace Paris.Engine.Stats
 
 namespace Paris.Engine.Networking
 {
-	// Offline: neutralise the online lobby/disconnect paths that crash without Steam.
+	// Offline: neutralize the online lobby/disconnect paths that crash without Steam.
 	class patch_NetworkManager : NetworkManager
 	{
 		public new void Disconnect(bool transition = false)
@@ -314,7 +218,7 @@ namespace Paris.Engine.Networking
 	}
 }
 
-// Offline: leaderboards never initialise (constructor becomes a no-op).
+// Offline: leaderboards never initialise.
 [MonoModPatch("Paris.Engine.Leaderboards.Leaderboard")]
 public class patch_Leaderboard
 {
