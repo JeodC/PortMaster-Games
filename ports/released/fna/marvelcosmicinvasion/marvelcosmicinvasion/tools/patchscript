@@ -36,6 +36,23 @@ export PATH="$MONODIR/bin:$PATH"
 export MONO_PATH="$PORTDIR/dlls:$GAMEDIR:$PORTDIR/monomod"
 export LD_LIBRARY_PATH="$PORTDIR/libs:$MONODIR/lib:/usr/lib:$LD_LIBRARY_PATH"
 
+# The bundled LLVM opt/llc need GLIBC_2.29 and GLIBCXX_3.4.26 (GCC 9). Report what
+# this device actually provides so a failed LLVM pass explains itself in the log.
+device_glibc() {
+    local v
+    v="$(getconf GNU_LIBC_VERSION 2>/dev/null | grep -oE '[0-9]+\.[0-9]+' | tail -1)"
+    [ -n "$v" ] || v="$(ldd --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | tail -1)"
+    echo "${v:-unknown}"
+}
+
+device_glibcxx() {
+    local lib v
+    lib="$(ldconfig -p 2>/dev/null | grep -m1 -oE '/[^ ]*libstdc\+\+\.so\.6')"
+    [ -n "$lib" ] || lib="$(ls /usr/lib/libstdc++.so.6 /usr/lib/*/libstdc++.so.6 2>/dev/null | head -1)"
+    [ -n "$lib" ] && v="$(grep -aoE 'GLIBCXX_[0-9.]+' "$lib" 2>/dev/null | sort -V | tail -1)"
+    echo "${v:-unknown}"
+}
+
 prepare_system() {
     if [ ! -x "$MONO" ]; then
         emit_fail_msg "Patching failed: the Mono runtime is not mounted."
@@ -92,8 +109,8 @@ patch_assemblies() {
 }
 
 aot_one() {
-    local asm="$1" step="$2" start now pid
-    echo "Optimizing $asm ($step)..."
+    local asm="$1" step="$2" start now pid rc
+    echo "Optimizing $asm ($step) with LLVM..."
     start=$(date +%s)
     "$MONO" -O=all --aot=llvm "$asm" &
     pid=$!
@@ -103,13 +120,33 @@ aot_one() {
         now=$(date +%s)
         echo "  ...still optimizing $asm ($((now - start))s elapsed)"
     done
-    wait "$pid"
-    return $?
+    wait "$pid"; rc=$?
+    if [ "$rc" -ne 0 ] || [ ! -f "$asm.so" ]; then
+        echo "LLVM AOT of $asm did not succeed (exit $rc) - the bundled opt/llc likely can't run on this CFW's system libs."
+        echo "Needs: GLIBC_2.29     | Yours: GLIBC_$(device_glibc)"
+        echo "Needs: GLIBCXX_3.4.26 | Yours: $(device_glibcxx)"
+        echo "Retrying with standard AOT (the port will run here, just without the LLVM speedup)..."
+        rm -f "$asm.so"
+        "$MONO" -O=all --aot "$asm"
+        rc=$?
+    fi
+    if [ "$rc" -ne 0 ] || [ ! -f "$asm.so" ]; then
+        echo "AOT of $asm failed (exit $rc), even without LLVM - the Mono runtime cannot compile this assembly on this device."
+        return 1
+    fi
+    echo "  $asm optimized."
+    return 0
 }
 
 aot_assemblies() {
-    aot_one ParisEngine.dll "1 of 2" || return 1
-    aot_one Game.exe "2 of 2" || return 1
+    if ! aot_one ParisEngine.dll "1 of 2"; then
+        emit_fail_msg "Patching failed while optimizing ParisEngine.dll - this device's Mono could not ahead-of-time compile the game. See patcherr.txt."
+        return 1
+    fi
+    if ! aot_one Game.exe "2 of 2"; then
+        emit_fail_msg "Patching failed while optimizing Game.exe - this device's Mono could not ahead-of-time compile the game. See patcherr.txt."
+        return 1
+    fi
 }
 
 repack_textures() {
