@@ -2206,12 +2206,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-07T17:53",
+      "date_updated": "2026-07-07T20:41",
       "first_seen": "2026-07-06",
-      "md5": "1b007f1475643bb8b54f19bc87090a2c",
-      "size": 5048993,
-      "lifetime_downloads": 34,
-      "last_commit": "[MCI] Fix softlock in Wakanda"
+      "md5": "786ea1ee3c7bace43717d62dbbcb0f94",
+      "size": 5050884,
+      "lifetime_downloads": 38,
+      "last_commit": "[MCI] Actually fix softlock in Wakanda"
     }
   },
   {
