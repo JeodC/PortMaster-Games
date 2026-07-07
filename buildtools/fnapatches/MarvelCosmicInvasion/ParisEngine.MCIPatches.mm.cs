@@ -212,6 +212,70 @@ namespace Paris.Engine.Networking
 	}
 }
 
+// Halt EpicHelper, EOSSDK is stubbed
+namespace Paris.Engine
+{
+	[MonoModPatch("Paris.Engine.EpicHelper")]
+	static class patch_EpicHelper
+	{
+		[MonoModReplace]
+		public static void Init()
+		{
+		}
+	}
+}
+
+// Mono 6.12 LLVM AOT miscompiles Vector3.CatmullRom/Hermite, 
+// so recompute in scalar double
+namespace Paris.Engine.Effects
+{
+	class patch_SplinePositionTween : SplinePositionTween
+	{
+		[MonoModReplace]
+		public new void Tick(float deltaTime)
+		{
+			this._timer += deltaTime;
+			this._progress = (this._duration != 0f) ? MCIClamp(this._timer / this._duration, 0f, 1f) : 1f;
+			float t = this._progress;
+			if ((int)this._splineType == 0) // CatmullRom
+			{
+				this._position = new Vector3(
+					MCICatmull(this._curveControl.X, this._curveStart.X, this._curveEnd.X, this._curveControl.X, t),
+					MCICatmull(this._curveControl.Y, this._curveStart.Y, this._curveEnd.Y, this._curveControl.Y, t),
+					MCICatmull(this._curveControl.Z, this._curveStart.Z, this._curveEnd.Z, this._curveControl.Z, t));
+				return;
+			}
+			this._position = new Vector3(
+				MCIHermite(this._curveStart.X, this._tangentStart.X, this._curveEnd.X, this._tangentEnd.X, t),
+				MCIHermite(this._curveStart.Y, this._tangentStart.Y, this._curveEnd.Y, this._tangentEnd.Y, t),
+				MCIHermite(this._curveStart.Z, this._tangentStart.Z, this._curveEnd.Z, this._tangentEnd.Z, t));
+		}
+
+		private static float MCIClamp(float v, float lo, float hi)
+		{
+			return (v < lo) ? lo : ((v > hi) ? hi : v);
+		}
+
+		private static float MCICatmull(float v1, float v2, float v3, float v4, float a)
+		{
+			double num = (double)a * a;
+			double num2 = (double)a * num;
+			return (float)(0.5 * (2.0 * v2 + (-(double)v1 + v3) * a + (2.0 * v1 - 5.0 * v2 + 4.0 * v3 - v4) * num + (-(double)v1 + 3.0 * v2 - 3.0 * v3 + v4) * num2));
+		}
+
+		private static float MCIHermite(float v1, float t1, float v2, float t2, float a)
+		{
+			double num2 = (double)a * a;
+			double num3 = (double)a * num2;
+			double n4 = 2.0 * num3 - 3.0 * num2 + 1.0;
+			double n5 = -2.0 * num3 + 3.0 * num2;
+			double n6 = num3 - 2.0 * num2 + a;
+			double n7 = num3 - num2;
+			return (float)((double)v1 * n4 + (double)v2 * n5 + (double)t1 * n6 + (double)t2 * n7);
+		}
+	}
+}
+
 [MonoModPatch("Paris.Engine.Leaderboards.Leaderboard")]
 public class patch_Leaderboard
 {
@@ -222,7 +286,7 @@ public class patch_Leaderboard
 }
 
 // The CRT filter's phosphor mask degenerates below 3x display scale
-// Fix it here
+// Clamp it
 namespace Paris.Engine.Graphics.Shaders
 {
 	class patch_CRTShader : CRTShader
