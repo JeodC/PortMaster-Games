@@ -73,7 +73,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [],
       "availability": "paid",
@@ -87,12 +87,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/air/air/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/air/air/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/air.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2025-05-17",
-      "md5": "e97f061de20601d21d2e5ba1f5277f9f",
-      "size": 742445,
-      "lifetime_downloads": 18,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "91343ab19219e251079dcb3e03422f42",
+      "size": 742456,
+      "lifetime_downloads": 29,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
@@ -379,7 +379,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [
         {
@@ -399,12 +399,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/clannad/clannad/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/clannad/clannad/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/clannad.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2025-05-17",
-      "md5": "85f37cbd58834948cf57cfc61fb05c01",
-      "size": 324949,
-      "lifetime_downloads": 7,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "aa9cbd5972983c66319a942fa2868ada",
+      "size": 324961,
+      "lifetime_downloads": 15,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
@@ -431,7 +431,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [
         {
@@ -451,12 +451,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/clannadss/clannadss/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/clannadss/clannadss/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/clannadss.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2026-05-16",
-      "md5": "ca8b9226479f8e28cf9a1536ca060c98",
-      "size": 626082,
-      "lifetime_downloads": 0,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "b06f19bbda64724ef8b5a86db5708048",
+      "size": 626093,
+      "lifetime_downloads": 7,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
@@ -483,7 +483,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [
         {
@@ -503,12 +503,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/tomoyo_after/tomoyo_after/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/tomoyo_after/tomoyo_after/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/tomoyo_after.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2025-05-17",
-      "md5": "8f61266db75d11fafb8f48de0c8799e6",
-      "size": 341549,
-      "lifetime_downloads": 6,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "152b1b3698fa358a430fe4b9ed50ae10",
+      "size": 341560,
+      "lifetime_downloads": 8,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
@@ -1973,7 +1973,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [],
       "availability": "paid",
@@ -1987,12 +1987,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/kanon/kanon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/kanon/kanon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/kanon.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2025-05-17",
-      "md5": "38b140bdce2e2ff787ca32d84425fcca",
-      "size": 333976,
-      "lifetime_downloads": 6,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "7aae1fffa7dae86d08163b4fbc277fe1",
+      "size": 333989,
+      "lifetime_downloads": 9,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
@@ -2064,7 +2064,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [],
       "availability": "paid",
@@ -2078,12 +2078,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/littlebusters/littlebusters/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/littlebusters/littlebusters/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/littlebusters.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2025-05-17",
-      "md5": "fe1499d259e40fd3b9c2be78f5c01693",
-      "size": 515912,
-      "lifetime_downloads": 4,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "165cfc980c0f3c9eb3657cdb92166480",
+      "size": 515930,
+      "lifetime_downloads": 8,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
@@ -2931,7 +2931,7 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "rlvm.squashfs"
+        "rlvm-sdl2.squashfs"
       ],
       "store": [],
       "availability": "paid",
@@ -2945,12 +2945,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/planetarian/planetarian/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rlvm/planetarian/planetarian/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/planetarian.zip",
-      "date_updated": "2026-05-16T11:22",
+      "date_updated": "2026-07-08T23:05",
       "first_seen": "2025-05-17",
-      "md5": "208f9a7507bc5fe0c08298a35e433d65",
-      "size": 258828,
-      "lifetime_downloads": 6,
-      "last_commit": "[RLVM] Update rlvm ports to add mpg video support, improved transition effects, and add Clannad Side Stories"
+      "md5": "ab50a37e84cda4ae53e7124950ebd6ad",
+      "size": 258841,
+      "lifetime_downloads": 8,
+      "last_commit": "Change rlvm runtime to rlvm-sdl2 (name collision)"
     }
   },
   {
