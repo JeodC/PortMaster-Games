@@ -22,7 +22,7 @@
     "rtr": false,
     "exp": true,
     "runtime": [
-      "mono-6.12.0.122.squashfs"
+      "mono-6.12.0.122-aarch64.squashfs"
     ],
     "store": [
       {
