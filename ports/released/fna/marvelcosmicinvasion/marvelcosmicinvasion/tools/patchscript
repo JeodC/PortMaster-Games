@@ -154,8 +154,10 @@ repack_textures() {
         echo "Textures already re-encoded, skipping."
         return 0
     fi
+    # Keep the managed heap bounded on 1GB devices
     ASTC_QUALITY=60.0 MONO_PATH="$PORTDIR/dlls" \
-        "$MONO" "$PORTDIR/tools/MCIRepacker.exe" "$GAMEDIR/Content/" || return 1
+    MONO_GC_PARAMS="soft-heap-limit=256m,major=marksweep" \
+    "$MONO" "$PORTDIR/tools/MCIRepacker.exe" "$GAMEDIR/Content/" || return 1
     rm -f .astc_done
     touch .repack_done
 }

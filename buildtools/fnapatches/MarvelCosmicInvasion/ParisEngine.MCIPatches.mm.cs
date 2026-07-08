@@ -197,7 +197,9 @@ namespace Paris.Engine.Stats
 	}
 }
 
-// Halt networking, EOSSDK is stubbed
+// Halt networking, EOSSDK is stubbed.
+// (The LAN build needs the real Disconnect/ChangeLobbyLocked - its lobby calls are shimmed.)
+#if !MCI_LAN
 namespace Paris.Engine.Networking
 {
 	class patch_NetworkManager : NetworkManager
@@ -211,8 +213,12 @@ namespace Paris.Engine.Networking
 		}
 	}
 }
+#endif
 
-// Halt EpicHelper, EOSSDK is stubbed
+// Halt EpicHelper, EOSSDK is stubbed.
+// (The LAN build defines MCI_LAN and supplies its own patch_EpicHelper that un-gates
+// EOS onto the clean-room LAN backend instead of stubbing it out.)
+#if !MCI_LAN
 namespace Paris.Engine
 {
 	[MonoModPatch("Paris.Engine.EpicHelper")]
@@ -224,6 +230,7 @@ namespace Paris.Engine
 		}
 	}
 }
+#endif
 
 // Mono 6.12 LLVM AOT miscompiles Vector3.CatmullRom/Hermite, 
 // so recompute in scalar double

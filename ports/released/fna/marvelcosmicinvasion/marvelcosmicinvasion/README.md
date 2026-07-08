@@ -2,6 +2,18 @@
 
 Buy MARVEL Cosmic Invasion on [Steam](https://store.steampowered.com/app/2753970/) and copy the **entire** game folder (Windows install) into `marvelcosmicinvasion/gamedata/`.
 
+## LAN co-op
+
+This port replaces the game's Epic Online Services matchmaking with local-network play. Devices with this port installed can play co-op together (up to four players):
+
+1. Install the port and game data on every device, all on the same network.
+2. Host: **LAN -> Create Party**, Public or Private.
+3. Others: **LAN -> Quick Join**, or **Join Party Code** for private parties.
+
+Player names are the device hostnames. Discovery is UDP broadcast on port 55123, so all devices must be on the same subnet - a phone hotspot works too.
+
+**The LAN layer is fully isolated from the real online services and does not interfere with them.** It never contacts Epic or Steam; all traffic stays on the local network between your devices. No account is used, read, or modified, and your game installs elsewhere (and their online play) are completely unaffected. Friends, invites, and crossplay are hidden in the port's menus because those only exist on the real online services.
+
 ## Notes
 
 DLC is packaged with the base game and is enabled with an entitlement check. Therefore, this port **cannot** distinguish between game data with dlc purchased vs not purchased. In accordance, DLC is left disabled.

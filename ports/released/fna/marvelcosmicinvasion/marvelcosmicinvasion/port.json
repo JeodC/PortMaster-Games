@@ -11,7 +11,7 @@
     "porter": [
       "Jeod"
     ],
-    "desc": "A cosmic battle awaits! Choose between 15 Marvel Super Heroes in this frenetic action beat ‘em up to fight against the deadly Annihilation Wave threatening the galaxy. From New York City to the depths of the Negative Zone, the future of the Marvel Universe will be fought for across the stars!",
+    "desc": "A cosmic battle awaits! Choose between 15 Marvel Super Heroes in this frenetic action beat \u2018em up to fight against the deadly Annihilation Wave threatening the galaxy. From New York City to the depths of the Negative Zone, the future of the Marvel Universe will be fought for across the stars! This port adds LAN co-op: devices on the same network with the port installed can play together, fully offline.",
     "desc_md": null,
     "inst": "Buy MARVEL Cosmic Invasion on Steam and copy the entire game folder (Windows install) into marvelcosmicinvasion/gamedata.",
     "inst_md": null,
@@ -22,7 +22,7 @@
     "rtr": false,
     "exp": true,
     "runtime": [
-      "mono-6.12.0.122-aarch64.squashfs"
+      "mono-6.12.0.122.squashfs"
     ],
     "store": [
       {

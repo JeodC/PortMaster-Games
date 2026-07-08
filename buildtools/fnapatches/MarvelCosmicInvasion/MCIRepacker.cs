@@ -381,6 +381,7 @@ namespace MCIRepacker
                 finally
                 {
                     count_done++;
+                    GC.Collect();
                 }
             }
             Console.Out.WriteLine("Repack finished: " + count_done + " files visited, " + failed + " failures.");
