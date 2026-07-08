@@ -2175,7 +2175,7 @@
       "porter": [
         "Jeod"
       ],
-      "desc": "A cosmic battle awaits! Choose between 15 Marvel Super Heroes in this frenetic action beat ‘em up to fight against the deadly Annihilation Wave threatening the galaxy. From New York City to the depths of the Negative Zone, the future of the Marvel Universe will be fought for across the stars!",
+      "desc": "A cosmic battle awaits! Choose between 15 Marvel Super Heroes in this frenetic action beat ‘em up to fight against the deadly Annihilation Wave threatening the galaxy. From New York City to the depths of the Negative Zone, the future of the Marvel Universe will be fought for across the stars! This port adds LAN co-op: devices on the same network with the port installed can play together, fully offline.",
       "desc_md": null,
       "inst": "Buy MARVEL Cosmic Invasion on Steam and copy the entire game folder (Windows install) into marvelcosmicinvasion/gamedata.",
       "inst_md": null,
@@ -2186,7 +2186,7 @@
       "rtr": false,
       "exp": true,
       "runtime": [
-        "mono-6.12.0.122-aarch64.squashfs"
+        "mono-6.12.0.122.squashfs"
       ],
       "store": [
         {
@@ -2206,12 +2206,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-07T21:18",
+      "date_updated": "2026-07-08T03:22",
       "first_seen": "2026-07-06",
-      "md5": "8375654b63ee9e4c2353402cab0204f2",
-      "size": 5051489,
-      "lifetime_downloads": 39,
-      "last_commit": "[MCI] Adjust patchscript verbosity"
+      "md5": "4108b1d9b935f599012587aaa80170c7",
+      "size": 5074899,
+      "lifetime_downloads": 43,
+      "last_commit": "[MCI] Add LAN play"
     }
   },
   {
