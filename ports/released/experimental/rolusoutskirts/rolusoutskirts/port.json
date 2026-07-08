@@ -34,7 +34,7 @@
     ],
     "availability": "free",
     "reqs": [
-      "2GB"
+      "2gb"
     ],
     "arch": [
       "aarch64"

@@ -5,8 +5,8 @@ This port of Pokewilds is made possible with the use of Westonpack by BinaryCoun
 After installing the port, download the Windows game from https://github.com/SheerSt/pokewilds/releases and extract the `mods` and `app` folders, as well as `settings.txt`, into `ports/pokewilds/bin`.
 
 You also need to install the following runtimes using the PortMaster app:
-- Westonpack 0.2 (weston_pkg_0.2.aarch64.squashfs) -- If you're not using a mainline firmware
-- Java 17.0.13 (zulu17.54.21-ca-jre17.0.13-linux.aarch64.squashfs)
+- Westonpack 0.2 (weston_pkg_0.2.squashfs) -- If you're not using a mainline firmware
+- Java 17.0.13 (zulu17.54.21-ca-jre17.0.13-linux.squashfs)
 
 ## Default Gameplay Controls
 | Button            | Action                                |
@@ -35,7 +35,7 @@ Documentation: https://github.com/SheerSt/pokewilds/issues/476.
 
 This port requires the following runtimes in `PortMaster/libs`:
 
-- **Java 17** — [zulu17.54.21-ca-jre17.0.13-linux.aarch64.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/zulu17.54.21-ca-jre17.0.13-linux.aarch64.squashfs)
+- **Java 17** — [zulu17.54.21-ca-jre17.0.13-linux.squashfs](https://github.com/PortsMaster/PortMaster-New/releases/download/2025-01-20_2237/zulu17.54.21-ca-jre17.0.13-linux.squashfs)
 
 [Pharos](https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip) will fetch these automatically when installing the port. Otherwise download them manually from the [runtimes folder](https://github.com/JeodC/RHH-Ports/tree/main/runtimes) and drop them in `PortMaster/libs`.
 
