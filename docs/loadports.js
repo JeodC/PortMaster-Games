@@ -21,11 +21,12 @@ async function loadPorts() {
         'gmloadernext.squashfs': 'GMLoader-Next',
         'gmtoolkit.squashfs': 'GMToolkit',
         'mkxp-z.squashfs': 'MKXP-Z',
+        'mono-6.12.0.122-aarch64.squashfs': 'Mono 6.12',
         'python_3.11.squashfs': 'Python 3.11',
-        'rlvm.squashfs': 'RLVM',
+        'rlvm-sdl2.squashfs': 'RLVM',
         'solarus-1.6.5.squashfs': 'Solarus',
         'weston_pkg_0.2.squashfs': 'Westonpack',
-        'zulu17.54.21-ca-jre17.0.13-linux.aarch64.squashfs': 'Java 17'
+        'zulu17.54.21-ca-jre17.0.13-linux.squashfs': 'Java 17'
     };
 
     const mappings = [

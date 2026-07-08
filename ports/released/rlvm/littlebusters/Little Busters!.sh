@@ -26,7 +26,7 @@ cd $GAMEDIR
 
 # Setup RLVM
 RLVM="$HOME/rlvm"
-RLVM_RUNTIME="$controlfolder/libs/rlvm.squashfs"
+RLVM_RUNTIME="$controlfolder/libs/rlvm-sdl2.squashfs"
 FONT="--font $RLVM/fonts/sazanami-gothic.ttf"
 FONT2="--font $RLVM/fonts/DejaVuSans.ttf"
 if [ -f "$RLVM_RUNTIME" ]; then

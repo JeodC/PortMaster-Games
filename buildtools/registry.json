@@ -108,7 +108,7 @@
       "upstream_repo": "JeodC/SuperEngine",
       "upstream_branch": "feat/sdl2",
       "commit_prefix": "RLVM",
-      "artifact": "rlvm.squashfs"
+      "artifact": "rlvm-sdl2.squashfs"
     }
   }
 }

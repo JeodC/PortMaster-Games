@@ -22,7 +22,7 @@
     "rtr": false,
     "exp": false,
     "runtime": [
-      "rlvm.squashfs"
+      "rlvm-sdl2.squashfs"
     ],
     "store": [
       {

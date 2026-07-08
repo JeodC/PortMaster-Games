@@ -24,7 +24,7 @@ This port is marked experimental because we can't save and load games due to the
 
 This port requires the following runtimes in `PortMaster/libs`:
 
-- **RLVM** — [rlvm.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/rlvm.squashfs)
+- **RLVM** — [rlvm-sdl2.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/rlvm-sdl2.squashfs)
 
 [Pharos](https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip) will fetch these automatically when installing the port. Otherwise download them manually from the [runtimes folder](https://github.com/JeodC/RHH-Ports/tree/main/runtimes) and drop them in `PortMaster/libs`.
 

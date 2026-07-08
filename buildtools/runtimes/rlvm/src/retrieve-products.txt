@@ -7,8 +7,8 @@ DESTDIR=$2
 cd "$DESTDIR" || { echo "DESTDIR not found: $DESTDIR"; exit 1; }
 
 # build.txt produces a single artifact — the squashfs — at the staging dir
-# root. The workflow propagates it from $DESTDIR/rlvm.squashfs to the
+# root. The workflow propagates it from $DESTDIR/rlvm-sdl2.squashfs to the
 # registered target_dir (runtimes/).
-cp "$SRCDIR/rlvm.squashfs" "$DESTDIR/rlvm.squashfs"
+cp "$SRCDIR/rlvm-sdl2.squashfs" "$DESTDIR/rlvm-sdl2.squashfs"
 
 echo "Packaging complete."

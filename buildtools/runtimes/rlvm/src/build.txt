@@ -4,13 +4,13 @@ set -e
 #
 # Source: JeodC/SuperEngine fork (which tracks upstream Mickey-snow/SuperEngine
 #   plus the SDL2 + GLEW removal + Boost.Locale → iconv + dep trim work).
-# Output: rlvm.squashfs containing:
+# Output: rlvm-sdl2.squashfs containing:
 #   - rlvm binary (statically linked where possible, transitive lib closure
 #     in libs/). Built with -DRLVM_USE_GLES2=ON, so DT_NEEDED is
 #     libGLESv2.so.2 — the binary uses native EGL + GLES on the device and
 #     never touches libGL.so / desktop-GL dispatch.
 #   - fonts/ (sazanami-gothic + DejaVuSans, copied from the existing committed
-#     runtimes/rlvm.squashfs — they don't change build-to-build and shouldn't
+#     runtimes/rlvm-sdl2.squashfs — they don't change build-to-build and shouldn't
 #     be re-shipped as separate binary blobs in the source tree)
 #
 # Historically this also bundled gl4es/ (a libGL→GLES shim) and the launcher
@@ -145,15 +145,15 @@ for f in squashfs-stage/libs/*.so*; do
 done
 
 # ---------------------------------------------------------------------------
-# Pull fonts/ from the existing committed runtimes/rlvm.squashfs. They're
+# Pull fonts/ from the existing committed runtimes/rlvm-sdl2.squashfs. They're
 # stable across rebuilds (we put them there ourselves) and aren't worth
 # re-shipping as standalone binary blobs in the source tree.
 # ---------------------------------------------------------------------------
-EXISTING_SQUASHFS="/root/runtimes/rlvm.squashfs"
+EXISTING_SQUASHFS="/root/runtimes/rlvm-sdl2.squashfs"
 if [[ ! -f "$EXISTING_SQUASHFS" ]]; then
     echo "ERROR: $EXISTING_SQUASHFS not found — needed for fonts/"
     echo "First-time bootstrap: copy fonts/ into squashfs-stage/ manually and"
-    echo "rerun, or seed runtimes/rlvm.squashfs with the kloptops build before"
+    echo "rerun, or seed runtimes/rlvm-sdl2.squashfs with the kloptops build before"
     echo "invoking the workflow."
     exit 1
 fi
@@ -186,13 +186,13 @@ done
 # ---------------------------------------------------------------------------
 # Package squashfs (gzip + 128 KB blocks + all-root, matches existing runtimes)
 # ---------------------------------------------------------------------------
-rm -f rlvm.squashfs
-mksquashfs squashfs-stage rlvm.squashfs \
+rm -f rlvm-sdl2.squashfs
+mksquashfs squashfs-stage rlvm-sdl2.squashfs \
     -comp gzip -b 131072 -all-root -no-progress -noappend
 
 echo
 echo "Built artifact:"
-ls -la rlvm.squashfs
+ls -la rlvm-sdl2.squashfs
 echo
 echo "DT_NEEDED for the rlvm binary inside the squashfs:"
 readelf -d squashfs-stage/rlvm | grep NEEDED
