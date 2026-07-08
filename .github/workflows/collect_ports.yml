@@ -48,7 +48,7 @@ jobs:
           mkdir -p temp_ports
           [ -f docs/ports.json ] || echo "[]" > docs/ports.json
 
-      # ────────────────────── DETERMINE PORTS ──────────────────────
+      # ---------------------- DETERMINE PORTS ----------------------
       - name: Determine ports to process
         id: ports
         run: |
@@ -149,7 +149,7 @@ jobs:
       # lifetime_downloads is only updated when a port is re-uploaded (Process ports step).
       # The frontend adds the live GitHub download_count on top for the current period.
 
-      # ────────────────────── PROCESS PORTS ──────────────────────
+      # ---------------------- PROCESS PORTS ----------------------
       - name: Process ports
         if: steps.ports.outputs.ports != ''
         run: |
@@ -266,7 +266,7 @@ jobs:
             mv "$PORTS_JSON.tmp" "$PORTS_JSON"
           done
 
-      # ────────────────────── SYNC DISK, JSON, AND RELEASE ──────────────────────
+      # ---------------------- SYNC DISK, JSON, AND RELEASE ----------------------
       - name: Purge deleted or invalid ports
         run: |
           set -euo pipefail
@@ -328,13 +328,17 @@ jobs:
 
             [[ "$ASSET_NAME" == *.zip ]] || continue
 
+            # images.zip belongs to the PortMaster catalog, not a port --
+            # leave it alone.
+            [[ "$ASSET_NAME" == "images.zip" ]] && continue
+
             if ! printf '%s\n' "${VALID_NAMES[@]}" | grep -iqx "$ASSET_NAME"; then
               echo "Deleting orphaned asset: $ASSET_NAME"
               gh api -X DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/$ASSET_ID" || echo "Failed to delete $ASSET_NAME"
             fi
           done
 
-      # ────────────────────── RELEASE ──────────────────────
+      # ---------------------- RELEASE ----------------------
       - name: Ensure release exists
         run: |
           gh release view ports-latest >/dev/null 2>&1 || \
@@ -352,6 +356,36 @@ jobs:
           for f in "${zips[@]}"; do
             gh release upload ports-latest "$f" --clobber
           done
+
+      # ---------------------- PORTMASTER CATALOG ----------------------
+      # PortMasterV3 ports.json + images.zip (buildtools/generate_pm_catalog.py).
+      # Unchanged assets keep their ids -- Pharos caches images by asset id+size.
+      - name: Publish PortMaster catalog
+        run: |
+          set -euo pipefail
+          python3 buildtools/generate_pm_catalog.py --output temp_pm
+
+          # The images.zip md5 is baked into ports.json, so if the catalog
+          # didn't change, the images didn't either.
+          if curl -sfL -o current_catalog.json \
+              "https://github.com/${GITHUB_REPOSITORY}/releases/download/ports-latest/ports.json"; then
+            if cmp -s current_catalog.json temp_pm/ports.json; then
+              echo "PortMaster catalog unchanged; skipping upload."
+              exit 0
+            fi
+            OLD_MD5=$(jq -r '.utils["images.zip"].md5 // empty' current_catalog.json || true)
+            NEW_MD5=$(md5sum temp_pm/images.zip | awk '{print $1}')
+            if [[ -n "$OLD_MD5" && "$OLD_MD5" == "$NEW_MD5" ]]; then
+              echo "images.zip unchanged; uploading catalog only."
+              gh release upload ports-latest temp_pm/ports.json docs/030_rhh.source.json --clobber
+              exit 0
+            fi
+          fi
+          gh release upload ports-latest \
+            temp_pm/ports.json \
+            temp_pm/images.zip \
+            docs/030_rhh.source.json \
+            --clobber
 
       - name: Commit ports.json
         run: |

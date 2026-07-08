@@ -25,6 +25,14 @@ If you use Pharos, autoinstall is performed for you.
 
 You should use the **BETA** branch of the PortMaster application to ensure you have all the included tools (e.g. 7zzs).
 
+### Adding this repository to the PortMaster app
+PortMaster's own app can browse and install these ports directly. Download [030_rhh.source.json](https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/030_rhh.source.json) and place it in the `config` folder inside your PortMaster installation (next to `020_portmaster.source.json`), commonly:
+
+- `/roms/ports/PortMaster/config/` (ArkOS and similar)
+- `.local/share/PortMaster/config/` (ROCKNIX, muOS, Knulli, and similar)
+
+On the next launch PortMaster will fetch this repository's catalog alongside its own. Note that a handful of ports here share names with entries in the official PortMaster or Multiverse catalogs; for those, PortMaster shows the official entry instead of mine.
+
 ## Port Capability Requirements
 Some of the ports in this repository have minimum requirements. Be sure to check the `port.json` file for a port to see if it lists any of the following requirements:
 

@@ -60,6 +60,30 @@ class Downloader:
         self.progress_q = progress_q
         self.autoinstall_dir = AUTOINSTALL_DIR
         self.installer = AutoInstaller(self.autoinstall_dir)
+        self._runtime_url_cache: dict = {}
+
+    # ------------------------------------------------------------------
+    # Runtime URL resolution
+    # ------------------------------------------------------------------
+    def _runtime_urls(self, repo_slug: str) -> dict:
+        """Runtime name -> URL from the repo's PortMaster catalog: 'utils' for
+        repo-hosted runtimes, 'official_runtimes' for PortMaster's own."""
+        if repo_slug in self._runtime_url_cache:
+            return self._runtime_url_cache[repo_slug]
+        urls = {}
+        try:
+            data, _ = _gh_request(
+                f"https://github.com/{repo_slug}/releases/download/ports-latest/ports.json"
+            )
+            catalog = json.loads(data)
+            for section in ("utils", "official_runtimes"):
+                for name, info in catalog.get(section, {}).items():
+                    if name.endswith(".squashfs") and info.get("url"):
+                        urls[name] = info["url"]
+        except Exception as e:
+            print(f"[RUNTIME] Catalog lookup failed for {repo_slug}: {e}")
+        self._runtime_url_cache[repo_slug] = urls
+        return urls
 
     # ------------------------------------------------------------------
     # Main loop - autoinstall runs as soon as the queue is empty
@@ -180,6 +204,7 @@ class Downloader:
 
         LIBS_DIR.mkdir(parents=True, exist_ok=True)
         manifest_runtimes = self._load_runtime_manifest()
+        url_map = self._runtime_urls(port.repo) if port.repo else {}
 
         for rt_name in port.runtime:
             rt_path = LIBS_DIR / rt_name
@@ -194,8 +219,8 @@ class Downloader:
                 self._save_runtime_manifest(manifest_runtimes)
                 continue
 
-            url = f"{port.runtime_base_url}/{rt_name}"
-            print(f"[RUNTIME] Downloading {rt_name}")
+            url = url_map.get(rt_name) or f"{port.runtime_base_url}/{rt_name}"
+            print(f"[RUNTIME] Downloading {rt_name} from {url}")
             self.progress_q.put((0, 1, f"Runtime: {rt_name}", "download"))
             tmp_path = rt_path.with_suffix(".tmp")
 

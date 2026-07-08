@@ -197,7 +197,7 @@ class Pharos:
                     name=name,
                     url=f"https://github.com/{path}",
                     images_dir=os.path.join(DATA_DIR, "resources", f"{owner}-{name}-images"),
-                    images_zip_url=f"https://github.com/{path}/releases/download/screenshots-latest/images.zip",
+                    images_zip_url=f"https://github.com/{path}/releases/download/ports-latest/images.zip",
                 )
                 self.repositories.append(repo)
                 threading.Thread(
@@ -384,13 +384,18 @@ class Pharos:
         if not items or not repo.images_dir or not os.path.isdir(repo.images_dir):
             return
         for item in items:
-            for ext in ("png", "jpg", "jpeg"):
-                path = os.path.join(repo.images_dir, f"{item.name}.screenshot.{ext}")
-                if os.path.exists(path):
-                    item.image_path = path
+            # images.zip names are PortMaster-cleaned ("tunics!" becomes
+            # "tunics"), so try the cleaned form too.
+            cleaned = re.sub(r"[ \.]+", ".", re.sub(r"[^a-zA-Z0-9 _\-\.]+", "", item.name.strip().lower()))
+            item.image_path = None
+            for name in dict.fromkeys((item.name, cleaned)):
+                for ext in ("png", "jpg", "jpeg"):
+                    path = os.path.join(repo.images_dir, f"{name}.screenshot.{ext}")
+                    if os.path.exists(path):
+                        item.image_path = path
+                        break
+                if item.image_path:
                     break
-            else:
-                item.image_path = None
 
     # ------------------------------------------------------------------
     # Render Views
