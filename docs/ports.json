@@ -702,12 +702,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/deltarune/deltarune/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/deltarune/deltarune/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/deltarune.zip",
-      "date_updated": "2026-07-03T16:32",
+      "date_updated": "2026-07-09T14:29",
       "first_seen": "2025-05-18",
-      "md5": "08327683922601426918d74d5dff3a14",
-      "size": 4312430,
-      "lifetime_downloads": 199,
-      "last_commit": "[DELTARUNE] Fix Ch3 crash"
+      "md5": "6b2813da4f44b4f29408c1ad53a109d4",
+      "size": 4316105,
+      "lifetime_downloads": 218,
+      "last_commit": "[DELTARUNE] Attempt some additional performance tweaks"
     }
   },
   {
