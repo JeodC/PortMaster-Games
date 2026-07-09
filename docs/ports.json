@@ -5075,6 +5075,51 @@
   },
   {
     "version": 4,
+    "name": "zelda-ladxhd.zip",
+    "items": [
+      "Zelda LADXHD.sh",
+      "zelda-ladxhd"
+    ],
+    "items_opt": [],
+    "attr": {
+      "title": "The Legend of Zelda: Link's Awakening DX HD",
+      "porter": [
+        "Jeod"
+      ],
+      "desc": "Play Link's Awakening with modern QoL features!",
+      "desc_md": null,
+      "inst": "Place the original v1.0.0 zip file in the data folder. The port will extract and patch it automatically on first launch.",
+      "inst_md": null,
+      "genres": [
+        "action",
+        "adventure"
+      ],
+      "image": null,
+      "rtr": false,
+      "exp": false,
+      "runtime": [],
+      "store": [],
+      "availability": "free",
+      "reqs": [],
+      "arch": [
+        "aarch64"
+      ],
+      "min_glibc": ""
+    },
+    "source": {
+      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-ladxhd/zelda-ladxhd/screenshot.png",
+      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-ladxhd/zelda-ladxhd/README.md",
+      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-ladxhd.zip",
+      "date_updated": "2026-07-09T22:38",
+      "first_seen": "2026-07-09",
+      "md5": "74e5363bebaa4123806eb53bb4d4f621",
+      "size": 1762692,
+      "lifetime_downloads": 0,
+      "last_commit": "[LADXHD] Re-release port with new upstream url"
+    }
+  },
+  {
+    "version": 4,
     "name": "triga.zip",
     "items": [
       "Triga.sh",
