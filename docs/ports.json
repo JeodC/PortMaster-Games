@@ -2772,9 +2772,7 @@
       "image": null,
       "rtr": true,
       "exp": false,
-      "runtime": [
-        "python_3.11.squashfs"
-      ],
+      "runtime": [],
       "store": [],
       "availability": "full",
       "reqs": [],
@@ -2787,12 +2785,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip",
-      "date_updated": "2026-07-08T23:44",
+      "date_updated": "2026-07-09T13:40",
       "first_seen": "2026-01-29",
-      "md5": "02ca41958d251132b164ae51a2e9a452",
-      "size": 21749663,
-      "lifetime_downloads": 1262,
-      "last_commit": "[Pharos] Update to v1.1.6"
+      "md5": "148576c53be0e1934073651137ccfa8b",
+      "size": 21749457,
+      "lifetime_downloads": 1279,
+      "last_commit": "[PHAROS] Cleanup runtime requirements: Pharos is pyinstalled, so no python runtime needed"
     }
   },
   {
