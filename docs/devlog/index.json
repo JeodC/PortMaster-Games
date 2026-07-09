@@ -1,6 +1,12 @@
 {
   "posts": [
     {
+      "slug": "2026-07-09-ports-takedown",
+      "title": "On removing my old ports from PortMaster",
+      "date": "2026-07-09",
+      "excerpt": "I requested several of my old ports be removed from PortMaster the other day. It's nothing terrible, but here's why."
+    },
+    {
       "slug": "2026-07-06-cosmicinvasion",
       "title": "MARVEL Cosmic Invasion: a beat-em-up for butt-kickers",
       "date": "2026-07-06",
