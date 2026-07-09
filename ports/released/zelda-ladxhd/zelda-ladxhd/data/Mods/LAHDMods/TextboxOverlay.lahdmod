@@ -1,0 +1,6 @@
+// Modifies the scaling size of texboxes.
+
+// The scaling value used for textboxes. Use a value of "0" to use game default. This value should probably not
+// exceed 6-10 on screens even up to 3840x2160 resolution. Decimal values (like 2.50) are allowed but not recommended.
+// Default: 0
+textbox_scale = 0

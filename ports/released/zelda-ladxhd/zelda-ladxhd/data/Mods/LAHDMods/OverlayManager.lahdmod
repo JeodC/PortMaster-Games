@@ -1,0 +1,6 @@
+// This file can force the scaling value of the inventory/map screen.
+// Make sure to test the value inside a dungeon where an additional map is tacked onto the inventory screen.
+
+// Inventory scaling factor. Use a value of "0" to use the game value. Decimal values (like 2.50) are allowed but not recommended.
+// Default: 0.00
+inventory_scale_override = 0.00

@@ -1,0 +1,35 @@
+// Can enable/disable HUD elements, force a specific scaling size, and manually adjust positions of the HUD overlay.
+// It may take a lot of manual tweaking and reloading the game to get everything exactly as you want it.
+
+// Item Equipment HUD: Show/Hide with true/false or set scale and offsets. Negative values are valid. Use "0" for game default.
+// Defaults: true / 0 / 0 / 0
+custom_items_show = true
+custom_items_scale = 0
+custom_items_offsetx = 0
+custom_items_offsety = 0
+
+// Current Hearts HUD: Show/Hide with true/false or set scale and offsets. Negative values are valid. Use "0" for game default.
+// Defaults: true / 0 / 0 / 0
+custom_heart_show = true
+custom_heart_scale = 0
+custom_heart_offsetx = 0
+custom_heart_offsety = 0
+
+// Current Rupees HUD: Show/Hide with true/false or set scale and offsets. Negative values are valid. Use "0" for game default.
+// Defaults: true / 0 / 0 / 0
+custom_rupee_show = true
+custom_rupee_scale = 0
+custom_rupee_offsetx = 0
+custom_rupee_offsety = 0
+
+// Current Keys HUD: Show/Hide with true/false or set scale and offsets. Negative values are valid. Use "0" for game default.
+// Defaults: true / 0 / 0 / 0
+custom_keys_show = true
+custom_keys_scale = 0
+custom_keys_offsetx = 0
+custom_keys_offsety = 0
+
+// Save Game Icon: Show/Hide with true/false or set scale and offsets. Use "0" for game default.
+// Defaults: true / 0
+custom_sicon_show = true
+custom_sicon_scale = 0

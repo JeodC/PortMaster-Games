@@ -1,0 +1,525 @@
+#!/bin/bash
+# Set GAMEDIR to the current directory and set logfile
+GAMEDIR="$PWD"
+LOGFILE="$GAMEDIR/../patchlog.txt"
+LOGERR="$GAMEDIR/../patcherr.txt"
+
+rm -f "$LOGERR"
+exec 3>&1
+> "$LOGFILE" && exec > >(tee "$LOGFILE") 2>&1
+echo "GAMEDIR is set to: $GAMEDIR"
+
+emit_fail_msg() {
+    echo "PATCH_FAIL_MSG:$1" >&3
+    echo "$1"
+    FAIL_MSG_SET=1
+}
+
+
+# Variables
+DATADIR="$GAMEDIR"
+TMPDIR="$GAMEDIR/tmp"
+PATCHES="$TMPDIR/patches"
+PATCHED="$TMPDIR/patchedFiles"
+UPSTREAM_BASE="https://gitlab.com/bighead.0/ladxhd_updated/-/raw"
+PATCHES_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources/patches_linux_arm64.zip"
+FUNCTIONS_CS_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Program/Functions.cs"
+ACHIEVEMENTS_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources/achievements.zip"
+PATCHES_ZIP="$TMPDIR/patches_linux_arm64.zip"
+ACHIEVEMENTS_ZIP="$TMPDIR/achievements.zip"
+ACHIEVEMENTS_DIR="$DATADIR/Data/Achievements"
+TARGETS_FILE="$TMPDIR/file_targets.txt"
+DERIVED_SET="$TMPDIR/derived_targets.txt"
+PARSE_TARGETS_AWK="$GAMEDIR/../tools/parse_targets.awk"
+PATCH_VERSION_FILE="$GAMEDIR/.patch_version"
+UPDATE_CHECK_FILE="$GAMEDIR/.update_check"
+BACKUP_ZIP="$GAMEDIR/.backup/source.zip"
+GOOD_HASH="f4adfba864b852908705ea6a18a48f18"
+CONSUMED_FILE="$TMPDIR/consumed_patches.txt"
+VCDIFF_MAX=2147483647
+TOTAL_PATCHED=0
+FAILED_PATCHES=0
+
+mark_consumed() {
+    echo "$1" >> "$CONSUMED_FILE"
+}
+
+is_consumed() {
+    [ -f "$CONSUMED_FILE" ] || return 1
+    grep -qFx -- "$1" "$CONSUMED_FILE"
+}
+
+is_linux_elf() {
+    [ -f "$1" ] || return 1
+    local magic
+    magic=$(head -c4 "$1" 2>/dev/null | od -An -t x1 | tr -d ' \n')
+    [ "$magic" = "7f454c46" ]
+}
+
+# Get derived files for a given source filename. Reads from $TARGETS_FILE
+# (parsed live from upstream Functions.cs by download_file_targets) so new
+# upstream derivatives are picked up automatically.
+get_derived_files() {
+    [ -f "$TARGETS_FILE" ] || return
+    awk -F'\t' -v s="$1" '$1==s {print $2; exit}' "$TARGETS_FILE"
+}
+
+# Build the set of every derived target filename from the live mapping.
+build_derived_set() {
+    [ -f "$TARGETS_FILE" ] || return
+    awk -F'\t' '{ n=split($2, a, " "); for (i=1;i<=n;i++) print a[i] }' \
+        "$TARGETS_FILE" | sort -u > "$DERIVED_SET"
+}
+
+is_derived_target() {
+    [ -f "$DERIVED_SET" ] || return 1
+    grep -qFx -- "$1" "$DERIVED_SET"
+}
+
+prepare_system() {
+    # Locate 7zip
+    SEVENZIP="$controlfolder/7zzs.${DEVICE_ARCH}"
+    if [ ! -x "$SEVENZIP" ]; then
+        SEVENZIP="$(command -v 7zzs 2>/dev/null || command -v 7z 2>/dev/null)"
+    fi
+    if [ -z "$SEVENZIP" ]; then
+        emit_fail_msg "Patching failed: 7zip is missing on this device."
+        echo "Missing 7zip!"
+        return 1
+    fi
+
+    # Ensure we have vcdiff
+    VCDIFF="$GAMEDIR/../tools/vcdiff"
+    if [ ! -x "$VCDIFF" ]; then
+        VCDIFF="$(command -v vcdiff 2>/dev/null)"
+    fi
+    if [ -z "$VCDIFF" ] || [ ! -x "$VCDIFF" ]; then
+        emit_fail_msg "Patching failed: vcdiff tool missing. Try reinstalling the port."
+        echo "Missing vcdiff!"
+        return 1
+    fi
+    chmod +x "$VCDIFF" 2>/dev/null || true
+
+    # Locate a download tool.
+    if command -v curl >/dev/null 2>&1; then
+        FETCH="curl -fsSL -o"
+    elif command -v wget >/dev/null 2>&1; then
+        FETCH="wget -q -O"
+    else
+        emit_fail_msg "Patching failed: no download tool (curl or wget) found."
+        echo "Missing curl or wget!"
+        return 1
+    fi
+}
+
+extract_game() {
+    # Find the game zip if not already set.
+    if [ -z "$ZIPFILE" ]; then
+        for f in "$DATADIR/"*.zip; do
+            [ -f "$f" ] || continue
+            case "$(basename "$f")" in
+                patches_linux_arm64.zip|achievements.zip) continue ;;
+            esac
+            ZIPFILE="$f"
+            break
+        done
+    fi
+
+    # Fall back to a previously-preserved backup zip (used for re-patching after an update).
+    FROM_BACKUP=0
+    if [ -z "$ZIPFILE" ] || [ ! -f "$ZIPFILE" ]; then
+        if [ -f "$BACKUP_ZIP" ]; then
+            mv "$BACKUP_ZIP" "$DATADIR/source.zip"
+            ZIPFILE="$DATADIR/source.zip"
+            FROM_BACKUP=1
+        fi
+    fi
+
+    if [ -z "$ZIPFILE" ] || [ ! -f "$ZIPFILE" ]; then
+        emit_fail_msg "No game zip found. Place the v1.0.0 source zip in the port's data folder."
+        echo "ERROR: No zip file found in $DATADIR"
+        return 1
+    fi
+
+    # The zip has everything under a top-level folder.
+    if [ "$FROM_BACKUP" = 1 ]; then
+        "$SEVENZIP" x -aoa -bso0 -bsp0 -o"$TMPDIR/game_extract" "$ZIPFILE"
+    else
+        echo "Extracting game from zip..."
+        "$SEVENZIP" x -aoa -o"$TMPDIR/game_extract" "$ZIPFILE"
+    fi
+    if [ $? -ne 0 ]; then
+        emit_fail_msg "Could not extract the game zip - the file may be corrupted."
+        echo "Failed to extract zip."
+        return 1
+    fi
+
+    # Find the extracted folder (name may vary)
+    EXTRACT_DIR=""
+    for d in "$TMPDIR/game_extract/"*/; do
+        [ -d "$d" ] || continue
+        EXTRACT_DIR="$d"
+        break
+    done
+
+    if [ -z "$EXTRACT_DIR" ]; then
+        EXTRACT_DIR="$TMPDIR/game_extract/"
+    fi
+
+    # Move contents into data dir
+    cp -r "$EXTRACT_DIR"* "$DATADIR/"
+    rm -rf "$TMPDIR/game_extract"
+
+    # Validate the exe
+    EXECUTABLE=""
+    if [ -f "$DATADIR/Link's Awakening DX HD.exe" ]; then
+        EXECUTABLE="$DATADIR/Link's Awakening DX HD.exe"
+    elif [ -f "$DATADIR/Link's Awakening DX HD" ]; then
+        EXECUTABLE="$DATADIR/Link's Awakening DX HD"
+    fi
+
+    if [ -z "$EXECUTABLE" ]; then
+        emit_fail_msg "Game executable missing after extraction. Wrong zip file?"
+        echo "ERROR: Executable not found after extraction."
+        return 1
+    fi
+
+    hash=$(md5sum "$EXECUTABLE" | awk '{print $1}')
+    if [ "$hash" != "$GOOD_HASH" ]; then
+        emit_fail_msg "Wrong game version. The original v1.0.0 source zip is required - see the port's readme."
+        echo "ERROR: Executable hash mismatch. Expected v1.0.0 original."
+        echo "  Expected: $GOOD_HASH"
+        echo "  Got:      $hash"
+        return 1
+    fi
+
+    echo "Game extracted and validated."
+
+    # Preserve the v1.0.0 zip so we can re-patch when upstream releases an update.
+    mkdir -p "$(dirname "$BACKUP_ZIP")"
+    mv -f "$ZIPFILE" "$BACKUP_ZIP"
+    rm -f "$DATADIR/source.7z"
+    rm -f "$DATADIR/.gitkeep"
+}
+
+download_patches() {
+    mkdir -p "$PATCHES" "$PATCHED"
+
+    # Offline / manual install: if the user dropped the upstream zip into
+    # data/ themselves, use it instead of downloading. The original is left
+    # in place so future re-patches still find it.
+    local manual_zip="$DATADIR/patches_linux_arm64.zip"
+    if [ -f "$manual_zip" ]; then
+        echo "Using manually-placed patches_linux_arm64.zip from data/."
+        cp -f "$manual_zip" "$PATCHES_ZIP"
+    else
+        echo "Downloading patches..."
+        $FETCH "$PATCHES_ZIP" "$PATCHES_URL"
+        if [ $? -ne 0 ]; then
+            emit_fail_msg "Patch download failed. Check internet, or drop patches_linux_arm64.zip into data/ for offline install."
+            echo "Failed to download patches."
+            return 1
+        fi
+    fi
+
+    echo "Extracting patches..."
+    "$SEVENZIP" x -aoa -o"$PATCHES" "$PATCHES_ZIP"
+    rm -f "$PATCHES_ZIP"
+}
+
+extract_achievements() {
+    mkdir -p "$ACHIEVEMENTS_DIR"
+
+    local manual_zip="$DATADIR/achievements.zip"
+    if [ -f "$manual_zip" ]; then
+        echo "Using manually-placed achievements.zip from data/."
+        cp -f "$manual_zip" "$ACHIEVEMENTS_ZIP"
+    else
+        echo "Downloading achievement icons..."
+        if ! $FETCH "$ACHIEVEMENTS_ZIP" "$ACHIEVEMENTS_URL"; then
+            echo "  WARN: could not download achievements.zip - achievement icons will be missing."
+            return 0
+        fi
+    fi
+
+    if "$SEVENZIP" x -aoa -bso0 -bsp0 -o"$ACHIEVEMENTS_DIR" "$ACHIEVEMENTS_ZIP"; then
+        local n
+        n=$(find "$ACHIEVEMENTS_DIR" -type f -name '*.png' | wc -l)
+        echo "Extracted $n achievement icon(s)."
+    else
+        echo "  WARN: could not extract achievements.zip - achievement icons will be missing."
+    fi
+    rm -f "$ACHIEVEMENTS_ZIP"
+}
+
+download_file_targets() {
+    local cs_file="$TMPDIR/Functions.cs"
+    local manual_cs="$DATADIR/Functions.cs"
+
+    echo "Fetching upstream file targets mapping..."
+    if [ -f "$manual_cs" ]; then
+        echo "Using manually-placed Functions.cs from data/."
+        cp -f "$manual_cs" "$cs_file"
+    elif ! $FETCH "$cs_file" "$FUNCTIONS_CS_URL"; then
+        emit_fail_msg "Could not get the derived-file mapping (Functions.cs). Check your internet connection, or for an offline install place Functions.cs in the data folder next to patches_linux_arm64.zip."
+        echo "ERROR: could not download Functions.cs and none was placed in data/."
+        return 1
+    fi
+
+    if ! awk -f "$PARSE_TARGETS_AWK" "$cs_file" > "$TARGETS_FILE" 2>&1; then
+        emit_fail_msg "The derived-file mapping (Functions.cs) could not be parsed. The file may be corrupt or from an unexpected upstream version."
+        echo "ERROR: failed to parse Functions.cs."
+        rm -f "$TARGETS_FILE"
+        return 1
+    fi
+
+    local count
+    count=$(wc -l < "$TARGETS_FILE" 2>/dev/null)
+    if [ "${count:-0}" -lt 5 ]; then
+        emit_fail_msg "The derived-file mapping (Functions.cs) looks incomplete. Refusing to patch with a partial mapping - try reinstalling, or replace Functions.cs in the data folder."
+        echo "ERROR: parsed mapping has only ${count:-0} entries (expected many); refusing to continue."
+        rm -f "$TARGETS_FILE"
+        return 1
+    fi
+
+    echo "Parsed $count derived-file mappings from upstream."
+}
+
+prepare_linux_files() {
+    # Rename exe to extensionless for Linux
+    local exe_noext="$DATADIR/Link's Awakening DX HD"
+    if [ "$EXECUTABLE" != "$exe_noext" ] && [ -f "$EXECUTABLE" ]; then
+        mv "$EXECUTABLE" "$exe_noext"
+        EXECUTABLE="$exe_noext"
+    fi
+
+    # Remove Windows/Mac-specific files
+    for file in "Link's Awakening DX HD.exe" \
+        "System.IO.Compression.Native.a" "System.Native.a" \
+        "System.Net.Http.Native.a" "System.Net.Security.Native.a" \
+        "System.Security.Cryptography.Native.OpenSsl.a" \
+        "libopenal.dylib" "libSDL2-2.0.0.dylib"; do
+        rm -f "$DATADIR/$file"
+    done
+}
+
+report_unmapped_patches() {
+    local count=0
+    for patch in "$PATCHES"/*.vcdiff; do
+        [ -f "$patch" ] || continue
+        local pname out_name
+        pname=$(basename "$patch")
+        is_consumed "$pname" && continue
+
+        out_name="${pname%.vcdiff}"
+        # 1:1 patches (output filename exists as a v1.0.0 source) are handled
+        # by the main loop - they're not "unmapped."
+        if [ -n "$(find "$DATADIR" -type f -name "$out_name" ! -path "*/tmp/*" ! -path "*/Mods/*" -print -quit 2>/dev/null)" ]; then
+            continue
+        fi
+
+        if [ "$count" -eq 0 ]; then
+            echo "WARN: patches with no static mapping found - upstream may have added new derivatives:"
+        fi
+        echo "  - $pname"
+        count=$((count + 1))
+    done
+
+    if [ "$count" -eq 0 ]; then
+        echo "All patches accounted for by static mapping."
+    else
+        echo "($count unmapped patch(es) skipped - auto-match disabled without checksums.)"
+    fi
+}
+
+handle_multi_file_patches() {
+    local source_file="$1"
+    local source_name
+    source_name=$(basename "$source_file")
+    local source_dir
+    source_dir=$(dirname "$source_file")
+
+    local derived
+    derived=$(get_derived_files "$source_name")
+    [ -n "$derived" ] || return
+
+    for d in $derived; do
+        local vcdiff_file="$PATCHES/$d.vcdiff"
+        [ -f "$vcdiff_file" ] || continue
+        is_consumed "$d.vcdiff" && continue
+
+        local patched_file="$PATCHED/$d"
+        local target_file="$source_dir/$d"
+
+        if ! "$VCDIFF" decode -max_target_file_size="$VCDIFF_MAX" -max_target_window_size="$VCDIFF_MAX" -dictionary "$source_file" -delta "$vcdiff_file" -target "$patched_file" 2>&1; then
+            echo "  ERROR: vcdiff decode failed for $d (source: $source_name)"
+            FAILED_PATCHES=$((FAILED_PATCHES + 1))
+            continue
+        fi
+        mv -f "$patched_file" "$target_file"
+        mark_consumed "$d.vcdiff"
+        TOTAL_PATCHED=$((TOTAL_PATCHED + 1))
+        echo "  Derived: $d (from $source_name)"
+    done
+}
+
+patch_game_files() {
+    : > "$CONSUMED_FILE"
+    prepare_linux_files
+    build_derived_set
+
+    # Pass 1: derived files via the live upstream mapping. Sources still v1.0.0.
+    local files_list="$TMPDIR/datadir_files.txt"
+    find "$DATADIR" -type f > "$files_list"
+
+    echo "Applying derived patches (static mapping)..."
+    while IFS= read -r file; do
+        case "$file" in
+            */~temp/*|*/tmp/*|*/Mods/*) continue ;;
+        esac
+        filename=$(basename "$file")
+
+        derived=$(get_derived_files "$filename")
+        [ -n "$derived" ] && handle_multi_file_patches "$file"
+    done < "$files_list"
+
+    # Pass 2: log any patches the static mapping didn't cover. We can't safely
+    # auto-match them (upstream encodes without checksums; vcdiff won't reject
+    # wrong sources) - surface them so Functions.cs parsing can be updated.
+    report_unmapped_patches
+
+    # Pass 3: 1:1 patches. Now we mutate sources. Re-run find since the derived
+    # pass may have written new files we don't want to iterate.
+    find "$DATADIR" -type f > "$files_list"
+
+    echo "Applying 1:1 patches..."
+    applied=0
+    while IFS= read -r file; do
+        case "$file" in
+            */~temp/*|*/tmp/*|*/Mods/*) continue ;;
+        esac
+        filename=$(basename "$file")
+
+        is_derived_target "$filename" && continue
+
+        vcdiff_file="$PATCHES/$filename.vcdiff"
+        [ -f "$vcdiff_file" ] || continue
+        is_consumed "$filename.vcdiff" && continue
+
+        patched_file="$PATCHED/$filename"
+        if ! "$VCDIFF" decode -max_target_file_size="$VCDIFF_MAX" -max_target_window_size="$VCDIFF_MAX" -dictionary "$file" -delta "$vcdiff_file" -target "$patched_file" 2>&1; then
+            echo "  ERROR: vcdiff decode failed for $filename"
+            FAILED_PATCHES=$((FAILED_PATCHES + 1))
+            continue
+        fi
+        mv -f "$patched_file" "$file"
+        mark_consumed "$filename.vcdiff"
+        applied=$((applied + 1))
+        TOTAL_PATCHED=$((TOTAL_PATCHED + 1))
+        echo "  [$applied] $filename"
+    done < "$files_list"
+
+    echo "Applied $applied 1:1 patches."
+
+    # Sanity checks
+    if [ "$TOTAL_PATCHED" -eq 0 ]; then
+        local patch_count
+        patch_count=$(find "$PATCHES" -maxdepth 1 -type f | wc -l)
+        emit_fail_msg "No patches were applied - patch files may be missing or incompatible."
+        echo "ERROR: 0 patches applied across all passes, but $patch_count file(s) exist in $PATCHES."
+        return 1
+    fi
+
+    if [ "$FAILED_PATCHES" -gt 0 ]; then
+        emit_fail_msg "Some patches failed to apply. See patcherr.txt for details."
+        echo "ERROR: $FAILED_PATCHES patch(es) failed to decode - game would be incomplete."
+        return 1
+    fi
+
+    if ! is_linux_elf "$EXECUTABLE"; then
+        emit_fail_msg "The game binary was not converted to the Linux version. Patching is incomplete - reinstall with an internet connection (offline installs also need Functions.cs in the data folder)."
+        echo "ERROR: '$EXECUTABLE' is not a Linux ELF after patching - the binary patch did not apply."
+        return 1
+    fi
+
+    echo "Patching complete."
+    post_patch
+}
+
+post_patch() {
+    mkdir -p "$GAMEDIR/Mods/LAHDMods"
+    mkdir -p "$GAMEDIR/Mods/Graphics"
+
+    # Remove junk minimap data
+    for file in three_1.txt three_2.txt three_3.txt; do
+        rm -f "$DATADIR/Dungeon/$file"
+    done
+
+    # Remove junk map files
+    for file in \
+        "dungeon3_1.map" "dungeon3_1.map.data" \
+        "dungeon3_2.map" "dungeon3_2.map.data" \
+        "dungeon3_3.map" "dungeon3_3.map.data" \
+        "dungeon3_4.map" "dungeon3_4.map.data"; do
+        rm -f "$DATADIR/Maps/$file"
+    done
+
+    # Rename binary to avoid spaces/apostrophe issues with gptokeyb
+    mv "$DATADIR/Link's Awakening DX HD" "$DATADIR/LADXHD"
+    chmod +x "$DATADIR/LADXHD"
+}
+
+cleanup() {
+    rm -rf "$TMPDIR"
+}
+
+record_patch_version() {
+    # Store the upstream release tag we patched against so the launch script
+    # can detect future releases and trigger a re-patch. Offline installs
+    # get a "manual" sentinel - the launchscript will detect it as a tag
+    # mismatch the next time the device comes online and re-patch from
+    # upstream automatically.
+    if [ -n "$UPSTREAM_TAG" ]; then
+        echo "$UPSTREAM_TAG" > "$PATCH_VERSION_FILE"
+        echo "Recorded patch version: $UPSTREAM_TAG"
+    else
+        echo "manual" > "$PATCH_VERSION_FILE"
+        echo "Recorded patch version: manual (offline install)"
+    fi
+}
+
+record_update_preference() {
+    if [ -n "$UPDATE_CHECK" ]; then
+        echo "$UPDATE_CHECK" > "$UPDATE_CHECK_FILE"
+        echo "Recorded update-check preference: $UPDATE_CHECK"
+    fi
+}
+
+process_game() {
+    echo "Preparing system..."
+    prepare_system || return 1
+    echo "Extracting and validating game..."
+    extract_game || return 1
+    echo "Downloading and extracting patches..."
+    download_patches || return 1
+    download_file_targets || return 1
+    echo "Patching game files..."
+    patch_game_files || return 1
+    echo "Extracting achievement icons..."
+    extract_achievements
+    echo "Recording patch version..."
+    record_patch_version
+    record_update_preference
+    echo "Finishing up..."
+}
+
+# Main
+if ! process_game; then
+    [ -z "$FAIL_MSG_SET" ] && emit_fail_msg "Patching failed. See patcherr.txt in the port folder for details."
+    echo "Patching process failed!"
+    mv "$LOGFILE" "$LOGERR"
+else
+    echo "Patching process complete!"
+fi
+
+cleanup

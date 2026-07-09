@@ -1,0 +1,6 @@
+// This file can force the scaling value of the various menus including the file selection screen and option menus.
+// The in-game menus are also affected by the scaling value set here.
+
+// Menu scaling factor. Use a value of "0" to use the game value. Decimal values (like 2.50) are allowed but not recommended.
+// Default: 0.00
+menu_scale_override = 0.00
