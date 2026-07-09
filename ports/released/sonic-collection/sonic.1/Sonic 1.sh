@@ -96,6 +96,7 @@ if [ "$needs_patching" = "true" ]; then
         export controlfolder
         export ESUDO
         export DEVICE_ARCH
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb) 2>/dev/null
     else

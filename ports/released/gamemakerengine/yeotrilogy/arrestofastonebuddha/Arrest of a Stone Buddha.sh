@@ -55,6 +55,7 @@ if [ ! -f patchlog.txt ] || [ -n "$(find "$GAMEDIR/assets" -mindepth 1 -maxdepth
         export controlfolder
         export DEVICE_ARCH
         export ESUDO
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb)
     else

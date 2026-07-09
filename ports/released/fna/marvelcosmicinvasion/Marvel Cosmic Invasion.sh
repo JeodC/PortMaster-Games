@@ -80,6 +80,7 @@ if [ ! -f "$GAMEDIR/patchlog.txt" ] || [ ! -f "$GAMEDIR/gamedata/.mci_patched" ]
         export PATCHER_TIME="5 to 40 minutes depending on device"
         export MONODIR MONO
         export controlfolder ESUDO DEVICE_ARCH
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb)
     else

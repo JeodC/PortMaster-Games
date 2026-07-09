@@ -76,6 +76,7 @@ if [ ! -f "$GAMEDIR/patchlog.txt" ]; then
     export PATCHER_GAME="Pokemon Rejuvenation"
     export PATCHER_TIME="around 1 minute"
     export PATCHDIR=$GAMEDIR
+    chmod +x "$PATCHER_FILE"
     source "$controlfolder/utils/patcher.txt"
 fi
 

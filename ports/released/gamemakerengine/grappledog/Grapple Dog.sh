@@ -75,6 +75,7 @@ if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/data.win" ]; then
         export PATCHER_GAME="$(basename "${0%.*}")"
         export PATCHER_TIME="a while"
         export controlfolder
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb)
     else

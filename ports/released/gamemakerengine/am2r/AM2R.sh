@@ -71,6 +71,7 @@ if [ "$need_patch" -eq 1 ]; then
         if [[ "$ASPECT_X" -eq 3 && "$ASPECT_Y" -eq 2 ]]; then
             export ASPECTPATCH=1
         fi
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 $(pidof gptokeyb)
     else

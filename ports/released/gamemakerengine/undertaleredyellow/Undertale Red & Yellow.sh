@@ -54,6 +54,7 @@ if [ ! -f patchlog.txt ] || [ -f "$GAMEDIR/assets/data.win" ]; then
         export PATCHER_TIME="2 to 5 minutes"
         export controlfolder
         export ESUDO
+        chmod +x "$PATCHER_FILE"
         source "$controlfolder/utils/patcher.txt"
         $ESUDO kill -9 "$(pidof gptokeyb)"
     else
