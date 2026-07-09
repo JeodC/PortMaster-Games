@@ -40,12 +40,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/am2r/am2r/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/am2r/am2r/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/am2r.zip",
-      "date_updated": "2026-05-27T23:15",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "0563d8596919b21d10e9a1df91040e1e",
-      "size": 2974456,
-      "lifetime_downloads": 100,
-      "last_commit": "Roll all GMS ports over to new gmtoolkit"
+      "md5": "5134a1942c7f8fcb150d406d216f8401",
+      "size": 2974467,
+      "lifetime_downloads": 158,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -140,12 +140,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/arrestofastonebuddha.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-07-02",
-      "md5": "57d03093151bee03da8df0b3e749de00",
-      "size": 2620944,
-      "lifetime_downloads": 44,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "a60958eb97a6112312c13c6b816e5df0",
+      "size": 2620957,
+      "lifetime_downloads": 56,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -200,12 +200,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/aurascope/aurascope/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/aurascope/aurascope/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/aurascope.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "397886d2bebf74d90286583a55d028e8",
-      "size": 2750838,
-      "lifetime_downloads": 23,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "56bebc7e79067311834fc02f0e19c8ee",
+      "size": 2750850,
+      "lifetime_downloads": 26,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -346,12 +346,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/benbowars/benbowars/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/benbowars/benbowars/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/benbowars.zip",
-      "date_updated": "2026-07-03T01:31",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-07-03",
-      "md5": "ef87781c042806d186c9eb7cabe64018",
-      "size": 5319456,
-      "lifetime_downloads": 0,
-      "last_commit": "[BENBOWARS] Release"
+      "md5": "92d3bb0f02838b71b9e12a580eb70839",
+      "size": 5319469,
+      "lifetime_downloads": 5,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -572,12 +572,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/darkdeity.zip",
-      "date_updated": "2026-07-08T22:59",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "c3c2db0c08a7c05b90f02a4a04399a2c",
-      "size": 4391923,
-      "lifetime_downloads": 26,
-      "last_commit": "Case sensitivity in various port.json files"
+      "md5": "753128a07479a379d57b962edc1111f4",
+      "size": 4391936,
+      "lifetime_downloads": 29,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -641,12 +641,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity2/darkdeity2/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity2/darkdeity2/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/darkdeity2.zip",
-      "date_updated": "2026-07-08T22:59",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "3f7f1659573e868d1713ffef213efba2",
-      "size": 6131260,
-      "lifetime_downloads": 15,
-      "last_commit": "Case sensitivity in various port.json files"
+      "md5": "318aac8166f024da027b56ac57639275",
+      "size": 6131273,
+      "lifetime_downloads": 16,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1039,12 +1039,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/dokimon/dokimon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/dokimon/dokimon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/dokimon.zip",
-      "date_updated": "2026-05-28T15:15",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-11",
-      "md5": "a83ca90ef68ca8b1ac205f7bc2d7aa57",
-      "size": 56261767,
-      "lifetime_downloads": 16,
-      "last_commit": "[DOKIMON] Remove gmlive patches and add config.ini sentinel to have port work"
+      "md5": "ec107c88bb1c39371d3ff090c378b223",
+      "size": 56261781,
+      "lifetime_downloads": 32,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1306,12 +1306,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/fadingafternoon/fadingafternoon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/fadingafternoon/fadingafternoon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/fadingafternoon.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-07-02",
-      "md5": "433f8b997b92a66aa9ee33643835eed5",
-      "size": 4082535,
-      "lifetime_downloads": 51,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "a98635bc1fed8b3d22a576855f6570c3",
+      "size": 4082548,
+      "lifetime_downloads": 75,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1360,12 +1360,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/fishbowl/fishbowl/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/fishbowl/fishbowl/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/fishbowl.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-05-29",
-      "md5": "8942a2ae5a4ef48ca1716392536e1881",
-      "size": 5827921,
-      "lifetime_downloads": 20,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "f20f276f5d87d39bda9fa1a9eb2500f3",
+      "size": 5827933,
+      "lifetime_downloads": 25,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1417,12 +1417,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/grappledog.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-05-20",
-      "md5": "0003d419bf373ff951499162a3c95ff5",
-      "size": 5272227,
-      "lifetime_downloads": 29,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "4cd3480eb965746b00bdea8eafe74928",
+      "size": 5272243,
+      "lifetime_downloads": 41,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1470,12 +1470,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/gunsoffury/gunsoffury/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/gunsoffury/gunsoffury/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/gunsoffury.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "ff4ec82732cdeb36ddd6b57441590e59",
-      "size": 5217315,
-      "lifetime_downloads": 58,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "97aff57389daa5ff8ae7b95a89dbc99c",
+      "size": 5217328,
+      "lifetime_downloads": 66,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1516,12 +1516,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/gyakutenlive/gyakutenlive/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/gyakutenlive/gyakutenlive/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/gyakutenlive.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-07-09",
-      "md5": "a0132f33040b05a2fb8f32c6c54e475c",
-      "size": 3216506,
-      "lifetime_downloads": 16,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "2a40963bae89ed23e004d71dbda985b9",
+      "size": 3216519,
+      "lifetime_downloads": 19,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -1883,12 +1883,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/iosas/iosas/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/iosas/iosas/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/iosas.zip",
-      "date_updated": "2026-06-24T12:33",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-11",
-      "md5": "b5cc09d217b1ced16ebce1b5091d41ad",
-      "size": 5654593,
-      "lifetime_downloads": 51,
-      "last_commit": "[IOSAS] v2.6 support"
+      "md5": "bf6d13c90b03f2e34f6c2309fdd15ea5",
+      "size": 5654606,
+      "lifetime_downloads": 57,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2154,12 +2154,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/lunarlux/lunarlux/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/lunarlux/lunarlux/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/lunarlux.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "7d46f83b0b45995f9179ad847ab692ff",
-      "size": 5325061,
-      "lifetime_downloads": 14,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "b3dcb69588105bd69c5a2b16a6251036",
+      "size": 5325073,
+      "lifetime_downloads": 22,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2206,12 +2206,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-08T22:56",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-07-06",
-      "md5": "4649ae8da3ebc67457333490555b361d",
-      "size": 5074903,
-      "lifetime_downloads": 48,
-      "last_commit": "[MCI] Fix runtime misnaming"
+      "md5": "470a3f759d16b18b10a431d4804723d3",
+      "size": 5074910,
+      "lifetime_downloads": 66,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2261,12 +2261,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/madhouse/madhouse/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/madhouse/madhouse/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/madhouse.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-28",
-      "md5": "bec7d0318d11535556efff354872497e",
-      "size": 5116765,
-      "lifetime_downloads": 22,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "1e78f0dbfdda0a94ec7ec51220d124c7",
+      "size": 5116778,
+      "lifetime_downloads": 27,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2433,12 +2433,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mystikbelle/mystikbelle/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mystikbelle/mystikbelle/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/mystikbelle.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "0c1129d92b959c4c29fa07ff898d6fd9",
-      "size": 3045577,
-      "lifetime_downloads": 20,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "c856aedb9505af24f29009bf2a3e8699",
+      "size": 3045590,
+      "lifetime_downloads": 26,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2597,12 +2597,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ooo/ooo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ooo/ooo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/ooo.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-01-01",
-      "md5": "22504f7b339bea3b8abd49315f1c3dad",
-      "size": 4803637,
-      "lifetime_downloads": 14,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "941449e25f63d90a5fd90bf248165b94",
+      "size": 4803650,
+      "lifetime_downloads": 21,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2698,12 +2698,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/outridermako/outridermako/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/outridermako/outridermako/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/outridermako.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-07-01",
-      "md5": "f8eaee3786575b58ea285f6d580859bb",
-      "size": 4907182,
-      "lifetime_downloads": 19,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "f3b1c763258c7474dd9081946b695af3",
+      "size": 4907195,
+      "lifetime_downloads": 27,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -2840,12 +2840,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/picayunedreams/picayune/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/picayunedreams/picayune/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/picayune.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-01-01",
-      "md5": "89661660590e7d14ed451cf9242b2937",
-      "size": 5228531,
-      "lifetime_downloads": 8,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "0c360d51823562ed6ea83a77ec851801",
+      "size": 5228544,
+      "lifetime_downloads": 14,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3136,12 +3136,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rpgmaker/pkmn_rejuvenation/pkmn_rejuvenation/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rpgmaker/pkmn_rejuvenation/pkmn_rejuvenation/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pkmn_rejuvenation.zip",
-      "date_updated": "2026-05-14T13:39",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-05-13",
-      "md5": "9d8cb6dfe673c979719c64e6f985082a",
-      "size": 7434451,
-      "lifetime_downloads": 1,
-      "last_commit": "Update readmes to add runtime requirements"
+      "md5": "e9ab00fee6885d16913cffd5d4b5ed85",
+      "size": 7434456,
+      "lifetime_downloads": 17,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3287,12 +3287,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/rolusoutskirts/rolusoutskirts/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/rolusoutskirts/rolusoutskirts/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/rolusoutskirts.zip",
-      "date_updated": "2026-07-08T22:59",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-01-01",
-      "md5": "c63c5ac92bf40c00d70e7f911a3c77a5",
-      "size": 5247308,
-      "lifetime_downloads": 9,
-      "last_commit": "Case sensitivity in various port.json files"
+      "md5": "c8d96fdceff246d314dd5f4a9e0ff4ef",
+      "size": 5247320,
+      "lifetime_downloads": 10,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3497,12 +3497,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/shrineslegacy/shrineslegacy/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/shrineslegacy/shrineslegacy/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/shrineslegacy.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-10-07",
-      "md5": "d35ee885d46afd37c53f20650ae514b7",
-      "size": 5423584,
-      "lifetime_downloads": 33,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "e296f30261bcb07e3df6748fb8465754",
+      "size": 5423597,
+      "lifetime_downloads": 39,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3548,12 +3548,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.1/sonic.1/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.1/sonic.1/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonic.1.zip",
-      "date_updated": "2026-07-05T21:30",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-10",
-      "md5": "604fc54e9027c8aed6923fa7edd6f802",
-      "size": 3222243,
-      "lifetime_downloads": 51,
-      "last_commit": "[SONICS] Update readme for new build paths"
+      "md5": "71182ac076663eccfc53b17307409b95",
+      "size": 3222249,
+      "lifetime_downloads": 54,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3599,12 +3599,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.2/sonic.2/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.2/sonic.2/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonic.2.zip",
-      "date_updated": "2026-07-05T21:30",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-10",
-      "md5": "de4091eac90c5599752ae8b93f388431",
-      "size": 3305258,
-      "lifetime_downloads": 45,
-      "last_commit": "[SONICS] Update readme for new build paths"
+      "md5": "8180c1f87077b53dc265f6a715e26674",
+      "size": 3305264,
+      "lifetime_downloads": 48,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3704,12 +3704,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.cd/sonic.cd/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/sonic-collection/sonic.cd/sonic.cd/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonic.cd.zip",
-      "date_updated": "2026-07-05T21:30",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-10",
-      "md5": "39fb00e241b899f87ab98623df78879f",
-      "size": 2977191,
-      "lifetime_downloads": 57,
-      "last_commit": "[SONICS] Update readme for new build paths"
+      "md5": "b2e9dda322576a9a5d40cc0bbca280ac",
+      "size": 2977196,
+      "lifetime_downloads": 60,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -3862,12 +3862,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/sonictt16b/sonictt16b/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/sonictt16b/sonictt16b/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonictt16b.zip",
-      "date_updated": "2026-05-29T03:26",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "65a955f247c4ebe7aa188a6f139c7880",
-      "size": 14962532,
-      "lifetime_downloads": 48,
-      "last_commit": "[GMS] Switch audio compression to auto, Pharos stores gmtoolkit version and updates it when stale"
+      "md5": "10627fc37eea3b27444c87081d2c9bf1",
+      "size": 14962545,
+      "lifetime_downloads": 71,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -4013,12 +4013,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/spinelasher/spinelasher/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/spinelasher/spinelasher/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/spinelasher.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-08-11",
-      "md5": "62883bcd0749510fd33a0ba98c925fe6",
-      "size": 5133895,
-      "lifetime_downloads": 15,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "1b5907f0f0ad12231e4d15c92ee06cfd",
+      "size": 5133908,
+      "lifetime_downloads": 21,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -4255,12 +4255,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mariokartzx/mariokartzx/screenshot.png",
       "readme_url": "",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/mariokartzx.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-02-08",
-      "md5": "b9ebc8f7fd34c37b196829e5ce299b83",
-      "size": 2743831,
-      "lifetime_downloads": 58,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "3e10e5e66d5226343cc7886297775443",
+      "size": 2743844,
+      "lifetime_downloads": 71,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -4406,12 +4406,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/friendsofringo.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-07-02",
-      "md5": "d2736c8fb526c5babab6fb0733210294",
-      "size": 3985976,
-      "lifetime_downloads": 38,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "efb05d940d3d864b24b4ab899e5dc921",
+      "size": 3985988,
+      "lifetime_downloads": 45,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -4510,12 +4510,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-foer/zelda-foer/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-foer/zelda-foer/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-foer.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-07",
-      "md5": "a22888799c0b87c4dcd21fd18440497f",
-      "size": 325456,
-      "lifetime_downloads": 59,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "a7043aaea46931be37b3050f242b9a95",
+      "size": 325469,
+      "lifetime_downloads": 68,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -4558,12 +4558,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-wogr/zelda-wogr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-wogr/zelda-wogr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-wogr.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-07",
-      "md5": "9729311415e4f10239a754d34bcf4285",
-      "size": 404090,
-      "lifetime_downloads": 46,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "846a1acfc32086e96248d256d32f9e55",
+      "size": 404103,
+      "lifetime_downloads": 53,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5122,12 +5122,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/triga/triga/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/triga/triga/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/triga.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-07-09",
-      "md5": "c847ec97f21253310f00cd5349fdaec3",
-      "size": 3621867,
-      "lifetime_downloads": 11,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "b4b9c91a4da98e3de064c89dbbc45745",
+      "size": 3621879,
+      "lifetime_downloads": 16,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5219,12 +5219,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ufo50/ufo50/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ufo50/ufo50/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/ufo50.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "631f19c7bc4a18fc90ba03ada07d4e63",
-      "size": 5327196,
-      "lifetime_downloads": 119,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "30d9f842f0804bd9ad7255e894da6854",
+      "size": 5327208,
+      "lifetime_downloads": 147,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5279,12 +5279,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertale/undertale/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertale/undertale/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/undertale.zip",
-      "date_updated": "2026-05-27T23:16",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-18",
-      "md5": "6a2e7eb183d51f6e256d81350d132102",
-      "size": 9540037,
-      "lifetime_downloads": 41,
-      "last_commit": "Roll all GMS ports over to new gmtoolkit"
+      "md5": "4baee3332a677190766d5593ab0685fa",
+      "size": 9540050,
+      "lifetime_downloads": 86,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5336,12 +5336,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/undertaleredyellow.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-05-19",
-      "md5": "96257a32fb57f6f6ef3318c8ff519235",
-      "size": 9966089,
-      "lifetime_downloads": 27,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "f40d033f7cbac7e0ea162cd362605f56",
+      "size": 9966102,
+      "lifetime_downloads": 39,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5398,12 +5398,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/utyellow/utyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/utyellow/utyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/utyellow.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-11",
-      "md5": "9176cd6fdf1889eb9e14937ddb7ca61c",
-      "size": 3939402,
-      "lifetime_downloads": 22,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "8699223e39c9b8446da60f4d8c411c29",
+      "size": 3939415,
+      "lifetime_downloads": 38,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5465,12 +5465,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/valhalla/valhalla/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/valhalla/valhalla/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/valhalla.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-08-25",
-      "md5": "b7ff5fe63c7079bfe5fe1145ca210424",
-      "size": 2431634,
-      "lifetime_downloads": 35,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "bba7b4dc037052d5e35b135660324bad",
+      "size": 2431646,
+      "lifetime_downloads": 39,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5530,12 +5530,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/vhr.zip",
-      "date_updated": "2026-07-01T16:32",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2025-11-11",
-      "md5": "5f85b53b4ee3705ed585659109bf63e5",
-      "size": 5562789,
-      "lifetime_downloads": 90,
-      "last_commit": "[VHR] Add patches for pixel scale persistence"
+      "md5": "5d41342b6f21e97ab32d26b03332e432",
+      "size": 5562802,
+      "lifetime_downloads": 102,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   },
   {
@@ -5693,12 +5693,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda2enhanced/zelda2enhanced/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda2enhanced/zelda2enhanced/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda2enhanced.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-09T19:09",
       "first_seen": "2026-05-14",
-      "md5": "cc492640eb0e16be38ec9732c8d8d2c7",
-      "size": 2824781,
-      "lifetime_downloads": 27,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "e86135551dcd5ff3d22fdc8489c01dd1",
+      "size": 2824795,
+      "lifetime_downloads": 46,
+      "last_commit": "Add missing chmod +x to 44 ports"
     }
   }
 ]
