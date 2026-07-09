@@ -26,19 +26,16 @@ export INSTALLDIR="$GAMEDIR/assets/install"
 export ASSETDIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
 
-# Tight-RAM devices can't sustain a parallel astcenc / vorbis workload.
+# Cap workers on tight-RAM devices
 THREADS_FLAG=""
 if [ "${DEVICE_RAM:-0}" -le 2 ]; then
-    THREADS_FLAG="--threads 1"
+    THREADS_FLAG="--threads 3"
 fi
 
-# Pick ASTC block by display size. 5x5 is the quality floor (6x6 blocked up on
-# the weakest devices); large screens keep the 4x4 default.
-SCREEN_PIXELS=$(( ${DISPLAY_WIDTH:-640} * ${DISPLAY_HEIGHT:-480} ))
-if [ "$SCREEN_PIXELS" -le 1000000 ]; then
-    BLOCK_FLAGS="--block 5x5 --quality fast"
-else
-    BLOCK_FLAGS=""
+# Pick ASTC block by RAM
+BLOCK_FLAGS=""
+if [ "${DEVICE_RAM:-0}" -le 1 ]; then
+    BLOCK_FLAGS="--block 5x5"
 fi
 
 ORIG_MAX_FREQS=""
@@ -169,6 +166,11 @@ patch_datafile() {
     local config="$GAMEDIR/tools/deltarune.json"
     if [ -f "$GAMEDIR/tools/$GAMEFILE.json" ]; then
         config="$GAMEDIR/tools/$GAMEFILE.json"
+    fi
+
+    # Performance mode (questions.lua answer)
+    if [ "$LOW_DETAIL" = "1" ] && [ -f "$GAMEDIR/tools/$GAMEFILE.lowdetail.json" ]; then
+        config="$GAMEDIR/tools/$GAMEFILE.lowdetail.json"
     fi
 
     # Demo data gets a different config

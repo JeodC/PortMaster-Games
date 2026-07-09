@@ -56,6 +56,7 @@ check_patch() {
             export PATCHER_FILE="$GAMEDIR/tools/patchscript"
             export PATCHER_GAME="$(basename "${0%.*}")"
             export PATCHER_TIME="a while"
+            export PATCHER_QUESTIONS="$GAMEDIR/tools/questions.lua"
             export controlfolder ESUDO DEVICE_ARCH DEVICE_RAM DISPLAY_WIDTH DISPLAY_HEIGHT
             chmod +x "$PATCHER_FILE"
             source "$controlfolder/utils/patcher.txt"
