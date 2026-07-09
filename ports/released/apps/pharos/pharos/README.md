@@ -25,13 +25,5 @@ Pharos does **not perform validation** on downloaded files. Users are responsibl
 ## Hosting Your Own Repository
 To host a repository compatible with Pharos, ensure it adheres to the expected structure and `ports.json` or `winecask.json` format. For guidance, see the [template repository](https://github.com/JeodC/Pharos-Template).
 
-## Runtimes
-
-This port requires the following runtimes in `PortMaster/libs`:
-
-- **Python 3.11** — [python_3.11.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/python_3.11.squashfs)
-
-[Pharos](https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip) will fetch these automatically when installing the port. Otherwise download them manually from the [runtimes folder](https://github.com/JeodC/RHH-Ports/tree/main/runtimes) and drop them in `PortMaster/libs`.
-
 ## Thanks
 Pharos is a python application inspired by RomM and PortMaster. Some code is based on existing functions from those applications, hence the AGPL license.
