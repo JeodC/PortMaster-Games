@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gamelist>
+	<game>
+		<path>./Zelda LTTP.sh</path>
+		<name>The Legend of Zelda : A Link to the Past Redux</name>
+		<desc>A native reimplementation of The Legend of Zelda: A Link to the Past (snesrev/zelda3), with widescreen support, a higher-resolution world map, and quality-of-life options. Provide your own US ROM; the game's assets are rebuilt on-device on first launch.</desc>
+		<image>./zelda-lttp/cover.png</image>
+		<thumbnail>./zelda-lttp/thumb.png</thumbnail>
+		<releasedate>20260710</releasedate>
+		<developer>Nintendo</developer>
+		<genre>Action / Adventure</genre>
+	</game>
+</gamelist>

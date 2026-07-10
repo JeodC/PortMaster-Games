@@ -91,6 +91,14 @@
       "track": "release",
       "commit_prefix": "PAPERBOAT",
       "artifacts": ["Paperboat", "paperboat.o2r", "gamecontrollerdb.txt", "libs", "tools/torch", "tools/assets.zip", "tools/config.yml"]
+    },
+    "zelda-lttp": {
+      "port_dir": "buildtools/ports/zelda-lttp",
+      "target_dirs": ["ports/released/zelda-lttp/zelda-lttp"],
+      "upstream_repo": "snesrev/zelda3",
+      "track": "release",
+      "commit_prefix": "ZELDALTTP",
+      "artifacts": ["zelda3", "libs"]
     }
   },
   "runtimes": {

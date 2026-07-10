@@ -1,0 +1,150 @@
+#!/bin/bash
+
+GAMEDIR="$PWD"
+TOOLS="$GAMEDIR/tools"
+LOGFILE="patchlog.txt"
+LOGERR="patcherr.txt"
+
+# Redirect stdout/stderr to the log. fd 3 keeps a handle on the patcher's pipe
+# (original stdout) so emit_fail_msg can push a dialog string to the GUI without
+# it landing in the log.
+rm -f "$GAMEDIR/$LOGERR"
+exec 3>&1
+> "$GAMEDIR/$LOGFILE" && exec > >(tee "$GAMEDIR/$LOGFILE") 2>&1
+
+emit_fail_msg() {
+    echo "PATCH_FAIL_MSG:$1" >&3
+    echo "$1"
+    FAIL_MSG_SET=1
+}
+
+ROM_SHA="66871d66be19ad2c34c927d6b14cd8eb6fc3181965b6e517cb361f7316009cfb"
+DAT_SHA="0fe2e4bd75d70f06fb9a74cd3a9cb336c838149b831b56e8792114a89292c793"
+XDELTA="$TOOLS/zelda3_assets.xdelta"
+OUT="$GAMEDIR/zelda3_assets.dat"
+XD3="${controlfolder}/xdelta3"
+SEVENZIP="${controlfolder}/7zzs.${DEVICE_ARCH}"
+TMP="$GAMEDIR/.rom_headerless.sfc"
+WORKDIR="$GAMEDIR/.romwork"
+
+prepare_system() {
+    if [ ! -e "$XD3" ]; then
+        emit_fail_msg "PortMaster's xdelta3 tool wasn't found. Update PortMaster and try again."
+        return 1
+    fi
+    if [ ! -f "$XDELTA" ]; then
+        emit_fail_msg "This build is missing tools/zelda3_assets.xdelta. Please reinstall the port."
+        return 1
+    fi
+}
+
+extract_rom_from_zip() {
+    local zip="$1" rom
+    rm -rf "$WORKDIR"; mkdir -p "$WORKDIR"
+    if [ -x "$SEVENZIP" ]; then
+        "$SEVENZIP" x -y -o"$WORKDIR" "$zip" >/dev/null 2>&1
+    elif command -v unzip >/dev/null 2>&1; then
+        unzip -o "$zip" -d "$WORKDIR" >/dev/null 2>&1
+    else
+        return 1
+    fi
+    rom=$(find "$WORKDIR" -type f \( -iname '*.sfc' -o -iname '*.smc' \) 2>/dev/null | head -1)
+    [ -n "$rom" ] && echo "$rom"
+}
+
+try_candidate() {
+    local src="$1" raw actual
+    case "$src" in
+        *.zip|*.ZIP)
+            raw="$(extract_rom_from_zip "$src")" || return 1
+            [ -n "$raw" ] || return 1
+            ;;
+        *) raw="$src" ;;
+    esac
+    normalize_rom "$raw" "$TMP"
+    actual="$(sha256sum "$TMP" | awk '{print $1}')"
+    [ "$actual" = "$ROM_SHA" ]
+}
+
+normalize_rom() {
+    local src="$1" dst="$2" size rem
+    size=$(stat -c %s "$src" 2>/dev/null || wc -c < "$src")
+    rem=$(( size % 1024 ))
+    if [ "$rem" = "512" ]; then
+        echo "Detected 512-byte copier header; stripping it."
+        dd if="$src" of="$dst" bs=512 skip=1 2>/dev/null
+    else
+        cp -f "$src" "$dst"
+    fi
+}
+
+prepare_rom() {
+    local d f
+    for d in "$GAMEDIR" "/$directory/snes"; do
+        [ -d "$d" ] || continue
+        for f in "$d"/*.sfc "$d"/*.smc; do
+            [ -e "$f" ] || continue
+            echo "Trying: $f"
+            try_candidate "$f" && { echo "ROM verified: $f"; return 0; }
+        done
+    done
+    for f in "$GAMEDIR"/*.zip; do
+        [ -e "$f" ] || continue
+        echo "Trying zip: $f"
+        try_candidate "$f" && { echo "ROM verified from: $f"; return 0; }
+    done
+    if [ -d "/$directory/snes" ]; then
+        for f in "/$directory/snes"/*.zip; do
+            [ -e "$f" ] || continue
+            case "$(basename "$f" | tr '[:upper:]' '[:lower:]')" in
+                *zelda*|*link*|*triforce*|*kamigami*)
+                    echo "Trying zip: $f"
+                    try_candidate "$f" && { echo "ROM verified from: $f"; return 0; }
+                    ;;
+            esac
+        done
+    fi
+    emit_fail_msg "No matching US A Link to the Past ROM found. Put your ROM (.sfc/.smc or .zip) in ports/zelda-lttp/ or your snes folder. See README.md."
+    return 1
+}
+
+reconstruct_assets() {
+    local actual
+    echo "Reconstructing zelda3_assets.dat ..."
+    if ! "$XD3" -d -s "$TMP" -f "$XDELTA" "$OUT"; then
+        emit_fail_msg "Asset reconstruction failed! See patcherr.txt."
+        return 1
+    fi
+
+    actual="$(sha256sum "$OUT" | awk '{print $1}')"
+    if [ "$actual" != "$DAT_SHA" ]; then
+        echo "Reconstructed .dat SHA256 mismatch: got $actual"
+        rm -f "$OUT"
+        emit_fail_msg "Asset reconstruction produced an unexpected result. See patcherr.txt."
+        return 1
+    fi
+    echo "zelda3_assets.dat created and verified."
+}
+
+cleanup() {
+    rm -rf "$TMP" "$WORKDIR"
+}
+
+process_game() {
+    echo "Checking dependencies..."
+    prepare_system || return 1
+    echo "Locating and verifying ROM..."
+    prepare_rom || return 1
+    reconstruct_assets || return 1
+}
+
+# Main
+if ! process_game; then
+    [ -z "$FAIL_MSG_SET" ] && emit_fail_msg "Patching failed. Report on the RHH-Ports GitHub with patcherr.txt."
+    echo "Patching process failed!"
+    mv "$GAMEDIR/$LOGFILE" "$GAMEDIR/$LOGERR"
+else
+    echo "Patching process complete!"
+fi
+
+cleanup
