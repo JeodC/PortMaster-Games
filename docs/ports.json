@@ -5177,7 +5177,7 @@
   },
   {
     "version": 4,
-    "name": "tunics!.zip",
+    "name": "tunics.zip",
     "items": [
       "Tunics!.sh",
       "tunics!/"
@@ -5211,13 +5211,13 @@
     "source": {
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/solarus/tunics!/tunics!/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/solarus/tunics!/tunics!/README.md",
-      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/tunics!.zip",
-      "date_updated": "2026-05-14T13:39",
-      "first_seen": "2025-11-11",
-      "md5": "5749b66887b8d947cab15e64ba8bd054",
-      "size": 2422616,
+      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/tunics.zip",
+      "date_updated": "2026-07-10T16:08",
+      "first_seen": "2026-07-10",
+      "md5": "e5452b034c3c6af646b348327325e768",
+      "size": 2422618,
       "lifetime_downloads": 0,
-      "last_commit": "Update readmes to add runtime requirements"
+      "last_commit": "Fix a bunch of stuff"
     }
   },
   {
@@ -5347,7 +5347,7 @@
       ],
       "desc": "Undertale Red & Yellow is a mod for the game Undertale that incorporates elements from Undertale Yellow. It features Frisk, accompanied by two ghosts Chara and Clover, as they navigate through the Underground. The mod includes additional content such as new interactions, minigames, and mini-bosses, which significantly extend the gameplay experience.",
       "desc_md": null,
-      "inst": "Copy the contents of your Steam or GOG Windows Undertale install and the ut-red-and-yellow.zip file to ports/undertale/assets.",
+      "inst": "Copy the contents of your Steam or GOG Windows Undertale install and the Undertale Red & Yellow mod zip (ut-red-and-yellow.zip from GameJolt) to ports/undertaleredyellow/assets.",
       "inst_md": null,
       "genres": [
         "rpg"
@@ -5368,6 +5368,11 @@
           "name": "GOG",
           "gameurl": "https://www.gog.com/en/game/undertale",
           "developerurl": ""
+        },
+        {
+          "name": "GameJolt (mod)",
+          "gameurl": "https://gamejolt.com/games/undertale-red-yellow/877387",
+          "developerurl": ""
         }
       ],
       "availability": "paid",
@@ -5381,12 +5386,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/undertaleredyellow.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-10T16:08",
       "first_seen": "2025-05-19",
-      "md5": "f40d033f7cbac7e0ea162cd362605f56",
-      "size": 9966102,
-      "lifetime_downloads": 39,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "506faf0e854f9e953e72831f89900c98",
+      "size": 9966199,
+      "lifetime_downloads": 42,
+      "last_commit": "Fix a bunch of stuff"
     }
   },
   {
