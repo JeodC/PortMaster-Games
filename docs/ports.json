@@ -702,12 +702,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/deltarune/deltarune/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/deltarune/deltarune/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/deltarune.zip",
-      "date_updated": "2026-07-09T14:29",
+      "date_updated": "2026-07-10T17:09",
       "first_seen": "2025-05-18",
-      "md5": "6b2813da4f44b4f29408c1ad53a109d4",
-      "size": 4316105,
-      "lifetime_downloads": 218,
-      "last_commit": "[DELTARUNE] Attempt some additional performance tweaks"
+      "md5": "35c26a2b30b3e08b6fe581ee0af37847",
+      "size": 4316157,
+      "lifetime_downloads": 228,
+      "last_commit": "[DELTARNE] Repack Ch5 textures with affinity bucketing (needs latest gmtoolkit)"
     }
   },
   {
