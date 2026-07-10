@@ -67,11 +67,12 @@ thermal_restore() {
 prepare_files() {
     mkdir -p "$SAVEDIR"
 
-    # Pick up the user-supplied UTRY zip if present, extract the base xdelta.
     MOD_ZIP=""
     for f in "$DATADIR"/*.zip; do
         [ -f "$f" ] || continue
-        case "$(basename "$f")" in *UTRY*|*utry*) MOD_ZIP="$f"; break;; esac
+        if unzip -l "$f" 2>/dev/null | grep -qiE "Undertale.*1\.08.*to.*UTRY.*\.xdelta"; then
+            MOD_ZIP="$f"; break
+        fi
     done
     if [ -n "$MOD_ZIP" ]; then
         mkdir -p "$DATADIR/utry"
@@ -82,7 +83,7 @@ prepare_files() {
         rm -f "$MOD_ZIP"
         for f in "$DATADIR/utry/"*.ogg; do [ -f "$f" ] && mv "$f" "$DATADIR/"; done
         [ -f "$DATADIR/utry/splash.png" ] && mv "$DATADIR/utry/splash.png" "$GAMEDIR/"
-        BASEPATCH=$(find "$DATADIR/utry" -maxdepth 1 -type f -name "Undertale*1.08*to*UTRY*.xdelta" | head -n 1)
+        BASEPATCH=$(find "$DATADIR/utry" -maxdepth 1 -type f -iname "Undertale*1.08*to*UTRY*.xdelta" | head -n 1)
         if [ -z "$BASEPATCH" ]; then
             emit_fail_msg "Did not find base UTRY xdelta in the supplied zip."
             return 1
@@ -91,7 +92,7 @@ prepare_files() {
         mv "$BASEPATCH" "$GAMEDIR/tools/patches/utry_steam.xdelta"
         rm -rf "$DATADIR/utry"
     elif [ ! -f "$GAMEDIR/tools/patches/utry_steam.xdelta" ]; then
-        emit_fail_msg "Missing UTRY zip and no cached xdelta. Drop the UTRY mod zip into assets/."
+        emit_fail_msg "Missing the Undertale Red & Yellow mod zip and no cached xdelta. Download it from https://gamejolt.com/games/undertale-red-yellow/877387 and drop the .zip into assets/."
         return 1
     fi
 

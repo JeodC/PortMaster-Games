@@ -78,6 +78,7 @@ REQS_MAP = {
 }
 
 ZIP_EPOCH = (2020, 1, 1, 0, 0, 0)  # arbitrary; real mtimes would change the zip md5 every run
+ASSET_NAME_RE = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 def name_cleaner(text):
@@ -246,6 +247,15 @@ def main():
     ports = {}
     declared_runtimes = set()
     for entry in catalog:
+        name = entry.get("name", "")
+        if not ASSET_NAME_RE.match(name):
+            print(
+                f"WARNING: skipping port {name!r} - its name has characters GitHub "
+                "strips from release-asset names, so its download URL would 404 "
+                '(#67). Rename the port\'s "name" to a clean slug.',
+                file=sys.stderr,
+            )
+            continue
         port = convert_port(entry)
         ports[port["name"]] = port
         declared_runtimes.update(port["attr"]["runtime"])

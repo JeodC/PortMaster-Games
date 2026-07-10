@@ -15,10 +15,7 @@ on:
     paths:
       - 'ports/released/**'
   workflow_run:
-    # The push trigger above doesn't fire for pushes made by the default
-    # GITHUB_TOKEN (GitHub suppresses this to prevent workflow recursion),
-    # so any workflow that commits port payloads must be chained here.
-    workflows: ["Build Ports", "Build Pharos"]
+    workflows: ["Build Ports", "Build Pharos", "Release Runtimes"]
     types: [completed]
 
 concurrency:
@@ -170,6 +167,12 @@ jobs:
 
             CANONICAL_NAME=$(jq -r '.name' "$PORT_JSON")
             [[ -n "$CANONICAL_NAME" ]] || continue
+
+            # Fail loudly on bad asset names
+            if [[ ! "$CANONICAL_NAME" =~ ^[A-Za-z0-9._-]+$ ]]; then
+              echo "::error::Port '$PORT_DIR' has name '$CANONICAL_NAME' with characters GitHub strips from asset names. Rename \"name\" in port.json to a clean slug matching [A-Za-z0-9._-]."
+              exit 1
+            fi
 
             SCREENSHOT=$(find "$PORT_DIR" -maxdepth 1 -iname 'screenshot*.png' -o -iname 'screenshot*.jpg' -o -iname 'screenshot*.jpeg' | head -n1)
             [[ -n "$SCREENSHOT" ]] || continue
@@ -358,34 +361,13 @@ jobs:
           done
 
       # ---------------------- PORTMASTER CATALOG ----------------------
-      # PortMasterV3 ports.json + images.zip (buildtools/generate_pm_catalog.py).
-      # Unchanged assets keep their ids -- Pharos caches images by asset id+size.
+      # Release Ports is the sole publisher of the PortMasterV3 catalog
+      # (ports.json + images.zip). buildtools/publish_pm_catalog.sh regenerates
+      # it from docs/ports.json + runtimes/ and uploads only what changed. It's
+      # chained after Release Runtimes (see the workflow_run trigger) so a
+      # runtime rebuild's new md5 gets republished once its asset is in place.
       - name: Publish PortMaster catalog
-        run: |
-          set -euo pipefail
-          python3 buildtools/generate_pm_catalog.py --output temp_pm
-
-          # The images.zip md5 is baked into ports.json, so if the catalog
-          # didn't change, the images didn't either.
-          if curl -sfL -o current_catalog.json \
-              "https://github.com/${GITHUB_REPOSITORY}/releases/download/ports-latest/ports.json"; then
-            if cmp -s current_catalog.json temp_pm/ports.json; then
-              echo "PortMaster catalog unchanged; skipping upload."
-              exit 0
-            fi
-            OLD_MD5=$(jq -r '.utils["images.zip"].md5 // empty' current_catalog.json || true)
-            NEW_MD5=$(md5sum temp_pm/images.zip | awk '{print $1}')
-            if [[ -n "$OLD_MD5" && "$OLD_MD5" == "$NEW_MD5" ]]; then
-              echo "images.zip unchanged; uploading catalog only."
-              gh release upload ports-latest temp_pm/ports.json docs/030_rhh.source.json --clobber
-              exit 0
-            fi
-          fi
-          gh release upload ports-latest \
-            temp_pm/ports.json \
-            temp_pm/images.zip \
-            docs/030_rhh.source.json \
-            --clobber
+        run: bash buildtools/publish_pm_catalog.sh
 
       - name: Commit ports.json
         run: |

@@ -13,7 +13,7 @@
     ],
     "desc": "Undertale Red & Yellow is a mod for the game Undertale that incorporates elements from Undertale Yellow. It features Frisk, accompanied by two ghosts Chara and Clover, as they navigate through the Underground. The mod includes additional content such as new interactions, minigames, and mini-bosses, which significantly extend the gameplay experience.",
     "desc_md": null,
-    "inst": "Copy the contents of your Steam or GOG Windows Undertale install and the ut-red-and-yellow.zip file to ports/undertale/assets.",
+    "inst": "Copy the contents of your Steam or GOG Windows Undertale install and the Undertale Red & Yellow mod zip (ut-red-and-yellow.zip from GameJolt) to ports/undertaleredyellow/assets.",
     "inst_md": null,
     "genres": [
       "rpg"
@@ -33,6 +33,11 @@
       {
         "name": "GOG",
         "gameurl": "https://www.gog.com/en/game/undertale",
+        "developerurl": ""
+      },
+      {
+        "name": "GameJolt (mod)",
+        "gameurl": "https://gamejolt.com/games/undertale-red-yellow/877387",
         "developerurl": ""
       }
     ],

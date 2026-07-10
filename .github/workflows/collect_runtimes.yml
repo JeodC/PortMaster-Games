@@ -56,31 +56,31 @@ jobs:
             fi
           done
 
-          # Snapshot remote assets (name → size, name → id)
+          # Snapshot remote assets.
           RELEASE_ID=$(gh api repos/${GITHUB_REPOSITORY}/releases/tags/runtimes-latest --jq '.id')
-          declare -A REMOTE_SIZES REMOTE_IDS
-          while IFS=: read -r name size id; do
+          declare -A REMOTE_DIGESTS REMOTE_IDS
+          while IFS=$'\t' read -r name digest id; do
             [ -z "$name" ] && continue
-            REMOTE_SIZES["$name"]="$size"
+            REMOTE_DIGESTS["$name"]="$digest"
             REMOTE_IDS["$name"]="$id"
           done < <(
             gh api "repos/${GITHUB_REPOSITORY}/releases/$RELEASE_ID/assets" \
-              --jq '.[] | "\(.name):\(.size):\(.id)"' 2>/dev/null || true
+              --jq '.[] | "\(.name)\t\(.digest // "")\t\(.id)"' 2>/dev/null || true
           )
 
-          # Upload new or size-changed runtimes
+          # Upload new or content-changed runtimes.
           for f in "${LOCAL[@]}"; do
             name=$(basename "$f")
-            local_size=$(stat -c %s "$f")
-            remote_size="${REMOTE_SIZES[$name]:-}"
-            if [ "$local_size" = "$remote_size" ]; then
-              echo "Skipping $name (unchanged: $local_size bytes)"
+            local_digest="sha256:$(sha256sum "$f" | awk '{print $1}')"
+            remote_digest="${REMOTE_DIGESTS[$name]:-}"
+            if [ "$local_digest" = "$remote_digest" ]; then
+              echo "Skipping $name (unchanged: $local_digest)"
               continue
             fi
-            if [ -n "$remote_size" ]; then
-              echo "Replacing $name (remote: $remote_size → local: $local_size bytes)"
+            if [ -n "$remote_digest" ]; then
+              echo "Replacing $name (remote: $remote_digest → local: $local_digest)"
             else
-              echo "Uploading new $name ($local_size bytes)"
+              echo "Uploading new $name ($local_digest)"
             fi
             gh release upload runtimes-latest "$f" --clobber
           done
