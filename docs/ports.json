@@ -572,12 +572,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/darkdeity.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-10T22:01",
       "first_seen": "2025-05-18",
-      "md5": "753128a07479a379d57b962edc1111f4",
-      "size": 4391936,
-      "lifetime_downloads": 29,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "17de9e7d8b03b3ed2a1255cca35293e3",
+      "size": 4391939,
+      "lifetime_downloads": 31,
+      "last_commit": "Various port fixes and typo corrections"
     }
   },
   {
@@ -946,7 +946,7 @@
     "name": "digitaltamersreborn.zip",
     "items": [
       "DigitalTamers Reborn.sh",
-      "digitamersreborn"
+      "digitaltamersreborn"
     ],
     "items_opt": [],
     "attr": {
@@ -956,7 +956,7 @@
       ],
       "desc": "Train, fight, evolve! Digital Tamers: ReBorn is a casual fighting game for all Digimon fans. Your mission is to take care of your partner, keep it strong, healthy in order to evolve and win battles and several prizes! Excel and win the 12 Championships that will take place throughout the year in order to become a true Digimon Tamer! Live this experience and welcome, to the Digital World!",
       "desc_md": null,
-      "inst": "Download the Windows executable from https://dragonrod342.itch.io/digital-tamers-reborn and put in the `ports/digitamersreborn/assets` folder..",
+      "inst": "Download the Windows executable (v2.2.2) from https://dragonrod342.itch.io/digital-tamers-reborn and put it in the `ports/digitaltamersreborn/assets` folder. The first launch unpacks it automatically.",
       "inst_md": null,
       "genres": [
         "action"
@@ -981,12 +981,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/digitaltamersreborn/digitaltamersreborn/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/digitaltamersreborn/digitaltamersreborn/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/digitaltamersreborn.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-10T22:01",
       "first_seen": "2025-05-18",
-      "md5": "32207bbd0128e5a2729593ad3b9e7368",
-      "size": 220690964,
-      "lifetime_downloads": 21,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "34a2efbff74eb24d652c43b070700be1",
+      "size": 220691290,
+      "lifetime_downloads": 27,
+      "last_commit": "Various port fixes and typo corrections"
     }
   },
   {
@@ -4255,12 +4255,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mariokartzx/mariokartzx/screenshot.png",
       "readme_url": "",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/mariokartzx.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-10T22:01",
       "first_seen": "2026-02-08",
-      "md5": "3e10e5e66d5226343cc7886297775443",
-      "size": 2743844,
-      "lifetime_downloads": 71,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "0c377b3e464bf9e9be76ffa9882a1148",
+      "size": 2743848,
+      "lifetime_downloads": 76,
+      "last_commit": "Various port fixes and typo corrections"
     }
   },
   {
@@ -5056,12 +5056,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-lttp.zip",
-      "date_updated": "2026-07-10T16:50",
+      "date_updated": "2026-07-10T22:01",
       "first_seen": "2026-07-10",
-      "md5": "13a79526a109c9b0624f5c3c683a1b0f",
-      "size": 1570434,
-      "lifetime_downloads": 0,
-      "last_commit": "[LTTP-REDUX] Release port"
+      "md5": "765689d72ca8b568d69b60f262076260",
+      "size": 1570589,
+      "lifetime_downloads": 1,
+      "last_commit": "Various port fixes and typo corrections"
     }
   },
   {
@@ -5431,12 +5431,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/undertaleredyellow.zip",
-      "date_updated": "2026-07-10T16:08",
+      "date_updated": "2026-07-10T22:01",
       "first_seen": "2025-05-19",
-      "md5": "506faf0e854f9e953e72831f89900c98",
-      "size": 9966199,
+      "md5": "fcc318a8787423859225c547be869f26",
+      "size": 9966200,
       "lifetime_downloads": 42,
-      "last_commit": "Fix a bunch of stuff"
+      "last_commit": "Various port fixes and typo corrections"
     }
   },
   {
