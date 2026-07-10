@@ -322,37 +322,15 @@ async function loadPorts() {
                             <time>${p.date}</time>
                         </header>
                         ${p.excerpt ? `<p class="devlog-excerpt">${p.excerpt}</p>` : ''}
-                        <details class="devlog-body" data-slug="${p.slug}">
-                            <summary>Read more →</summary>
-                            <div class="devlog-rendered">Loading…</div>
-                        </details>
+                        <button type="button" class="devlog-readmore" data-slug="${escAttr(p.slug)}" data-title="${escAttr(p.title)}">Read more →</button>
                     </article>
                 `).join('');
 
                 const olderHtml = `<p class="devlog-older"><a href="https://github.com/JeodC/RHH-Ports/tree/main/docs/devlog" target="_blank" rel="noopener noreferrer">Older posts →</a></p>`;
 
                 devlogContent.innerHTML = postsHtml + olderHtml;
-
-                // Lazy-fetch + render markdown when expanded
-                devlogContent.querySelectorAll('.devlog-body').forEach(details => {
-                    details.addEventListener('toggle', async () => {
-                        if (!details.open) return;
-                        const rendered = details.querySelector('.devlog-rendered');
-                        if (rendered.dataset.loaded === 'true') return;
-                        const slug = details.dataset.slug;
-                        try {
-                            const mdRes = await fetch(`devlog/${slug}.md`, { cache: 'no-cache' });
-                            if (!mdRes.ok) throw new Error('post missing');
-                            const md = await mdRes.text();
-                            rendered.innerHTML = (typeof marked !== 'undefined')
-                                ? marked.parse(md, { gfm: true, breaks: true })
-                                : `<pre>${md.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</pre>`;
-                            rendered.dataset.loaded = 'true';
-                        } catch (err) {
-                            rendered.innerHTML = '<p>Could not load this post.</p>';
-                        }
-                    });
-                });
+                // "Read more →" opens the full post in the shared README modal
+                // (wired via delegation on devlogContent once the modal helpers exist).
             } catch (err) {
                 devlogContent.innerHTML = '<p class="devlog-empty">Devlog unavailable.</p>';
             }
@@ -606,6 +584,14 @@ hr { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 1.5rem 0; }
         };
         wireTileClicks(recentStrip);
         wireTileClicks(newStrip);
+
+        devlogContent?.addEventListener('click', (e) => {
+            const btn = e.target.closest('.devlog-readmore');
+            if (!btn) return;
+            const slug = btn.dataset.slug;
+            if (!slug) return;
+            openReadmeModal(`devlog/${slug}.md`, btn.dataset.title || "Developer's Log");
+        });
 
     } catch (err) {
         container.textContent = 'Error loading ports: ' + err.message;

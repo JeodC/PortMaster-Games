@@ -64,7 +64,7 @@
 
 /* Accent links/labels */
 :root[data-night] .summary h2 small,
-:root[data-night] .devlog-body > summary,
+:root[data-night] .devlog-readmore,
 :root[data-night] .devlog-older a { color: var(--accent-text); }
 
 /* Nav hover */

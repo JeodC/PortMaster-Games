@@ -436,16 +436,19 @@ details[open] summary {
 	color: #333;
 }
 
-.devlog-body > summary {
+.devlog-readmore {
 	padding: 0;
-	justify-content: flex-start;
+	background: none;
+	border: none;
+	cursor: pointer;
 	color: var(--primary);
+	font-family: inherit;
 	font-weight: 600;
 	font-size: 0.9rem;
 }
 
-.devlog-body[open] > summary {
-	margin-bottom: 0.6rem;
+.devlog-readmore:hover {
+	text-decoration: underline;
 }
 
 .devlog-rendered {
