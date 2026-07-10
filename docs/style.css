@@ -751,6 +751,35 @@ details[open] summary {
 	display: none;
 }
 
+.readme-modal-title-row {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+
+.readme-modal-download {
+	display: inline-block;
+	padding: 0.35rem 0.9rem;
+	border-radius: var(--radius);
+	font-weight: 600;
+	font-size: 0.9rem;
+	text-decoration: none;
+	white-space: nowrap;
+	background: var(--primary);
+	color: var(--white);
+	transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.readme-modal-download:hover {
+	background: var(--primary-hover);
+	transform: translateY(-1px);
+}
+
+.readme-modal-download[hidden] {
+	display: none;
+}
+
 .readme-modal-stores {
 	display: flex;
 	flex-wrap: wrap;

@@ -484,6 +484,7 @@ async function loadPorts() {
         const readmeTitle = readmeModal?.querySelector('.readme-modal-title');
         const readmeFrame = readmeModal?.querySelector('.readme-modal-frame');
         const readmeClose = readmeModal?.querySelector('.readme-modal-close');
+        const readmeDownload = readmeModal?.querySelector('.readme-modal-download');
 
         const closeReadmeModal = () => {
             if (!readmeModal) return;
@@ -493,9 +494,18 @@ async function loadPorts() {
             document.body.style.overflow = '';
         };
 
-        const openReadmeModal = async (url, title, storesHtml = '') => {
+        const openReadmeModal = async (url, title, storesHtml = '', downloadUrl = '') => {
             if (!readmeModal) return;
             readmeTitle.textContent = title || 'README';
+            if (readmeDownload) {
+                if (downloadUrl) {
+                    readmeDownload.href = downloadUrl;
+                    readmeDownload.removeAttribute('hidden');
+                } else {
+                    readmeDownload.removeAttribute('href');
+                    readmeDownload.setAttribute('hidden', '');
+                }
+            }
             const storesSlot = readmeModal.querySelector('.readme-modal-stores');
             if (storesSlot) storesSlot.innerHTML = storesHtml || '';
             readmeFrame.srcdoc = '<html><body style="font-family:system-ui;padding:1rem;color:#666;margin:0">Loading…</body></html>';
@@ -561,7 +571,8 @@ hr { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 1.5rem 0; }
             // discount badges populated post-render by the sale tracker).
             const storesEl = card?.querySelector('.port-stores');
             const storesHtml = storesEl ? storesEl.outerHTML : '';
-            openReadmeModal(url, title, storesHtml);
+            const downloadUrl = card?.querySelector('.download-link')?.getAttribute('href') || '';
+            openReadmeModal(url, title, storesHtml, downloadUrl);
         });
 
         // Carousel tiles open the README modal when clicked. If a port has
@@ -579,7 +590,8 @@ hr { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 1.5rem 0; }
                 // re-render fresh from the source port's data.
                 const port = ports.find(p => (p.attr?.title || p.name) === title);
                 const storesHtml = port ? renderStores(port.attr?.store) : '';
-                openReadmeModal(readme, title, storesHtml);
+                const downloadUrl = port?.source?.download_url || '';
+                openReadmeModal(readme, title, storesHtml, downloadUrl);
             });
         };
         wireTileClicks(recentStrip);
