@@ -4,6 +4,9 @@
         "recompress_ogg": false
     },
     "externalize_textures": "textures",
+    "repack": true,
+    "page_size": 1024,
+    "repack_affinity": ["flowery", "orangeheart", "towery"],
     "code_patches": [
         {
             "entry": "gml_Object_obj_gamecontroller_Other_75",
