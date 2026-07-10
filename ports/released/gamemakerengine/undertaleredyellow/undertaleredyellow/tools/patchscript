@@ -23,7 +23,7 @@ echo "GAMEDIR is set to: $GAMEDIR"
 # Exports
 export DATADIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
-export DATAFILE="undertaleredyellow.port"
+export DATAFILE="undertalery.port"
 
 # Tight-RAM devices can't sustain a parallel astcenc / vorbis workload.
 THREADS_FLAG=""

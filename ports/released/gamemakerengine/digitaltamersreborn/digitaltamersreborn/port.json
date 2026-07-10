@@ -3,7 +3,7 @@
   "name": "digitaltamersreborn.zip",
   "items": [
     "DigitalTamers Reborn.sh",
-    "digitamersreborn"
+    "digitaltamersreborn"
   ],
   "items_opt": [],
   "attr": {
@@ -13,7 +13,7 @@
     ],
     "desc": "Train, fight, evolve! Digital Tamers: ReBorn is a casual fighting game for all Digimon fans. Your mission is to take care of your partner, keep it strong, healthy in order to evolve and win battles and several prizes! Excel and win the 12 Championships that will take place throughout the year in order to become a true Digimon Tamer! Live this experience and welcome, to the Digital World!",
     "desc_md": null,
-    "inst": "Download the Windows executable from https://dragonrod342.itch.io/digital-tamers-reborn and put in the `ports/digitamersreborn/assets` folder..",
+    "inst": "Download the Windows executable (v2.2.2) from https://dragonrod342.itch.io/digital-tamers-reborn and put it in the `ports/digitaltamersreborn/assets` folder. The first launch unpacks it automatically.",
     "inst_md": null,
     "genres": [
       "action"

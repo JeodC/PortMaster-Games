@@ -23,7 +23,7 @@ echo "GAMEDIR is set to: $GAMEDIR"
 # Exports
 export DATADIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
-export DATAFILE="digitaltamersreborn.port"
+export DATAFILE="dtr.port"
 
 # Tight-RAM devices can't sustain a parallel astcenc / vorbis workload.
 THREADS_FLAG=""
@@ -66,6 +66,18 @@ thermal_restore() {
 
 prepare_files() {
     mkdir -p "$SAVEDIR"
+
+    # Unpack the user-supplied Windows exe (self-extracting GM bundle) if present
+    local exe
+    exe=$(find "$DATADIR" -maxdepth 1 -type f -iname "*.exe" | head -n 1)
+    if [ -n "$exe" ]; then
+        echo "Unpacking $(basename "$exe")..."
+        if ! "$GAMEDIR/tools/7za" x -y "$exe" -o"$DATADIR" >/dev/null; then
+            emit_fail_msg "Failed to unpack $(basename "$exe")."
+            return 1
+        fi
+    fi
+    [ -f "$DATADIR/splash.png" ] && mv -f "$DATADIR/splash.png" "$GAMEDIR"
 
     # Delete excess files
     find "$DATADIR" -type f \( \
@@ -125,15 +137,19 @@ apply_xdelta() {
         rm -f "$tooldir/patches/dtr.zip."*
     fi
     if [ ! -f "$DATADIR/data.win" ]; then
-        emit_fail_msg "No data.win found. Copy your Digital Tamers Reborn data.win into assets/."
+        emit_fail_msg "No game data found. Copy the DigitalTamers Reborn v2.2.2 (PC) .exe into assets/."
         return 1
     fi
     if [ ! -f "$tooldir/patches/dtr.xdelta" ]; then
         emit_fail_msg "Missing dtr.xdelta after extraction."
         return 1
     fi
+    # A data.win already patched on a PC must not go through the xdelta again;
+    # patch_datafile handles both --check outcomes for it.
+    "$controlfolder/gmtoolkit.${DEVICE_ARCH}" --check --config "$GAMEDIR/tools/digitaltamersreborn.json" "$DATADIR/data.win" >/dev/null 2>&1
+    case "$?" in 0|2) return 0 ;; esac
     if ! "$controlfolder/xdelta3" -d -s "$DATADIR/data.win" -f "$tooldir/patches/dtr.xdelta" "$DATADIR/data.patched"; then
-        emit_fail_msg "xdelta apply failed."
+        emit_fail_msg "xdelta patch failed. Make sure your game is DigitalTamers Reborn v2.2.2 (PC)."
         return 1
     fi
     rm -f "$DATADIR/data.win"

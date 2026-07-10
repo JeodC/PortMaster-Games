@@ -1,5 +1,5 @@
 ## Installation
-Download the Windows executable from https://dragonrod342.itch.io/digital-tamers-reborn and put in the `ports/digitamersreborn/assets` folder.
+Download the Windows executable (v2.2.2) from https://dragonrod342.itch.io/digital-tamers-reborn and put it in the `ports/digitaltamersreborn/assets` folder. The first launch unpacks it automatically.
 
 ## Controls
 | Button | Action |
