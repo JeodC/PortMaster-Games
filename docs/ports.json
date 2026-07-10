@@ -5020,6 +5020,51 @@
     }
   },
   {
+    "version": 1,
+    "name": "zelda-lttp.zip",
+    "items": [
+      "Zelda LTTP.sh",
+      "zelda-lttp"
+    ],
+    "items_opt": [],
+    "attr": {
+      "title": "The Legend of Zelda: A Link to the Past Redux",
+      "porter": [
+        "tekkenfede",
+        "Jeod"
+      ],
+      "desc": "A native reimplementation of The Legend of Zelda: A Link to the Past, built from the snesrev/zelda3 project. Adds widescreen support, a higher-resolution world map, and a range of quality-of-life options over the original SNES game. You must provide your own US ROM; the game's assets are rebuilt on the device the first time you launch, so no PC-side extraction is required.",
+      "desc_md": null,
+      "inst": "Put a US 'A Link to the Past' ROM named zelda3.sfc in ports/zelda-lttp/ (a matching ROM in your snes folder is also detected), then launch; the assets are built on first run. You can instead drop a prebuilt zelda3_assets.dat into ports/zelda-lttp/.",
+      "inst_md": null,
+      "genres": [
+        "action",
+        "adventure"
+      ],
+      "image": null,
+      "rtr": false,
+      "exp": false,
+      "runtime": [],
+      "store": [],
+      "availability": "free",
+      "reqs": [],
+      "arch": [
+        "aarch64"
+      ]
+    },
+    "source": {
+      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/screenshot.png",
+      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/README.md",
+      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-lttp.zip",
+      "date_updated": "2026-07-10T16:50",
+      "first_seen": "2026-07-10",
+      "md5": "13a79526a109c9b0624f5c3c683a1b0f",
+      "size": 1570434,
+      "lifetime_downloads": 0,
+      "last_commit": "[LTTP-REDUX] Release port"
+    }
+  },
+  {
     "version": 4,
     "name": "zeldadoi.zip",
     "items": [
