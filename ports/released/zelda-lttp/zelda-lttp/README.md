@@ -15,7 +15,7 @@ Already have a `zelda3_assets.dat` from a PC build? Drop it straight into `ports
 
 ## Configuration
 
-The port re-tunes the display and performance settings in `zelda3.ini` to your device on every launch, so it's fully portable — copy it to any handheld and it adapts (screen aspect/resolution, Mode-7 map, audio buffer, renderer). Your edits to gameplay features, controls, and MSU are left alone. Settings live in `ports/zelda-lttp/zelda3.ini`. Highlights:
+The port re-tunes the display and performance settings in `zelda3.ini` to your device on every launch, so it's fully portable — copy it to any handheld and it adapts (screen aspect/resolution, Mode-7 map, audio buffer, renderer). Your edits to gameplay features, controls, and MSU are left alone. Settings live in `ports/zelda-lttp/zelda3.ini`, with a few of the most used settings toggleable with a bottom screen at runtime. Highlights:
 
 - **Widescreen**: set `ExtendedAspectRatio` to `16:9`, `16:10`, or `18:9` (default `4:3`).
 - **World map quality**: `EnhancedMode7` (lower it to `0` on weak devices if the map scroll stutters).
@@ -28,6 +28,10 @@ Controller input is native; the SNES-to-pad layout is under `[GamepadMap]`.
 ## Sprite Mods
 
 Alternative sprites are available at https://github.com/snesrev/sprites-gfx. Download the repository and copy the **contents** of `sprites-gfx-testing.zip\sprites-gfx-testing\snes\zelda3\` to your `zelda-lttp/alt` folder. Then, edit `zelda3.ini` to uncomment the `LinkGraphics =` line and edit the path to point to the sprite you want to use.
+
+## Achievements
+
+When using a second screen, the bottom screen's settings menu will display an achievements list. This is an offline copy of the RetroAchievements core set, which is useful for tracking file progress.
 
 ## Credits
 - Original port (hosted on PortMaster) by tekkenfede. Automated handling of first run and config by Jeod.
