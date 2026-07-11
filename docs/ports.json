@@ -4253,14 +4253,14 @@
     },
     "source": {
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mariokartzx/mariokartzx/screenshot.png",
-      "readme_url": "",
+      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mariokartzx/mariokartzx/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/mariokartzx.zip",
-      "date_updated": "2026-07-10T22:01",
+      "date_updated": "2026-07-11T02:20",
       "first_seen": "2026-02-08",
-      "md5": "0c377b3e464bf9e9be76ffa9882a1148",
-      "size": 2743848,
-      "lifetime_downloads": 76,
-      "last_commit": "Various port fixes and typo corrections"
+      "md5": "4764ed9cc78793ad5d91792a7aaec019",
+      "size": 2744155,
+      "lifetime_downloads": 80,
+      "last_commit": "[MKZX] Add missing readme file"
     }
   },
   {
