@@ -5056,12 +5056,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-lttp.zip",
-      "date_updated": "2026-07-10T22:01",
+      "date_updated": "2026-07-11T02:55",
       "first_seen": "2026-07-10",
-      "md5": "765689d72ca8b568d69b60f262076260",
-      "size": 1570589,
-      "lifetime_downloads": 1,
-      "last_commit": "Various port fixes and typo corrections"
+      "md5": "0b3f01bdf0f0d74cb000a7160cd8b49a",
+      "size": 1595856,
+      "lifetime_downloads": 6,
+      "last_commit": "[ZELDA3] Add dual screen support and borders"
     }
   },
   {
