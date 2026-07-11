@@ -2785,12 +2785,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip",
-      "date_updated": "2026-07-11T18:08",
+      "date_updated": "2026-07-11T18:11",
       "first_seen": "2026-01-29",
-      "md5": "52b1cd8c5381d01dd52591843377d097",
-      "size": 21748575,
+      "md5": "13f7b487a49190237fa41055212983e1",
+      "size": 21749854,
       "lifetime_downloads": 1374,
-      "last_commit": "[PHAROS] Add fallback for images.zip release paths"
+      "last_commit": "[Pharos] Update to v1.1.7"
     }
   },
   {
