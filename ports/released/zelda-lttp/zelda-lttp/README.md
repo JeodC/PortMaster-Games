@@ -13,6 +13,12 @@ The supported ROM is US v1.0, SHA-256 `66871d66be19ad2c34c927d6b14cd8eb6fc318196
 
 Already have a `zelda3_assets.dat` from a PC build? Drop it straight into `ports/zelda-lttp/` and the first-run step is skipped.
 
+## Dual Screen
+
+This port will use the bottom screen of a dual-screen handheld such as the AYN Thor for a companion instance, with working touch controls:
+
+![The port on a dual-screen handheld: the game up top, with a live world map, touch inventory, and achievements on the bottom screen](dualscreen.png)
+
 ## Configuration
 
 The port re-tunes the display and performance settings in `zelda3.ini` to your device on every launch, so it's fully portable — copy it to any handheld and it adapts (screen aspect/resolution, Mode-7 map, audio buffer, renderer). Your edits to gameplay features, controls, and MSU are left alone. Settings live in `ports/zelda-lttp/zelda3.ini`, with a few of the most used settings toggleable with a bottom screen at runtime. Highlights:
