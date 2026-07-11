@@ -336,9 +336,65 @@ async function loadPorts() {
             }
         };
 
+        // Shared card template: the main grid and the pinned Pharos card
+        // render identical content from a port's ports.json entry.
+        const renderPortCard = (port) => {
+            const title = port.attr.title || port.name;
+            const screenshot = port.source.screenshot_url || '';
+            const downloadHref = port.source.download_url || '';
+            const filename = downloadHref ? downloadHref.split('/').pop() : '';
+            const baseLifetime = port.source?.lifetime_downloads ?? 0;
+            const downloadCount = downloadCounts?.[filename] ?? 0;
+            const totalLifetime = baseLifetime + downloadCount;
+            const reqs = (port.attr?.reqs || []).join(', ');
+            const genres = (port.attr?.genres || []).join(', ');
+            const runtimes = (port.attr?.runtime || []).map(r => runtimeNames[r] || r).join(', ');
+            const lastCommit = port.source.last_commit;
+            const displayCommit = (!lastCommit || lastCommit.includes('Update ports.json'))
+                ? ""
+                : lastCommit;
+
+            return `
+                <div class="port-card">
+                    <img src="${screenshot}" alt="${title} screenshot" loading="lazy">
+                    <div class="port-info">
+                        <h2 class="port-title">${title}</h2>
+                        <p class="port-desc">${port.attr.desc || ''}</p>
+                        <div class="port-footer">
+                            <p class="download-count">
+                                <strong>Downloads since last update:</strong> ${downloadCount}</br>
+                                <strong>Total Downloads:</strong> ${totalLifetime}
+                            </p>
+                            ${reqs ? `<div class="port-reqs">${reqs}</div>` : ''}
+                            ${runtimes ? `<div class="port-runtimes">${runtimes}</div>` : ''}
+                            ${genres ? `<div class="port-genres">${genres}</div>` : ''}
+                            ${displayCommit ? `<div class="port-commit-banner" title="${displayCommit}">${displayCommit}</div>` : ''}
+                            ${renderStores(port.attr?.store)}
+                            <div class="port-buttons">
+                                <a class="details-link" href="${port.source.readme_url || ''}" target="_blank" rel="noopener noreferrer">Details</a>
+                                <a class="download-link" href="${downloadHref}" target="_blank" rel="noopener noreferrer">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        };
+
+        // Pinned Pharos card
+        const renderPharosCard = () => {
+            const el = document.getElementById('pharos-card');
+            if (!el) return;
+            const p = ports.find(x => x.name === 'pharos.zip');
+            if (!p) {
+                el.closest('.pharos-panel')?.setAttribute('hidden', '');
+                return;
+            }
+            el.innerHTML = renderPortCard(p);
+        };
+
         renderRecentStrip();
         renderNewStrip();
         renderDevlog();
+        renderPharosCard();
 
         // --- Core Functions ---
         const renderPorts = (filtered) => {
@@ -350,46 +406,7 @@ async function loadPorts() {
             if (genreVal !== 'all') countText += ` in "${genreDropdown.selectedOptions[0].text}"`;
             countDisplay.textContent = countText;
 
-            container.innerHTML = filtered.map(port => {
-                const title = port.attr.title || port.name;
-                const screenshot = port.source.screenshot_url || '';
-                const downloadHref = port.source.download_url || '';
-                const filename = downloadHref ? downloadHref.split('/').pop() : '';
-                const baseLifetime = port.source?.lifetime_downloads ?? 0;
-                const downloadCount = downloadCounts?.[filename] ?? 0;
-                const totalLifetime = baseLifetime + downloadCount;
-                const reqs = (port.attr?.reqs || []).join(', ');
-                const genres = (port.attr?.genres || []).join(', ');
-                const runtimes = (port.attr?.runtime || []).map(r => runtimeNames[r] || r).join(', ');
-                const lastCommit = port.source.last_commit;
-                const displayCommit = (!lastCommit || lastCommit.includes('Update ports.json')) 
-                    ? "" 
-                    : lastCommit;
-
-                return `
-                    <div class="port-card">
-                        <img src="${screenshot}" alt="${title} screenshot" loading="lazy">
-                        <div class="port-info">
-                            <h2 class="port-title">${title}</h2>
-                            <p class="port-desc">${port.attr.desc || ''}</p>
-                            <div class="port-footer">
-                                <p class="download-count">
-                                    <strong>Downloads since last update:</strong> ${downloadCount}</br>
-                                    <strong>Total Downloads:</strong> ${totalLifetime}
-                                </p>
-                                ${reqs ? `<div class="port-reqs">${reqs}</div>` : ''}
-                                ${runtimes ? `<div class="port-runtimes">${runtimes}</div>` : ''}
-                                ${genres ? `<div class="port-genres">${genres}</div>` : ''}
-                                ${displayCommit ? `<div class="port-commit-banner" title="${displayCommit}">${displayCommit}</div>` : ''}
-                                ${renderStores(port.attr?.store)}
-                                <div class="port-buttons">
-                                    <a class="details-link" href="${port.source.readme_url || ''}" target="_blank" rel="noopener noreferrer">Details</a>
-                                    <a class="download-link" href="${downloadHref}" target="_blank" rel="noopener noreferrer">Download</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-            }).join('');
+            container.innerHTML = filtered.map(renderPortCard).join('');
         };
 
         const updateDisplay = () => {
@@ -559,7 +576,7 @@ hr { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 1.5rem 0; }
         });
 
         // Delegate Details clicks to the modal opener
-        container.addEventListener('click', (e) => {
+        const handleDetailsClick = (e) => {
             const link = e.target.closest('.details-link');
             if (!link) return;
             e.preventDefault();
@@ -573,7 +590,9 @@ hr { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 1.5rem 0; }
             const storesHtml = storesEl ? storesEl.outerHTML : '';
             const downloadUrl = card?.querySelector('.download-link')?.getAttribute('href') || '';
             openReadmeModal(url, title, storesHtml, downloadUrl);
-        });
+        };
+        container.addEventListener('click', handleDetailsClick);
+        document.getElementById('pharos-card')?.addEventListener('click', handleDetailsClick);
 
         // Carousel tiles open the README modal when clicked. If a port has
         // no README, data-readme is empty and the default link behavior

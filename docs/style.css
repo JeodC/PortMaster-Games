@@ -946,6 +946,54 @@ details[open] summary {
 	padding: 0.8rem 1rem 1rem 1.25rem;
 }
 
+.pharos-panel {
+	background: var(--accent-bg);
+	border: 2px solid #666;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
+	overflow: hidden;
+	position: relative;
+	margin: 0 0 1rem;
+}
+
+.pharos-panel::before {
+	content: "";
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 6px;
+	background: var(--primary);
+	z-index: 1;
+}
+
+.pharos-panel .filters-panel-header h2 small {
+	font-size: 0.75rem;
+	font-weight: normal;
+	color: var(--primary);
+	margin-left: 6px;
+}
+
+.pharos-panel-body {
+	padding: 0.5rem 0.75rem 0.75rem 1rem;
+	font-size: 0.9rem;
+}
+
+/* The body holds a real .port-card (same template as the grid); the panel
+   already provides the chrome, so strip the card's own box. */
+.pharos-panel .port-card {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+	height: auto;
+}
+
+/* Grid cards reserve description space to keep rows uniform — pointless
+   in the rail, where the card stands alone. */
+.pharos-panel .port-desc {
+	min-height: 0;
+	font-size: 0.9rem;
+}
+
 /* ---------- Left rail inner controls ---------- */
 .page-left .search-section {
 	margin: 0 0 1rem;
@@ -1222,7 +1270,8 @@ details[open] summary {
 		font-size: 1.15rem;
 	}
 
-	.filters-panel-body {
+	.filters-panel-body,
+	.pharos-panel-body {
 		padding: 0.6rem 0.75rem 0.75rem 1rem;
 	}
 	.devlog-content,
