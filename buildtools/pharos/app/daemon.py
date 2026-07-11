@@ -206,6 +206,78 @@ def notify(cfw: str, message: str) -> bool:
     log("WARN", f"unsupported CFW '{cfw}'; would have sent: {message}")
     return False
 
+# If there's a modules dir (used for Tools menu in ES),
+# add a Pharos launch script there if the daemon is in use.
+MODULES_DIR = Path("/storage/.config/modules")
+MODULE_SCRIPT = MODULES_DIR / "Start Pharos.sh"
+MODULE_GAMELIST = MODULES_DIR / "gamelist.xml"
+MODULE_IMAGE = MODULES_DIR / "images" / "pharos.png"
+MODULE_COVER_SOURCE = INSTALL_DIR / "cover.png"
+_MODULE_SCRIPT_TEMPLATE = """#!/bin/bash
+# Created by pharos-daemon: launches Pharos from the Tools menu.
+source /etc/profile
+
+for launcher in "{ports_dir}/Pharos"*.sh; do
+    if [ -f "$launcher" ]; then
+        exec /bin/bash "$launcher"
+    fi
+done
+echo "Pharos launcher not found in {ports_dir}" >&2
+exit 1
+"""
+
+_GAMELIST_ENTRY_TEMPLATE = """    <game>
+        <path>./Start Pharos.sh</path>
+        <name>Pharos</name>
+        <desc>Pharos is a tool for downloading ports and wine bottles hosted on independent GitHub repositories.</desc>
+        <developer>Jeod</developer>
+        <publisher>Jeod</publisher>
+        <rating>5.0</rating>
+        <releasedate>2025</releasedate>
+        <genre>Tool</genre>
+        <players>1</players>
+{image_line}    </game>
+"""
+
+
+def ensure_es_module() -> None:
+    """Idempotently install 'Start Pharos.sh' + its gamelist.xml entry into
+    the ES modules dir. No-op on CFWs without /storage/.config/modules."""
+    if not MODULES_DIR.is_dir():
+        return
+    try:
+        if not MODULE_SCRIPT.exists():
+            ports_dir = INSTALL_DIR.parent
+            MODULE_SCRIPT.write_text(
+                _MODULE_SCRIPT_TEMPLATE.format(ports_dir=ports_dir), encoding="utf-8"
+            )
+            MODULE_SCRIPT.chmod(0o755)
+            log("INFO", f"installed ES module {MODULE_SCRIPT}")
+
+        if not MODULE_IMAGE.exists() and MODULE_COVER_SOURCE.exists():
+            MODULE_IMAGE.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(MODULE_COVER_SOURCE, MODULE_IMAGE)
+            log("INFO", f"copied module image -> {MODULE_IMAGE}")
+
+        if MODULE_GAMELIST.exists():
+            xml = MODULE_GAMELIST.read_text("utf-8")
+        else:
+            xml = '<?xml version="1.0"?>\n<gameList>\n</gameList>\n'
+        if "Start Pharos.sh" not in xml and "</gameList>" in xml:
+            image_line = (
+                "        <image>./images/pharos.png</image>\n"
+                if MODULE_IMAGE.exists()
+                else ""
+            )
+            entry = _GAMELIST_ENTRY_TEMPLATE.format(image_line=image_line)
+            xml = xml.replace("</gameList>", entry + "</gameList>", 1)
+            tmp = MODULE_GAMELIST.with_suffix(".tmp")
+            tmp.write_text(xml, encoding="utf-8")
+            os.replace(tmp, MODULE_GAMELIST)
+            log("INFO", f"added Pharos entry to {MODULE_GAMELIST}")
+    except OSError as e:
+        log("WARN", f"ES module injection failed: {e}")
+
 # ----------------------------------------------------------------------
 # Update check
 # ----------------------------------------------------------------------
@@ -432,6 +504,8 @@ def run_check() -> tuple[bool, bool]:
     """
     global _network_errors_this_pass
     _network_errors_this_pass = 0
+
+    ensure_es_module()
 
     local_md5s, local_titles, local_repos, muted = load_local_manifest()
     if not local_md5s:
