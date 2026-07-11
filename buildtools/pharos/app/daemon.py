@@ -211,8 +211,8 @@ def notify(cfw: str, message: str) -> bool:
 MODULES_DIR = Path("/storage/.config/modules")
 MODULE_SCRIPT = MODULES_DIR / "Start Pharos.sh"
 MODULE_GAMELIST = MODULES_DIR / "gamelist.xml"
-MODULE_IMAGE = MODULES_DIR / "images" / "pharos.png"
-MODULE_COVER_SOURCE = INSTALL_DIR / "cover.png"
+MODULE_IMAGE = MODULES_DIR / "images" / "pharos.svg"
+MODULE_ICON_SOURCE = INSTALL_DIR / "pharos.svg"
 _MODULE_SCRIPT_TEMPLATE = """#!/bin/bash
 # Created by pharos-daemon: launches Pharos from the Tools menu.
 source /etc/profile
@@ -226,7 +226,7 @@ echo "Pharos launcher not found in {ports_dir}" >&2
 exit 1
 """
 
-_GAMELIST_ENTRY_TEMPLATE = """    <game>
+_GAMELIST_ENTRY = """    <game>
         <path>./Start Pharos.sh</path>
         <name>Pharos</name>
         <desc>Pharos is a tool for downloading ports and wine bottles hosted on independent GitHub repositories.</desc>
@@ -236,7 +236,8 @@ _GAMELIST_ENTRY_TEMPLATE = """    <game>
         <releasedate>2025</releasedate>
         <genre>Tool</genre>
         <players>1</players>
-{image_line}    </game>
+        <image>./images/pharos.svg</image>
+    </game>
 """
 
 
@@ -254,23 +255,17 @@ def ensure_es_module() -> None:
             MODULE_SCRIPT.chmod(0o755)
             log("INFO", f"installed ES module {MODULE_SCRIPT}")
 
-        if not MODULE_IMAGE.exists() and MODULE_COVER_SOURCE.exists():
+        if not MODULE_IMAGE.exists() and MODULE_ICON_SOURCE.exists():
             MODULE_IMAGE.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(MODULE_COVER_SOURCE, MODULE_IMAGE)
-            log("INFO", f"copied module image -> {MODULE_IMAGE}")
+            shutil.copyfile(MODULE_ICON_SOURCE, MODULE_IMAGE)
+            log("INFO", f"copied module icon -> {MODULE_IMAGE}")
 
         if MODULE_GAMELIST.exists():
             xml = MODULE_GAMELIST.read_text("utf-8")
         else:
             xml = '<?xml version="1.0"?>\n<gameList>\n</gameList>\n'
         if "Start Pharos.sh" not in xml and "</gameList>" in xml:
-            image_line = (
-                "        <image>./images/pharos.png</image>\n"
-                if MODULE_IMAGE.exists()
-                else ""
-            )
-            entry = _GAMELIST_ENTRY_TEMPLATE.format(image_line=image_line)
-            xml = xml.replace("</gameList>", entry + "</gameList>", 1)
+            xml = xml.replace("</gameList>", _GAMELIST_ENTRY + "</gameList>", 1)
             tmp = MODULE_GAMELIST.with_suffix(".tmp")
             tmp.write_text(xml, encoding="utf-8")
             os.replace(tmp, MODULE_GAMELIST)
