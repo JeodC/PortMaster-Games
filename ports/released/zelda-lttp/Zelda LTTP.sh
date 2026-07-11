@@ -44,25 +44,11 @@ is_weak_device() {
     return 1
 }
 
-# Snap the panel's aspect ratio to one zelda3 supports (4:3 / 16:10 / 16:9 / 18:9).
-pick_aspect() {
-    local w="${ASPECT_X:-4}" h="${ASPECT_Y:-3}"
-    [ "$h" -gt 0 ] 2>/dev/null || { w=4; h=3; }
-
-    local ratio=$(( w * 1000 / h ))    # e.g. 16:9 -> 1777
-    if   [ "$ratio" -le 1450 ]; then echo "4:3"      # 4:3, 5:4
-    elif [ "$ratio" -le 1680 ]; then echo "16:10"    # 3:2, 16:10
-    elif [ "$ratio" -le 1880 ]; then echo "16:9"     # 16:9
-    else                             echo "18:9"     # 18:9, 2:1, wider
-    fi
-}
-
 # Tune zelda3.ini's display/performance settings to this device.
 apply_device_config() {
     [ -f "$GAMEDIR/zelda3.ini" ] || return 0
 
-    local aspect mode7 samples renderer
-    aspect=$(pick_aspect)
+    local mode7 samples renderer
 
     # Weak devices
     if is_weak_device; then
@@ -72,15 +58,12 @@ apply_device_config() {
     fi
 
     set_ini "Fullscreen"          "1"
-    set_ini "ExtendedAspectRatio" "$aspect"
     set_ini "EnhancedMode7"       "$mode7"
     set_ini "AudioSamples"        "$samples"
     set_ini "OutputMethod"        "$renderer"
     if [ -n "$DISPLAY_WIDTH" ] && [ -n "$DISPLAY_HEIGHT" ]; then
         set_ini "WindowSize" "${DISPLAY_WIDTH}x${DISPLAY_HEIGHT}"
     fi
-
-    echo "Device config: aspect=$aspect res=${DISPLAY_WIDTH}x${DISPLAY_HEIGHT} renderer=$renderer"
 }
 
 apply_device_config
@@ -109,19 +92,19 @@ if [ ! -f "$GAMEDIR/zelda3_assets.dat" ]; then
     exit 1
 fi
 
-# Face-button layout
-if [ -f "$GAMEDIR/swapabxy.txt" ]; then
-    chmod +x "$GAMEDIR/tools/swapabxy.py"
-    if [ -n "$SDL_GAMECONTROLLERCONFIG_FILE" ] && [ -f "$SDL_GAMECONTROLLERCONFIG_FILE" ]; then
-        if "$GAMEDIR/tools/swapabxy.py" < "$SDL_GAMECONTROLLERCONFIG_FILE" > "$GAMEDIR/gamecontrollerdb_swapped.txt" 2>/dev/null \
-           && [ -s "$GAMEDIR/gamecontrollerdb_swapped.txt" ]; then
-            export SDL_GAMECONTROLLERCONFIG_FILE="$GAMEDIR/gamecontrollerdb_swapped.txt"
-        fi
-    fi
-    if [ -n "$SDL_GAMECONTROLLERCONFIG" ]; then
-        swapped="$(echo "$SDL_GAMECONTROLLERCONFIG" | "$GAMEDIR/tools/swapabxy.py" 2>/dev/null)"
-        [ -n "$swapped" ] && export SDL_GAMECONTROLLERCONFIG="$swapped"
-    fi
+# Dual screen config
+has_dual_screen() {
+    [ "${DEVICE_HAS_DUAL_SCREEN}" = "true" ] && return 0
+    [ "$(cat /sys/class/drm/card*/card*-*/status 2>/dev/null | grep -cx connected)" -ge 2 ]
+}
+DUALSCREEN=0
+if has_dual_screen && [ ! -f "$GAMEDIR/no_dualscreen.txt" ]; then
+    DUALSCREEN=1
+    export ZELDA3_SECOND_SCREEN=1
+    export ZELDA3_SECOND_SCREEN_TITLE="Zelda3 Bottom Screen"
+    # Wayland session: let SDL pick the compositor backend
+    [ -n "$WAYLAND_DISPLAY" ] && export SDL_VIDEODRIVER=wayland
+    command -v swaymsg >/dev/null 2>&1 && swaymsg 'seat seat1 fallback true' >/dev/null 2>&1
 fi
 
 # Run it
@@ -130,5 +113,9 @@ pm_platform_helper "$GAME" >/dev/null
 "$GAME"
 
 # Cleanup
+if [ "$DUALSCREEN" = "1" ] && command -v swaymsg >/dev/null 2>&1; then
+    swaymsg 'seat seat1 fallback false' >/dev/null 2>&1
+    swaymsg 'output DSI-1 power off' >/dev/null 2>&1
+fi
 $ESUDO kill -9 "$(pidof gptokeyb)" 2>/dev/null
 pm_finish

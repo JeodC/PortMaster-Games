@@ -25,7 +25,12 @@ The port re-tunes the display and performance settings in `zelda3.ini` to your d
 
 Controller input is native; the SNES-to-pad layout is under `[GamepadMap]`.
 
+## Sprite Mods
+
+Alternative sprites are available at https://github.com/snesrev/sprites-gfx. Download the repository and copy the **contents** of `sprites-gfx-testing.zip\sprites-gfx-testing\snes\zelda3\` to your `zelda-lttp/alt` folder. Then, edit `zelda3.ini` to uncomment the `LinkGraphics =` line and edit the path to point to the sprite you want to use.
+
 ## Credits
 - Original port (hosted on PortMaster) by tekkenfede. Automated handling of first run and config by Jeod.
 - Game reimplementation: the [snesrev/zelda3](https://github.com/snesrev/zelda3) project.
+- Dual-screen add-on by [samyost1](https://github.com/samyost1/zelda3-android) and ported to linux arm by Jeod.
 - *The Legend of Zelda: A Link to the Past* is © Nintendo. This port ships no game assets; they are rebuilt from your own ROM.
