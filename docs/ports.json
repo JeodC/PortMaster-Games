@@ -2785,12 +2785,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip",
-      "date_updated": "2026-07-09T13:40",
+      "date_updated": "2026-07-11T18:08",
       "first_seen": "2026-01-29",
-      "md5": "148576c53be0e1934073651137ccfa8b",
-      "size": 21749457,
-      "lifetime_downloads": 1279,
-      "last_commit": "[PHAROS] Cleanup runtime requirements: Pharos is pyinstalled, so no python runtime needed"
+      "md5": "52b1cd8c5381d01dd52591843377d097",
+      "size": 21748575,
+      "lifetime_downloads": 1374,
+      "last_commit": "[PHAROS] Add fallback for images.zip release paths"
     }
   },
   {
