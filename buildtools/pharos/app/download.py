@@ -144,18 +144,24 @@ class Downloader:
                 with open(metadata_path, "r", encoding="utf-8") as f:
                     local_meta = json.load(f)
 
-        try:
-            parts = urllib.parse.urlparse(repo.images_zip_url).path.split("/")
-            owner, repo_name, _, _, tag = parts[1:6]
-            api_url = f"https://api.github.com/repos/{owner}/{repo_name}/releases/tags/{tag}"
-            data, _ = _gh_request(api_url)
-            release = json.loads(data)
-        except Exception as e:
-            print(f"[ERROR] Query release {repo.name}: {e}")
-            return
+        parts = urllib.parse.urlparse(repo.images_zip_url).path.split("/")
+        owner, repo_name, _, _, tag = parts[1:6]
 
-        asset = next((a for a in release.get("assets", []) if a["name"] == "images.zip"), None)
+        # Try the configured tag, then fall back.
+        asset = None
+        for candidate_tag in dict.fromkeys((tag, "screenshots-latest")):
+            try:
+                api_url = f"https://api.github.com/repos/{owner}/{repo_name}/releases/tags/{candidate_tag}"
+                data, _ = _gh_request(api_url)
+                release = json.loads(data)
+            except Exception as e:
+                print(f"[IMAGES] No {candidate_tag} release for {repo.name}: {e}")
+                continue
+            asset = next((a for a in release.get("assets", []) if a["name"] == "images.zip"), None)
+            if asset:
+                break
         if not asset:
+            print(f"[IMAGES] No images.zip found for {repo.name}")
             return
 
         remote_id = asset.get("id")
