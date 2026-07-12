@@ -4,7 +4,7 @@ From Paul Hubans, one of the developers behind UFO 50, MADHOUSE is a horror acti
 WARNING! This game contains depictions of violence and foul language!
 
 ## Installation Notes
-This early access game uses a later GM engine runtime, and you need to use the `gmtoolkit.squashfs` runtime from my `runtimes` folder to patch it. Copy `gmtoolkit.squashfs` to your `PortMaster/libs` folder and replace the existing version if installed.
+This early access game uses a later GM engine runtime, and you need the `gmtoolkit.aarch64` binary from the [gmtoolkit releases](https://github.com/JeodC/gmtoolkit/releases/latest) to patch it. Place it in your `PortMaster/` folder and replace the existing version if installed.
 
 ## Default Gameplay Controls (Xbox Layout)
 | Button            | Action |
@@ -23,13 +23,12 @@ This early access game uses a later GM engine runtime, and you need to use the `
 
 ## Runtimes
 
-This port requires the following runtimes in `PortMaster/libs`:
+This port requires the following:
 
-- **.NET 8** — [dotnet-8.0.12.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/dotnet-8.0.12.squashfs)
-- **GMToolkit** — [gmtoolkit.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/gmtoolkit.squashfs)
-- **GMLoader-Next** — [gmloadernext.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/gmloadernext.squashfs)
+- [gmtoolkit.aarch64](https://github.com/JeodC/gmtoolkit/releases/latest) placed in the `PortMaster/` folder.
+- [gmloadernext.squashfs](https://github.com/JeodC/RHH-Ports/raw/main/runtimes/gmloadernext.squashfs) placed in the `PortMaster/libs/` folder.
 
-[Pharos](https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip) will fetch these automatically when installing the port. Otherwise download them manually from the [runtimes folder](https://github.com/JeodC/RHH-Ports/tree/main/runtimes) and drop them in `PortMaster/libs`.
+[Pharos](https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip) will fetch these automatically when installing the port. Otherwise download them manually and add them to the correct folders.
 
 ## Thanks
 Paul Hubans -- The game  
