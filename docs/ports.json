@@ -200,12 +200,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/aurascope/aurascope/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/aurascope/aurascope/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/aurascope.zip",
-      "date_updated": "2026-07-12T17:05",
+      "date_updated": "2026-07-12T18:39",
       "first_seen": "2025-05-18",
-      "md5": "15ed1bb819e223c8b2bbfcabc316a13d",
-      "size": 2750805,
+      "md5": "ba6ed8e948261187cb6651e9d0754586",
+      "size": 2750946,
       "lifetime_downloads": 27,
-      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
+      "last_commit": "Restore patchscript blocks broken by gmtoolkit refactor"
     }
   },
   {
@@ -572,12 +572,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/darkdeity.zip",
-      "date_updated": "2026-07-12T17:05",
+      "date_updated": "2026-07-12T18:39",
       "first_seen": "2025-05-18",
-      "md5": "f2c92900e693a7f6359cd5c02ac72e01",
-      "size": 4391903,
+      "md5": "c96b998f3dab69bafa5504749e8c682f",
+      "size": 4391988,
       "lifetime_downloads": 37,
-      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
+      "last_commit": "Restore patchscript blocks broken by gmtoolkit refactor"
     }
   },
   {
@@ -1417,12 +1417,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/grappledog.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T18:39",
       "first_seen": "2026-05-20",
-      "md5": "4cd3480eb965746b00bdea8eafe74928",
-      "size": 5272243,
-      "lifetime_downloads": 41,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "e011c6046483464014e85b4e1515ab52",
+      "size": 5272309,
+      "lifetime_downloads": 52,
+      "last_commit": "Restore patchscript blocks broken by gmtoolkit refactor"
     }
   },
   {
