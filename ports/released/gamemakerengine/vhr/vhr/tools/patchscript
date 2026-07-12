@@ -72,6 +72,15 @@ prepare_files() {
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \
         -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
     \) -exec rm -f {} \;
+
+    # External data moves to the saves folder
+    if [ -d "$DATADIR/data" ]; then
+        rm -rf "$SAVEDIR/data"
+        mv "$DATADIR/data" "$SAVEDIR/data"
+    elif [ ! -d "$SAVEDIR/data" ]; then
+        emit_fail_msg "Missing data directory from copied game assets!"
+        return 1
+    fi
 }
 
 patch_datafile() {
