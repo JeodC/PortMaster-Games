@@ -40,12 +40,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/am2r/am2r/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/am2r/am2r/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/am2r.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "5134a1942c7f8fcb150d406d216f8401",
-      "size": 2974467,
-      "lifetime_downloads": 158,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "0292a6cace2d27ed3ddc346c5811d843",
+      "size": 2974451,
+      "lifetime_downloads": 168,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -140,12 +140,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/arrestofastonebuddha.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-07-02",
-      "md5": "a60958eb97a6112312c13c6b816e5df0",
-      "size": 2620957,
-      "lifetime_downloads": 56,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "738e3e4617c394e37bc82cc5e910627b",
+      "size": 2620919,
+      "lifetime_downloads": 63,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -200,12 +200,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/aurascope/aurascope/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/aurascope/aurascope/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/aurascope.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "56bebc7e79067311834fc02f0e19c8ee",
-      "size": 2750850,
-      "lifetime_downloads": 26,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "15ed1bb819e223c8b2bbfcabc316a13d",
+      "size": 2750805,
+      "lifetime_downloads": 27,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -572,12 +572,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity/darkdeity/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/darkdeity.zip",
-      "date_updated": "2026-07-10T22:01",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "17de9e7d8b03b3ed2a1255cca35293e3",
-      "size": 4391939,
-      "lifetime_downloads": 31,
-      "last_commit": "Various port fixes and typo corrections"
+      "md5": "f2c92900e693a7f6359cd5c02ac72e01",
+      "size": 4391903,
+      "lifetime_downloads": 37,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -641,12 +641,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity2/darkdeity2/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/darkdeity2/darkdeity2/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/darkdeity2.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "318aac8166f024da027b56ac57639275",
-      "size": 6131273,
-      "lifetime_downloads": 16,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "af57e08b0790e2948c09374412357030",
+      "size": 6131237,
+      "lifetime_downloads": 19,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -981,12 +981,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/digitaltamersreborn/digitaltamersreborn/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/digitaltamersreborn/digitaltamersreborn/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/digitaltamersreborn.zip",
-      "date_updated": "2026-07-10T22:01",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "34a2efbff74eb24d652c43b070700be1",
-      "size": 220691290,
-      "lifetime_downloads": 27,
-      "last_commit": "Various port fixes and typo corrections"
+      "md5": "4a146963b41142de83e4fc3e25440e88",
+      "size": 220691276,
+      "lifetime_downloads": 38,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -1039,12 +1039,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/dokimon/dokimon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/dokimon/dokimon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/dokimon.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-11-11",
-      "md5": "ec107c88bb1c39371d3ff090c378b223",
-      "size": 56261781,
-      "lifetime_downloads": 32,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "b8ebe9b1561691ee3d0381d647d79a61",
+      "size": 56261761,
+      "lifetime_downloads": 33,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -1306,12 +1306,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/fadingafternoon/fadingafternoon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/fadingafternoon/fadingafternoon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/fadingafternoon.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-07-02",
-      "md5": "a98635bc1fed8b3d22a576855f6570c3",
-      "size": 4082548,
-      "lifetime_downloads": 75,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "46d689f61a6fd65233ebd599ff278360",
+      "size": 4082511,
+      "lifetime_downloads": 80,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -1470,12 +1470,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/gunsoffury/gunsoffury/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/gunsoffury/gunsoffury/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/gunsoffury.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "97aff57389daa5ff8ae7b95a89dbc99c",
-      "size": 5217328,
-      "lifetime_downloads": 66,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "504b097a9fd2268471e094799ac3cb07",
+      "size": 5217289,
+      "lifetime_downloads": 74,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -1626,12 +1626,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/haque/haque/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/haque/haque/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/haque.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "cb013b47150a51a3e305f50583ee195e",
-      "size": 2735593,
-      "lifetime_downloads": 15,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "e525647454a237972561ef1e00db76be",
+      "size": 2735584,
+      "lifetime_downloads": 19,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -1883,12 +1883,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/iosas/iosas/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/iosas/iosas/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/iosas.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-11-11",
-      "md5": "bf6d13c90b03f2e34f6c2309fdd15ea5",
-      "size": 5654606,
-      "lifetime_downloads": 57,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "918138c5c2c9ccd14da815df6c8a2dae",
+      "size": 5654592,
+      "lifetime_downloads": 60,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -2154,12 +2154,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/lunarlux/lunarlux/screenshot.jpg",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/lunarlux/lunarlux/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/lunarlux.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "b3dcb69588105bd69c5a2b16a6251036",
-      "size": 5325073,
-      "lifetime_downloads": 22,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "c1519daf0b153d4bbd74541292216841",
+      "size": 5325031,
+      "lifetime_downloads": 25,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -2261,12 +2261,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/madhouse/madhouse/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/madhouse/madhouse/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/madhouse.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-28",
-      "md5": "1e78f0dbfdda0a94ec7ec51220d124c7",
-      "size": 5116778,
-      "lifetime_downloads": 27,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "e7b7624c8c573e423902d0f8ae2435b1",
+      "size": 5116740,
+      "lifetime_downloads": 28,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -2433,12 +2433,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mystikbelle/mystikbelle/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mystikbelle/mystikbelle/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/mystikbelle.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2025-05-18",
-      "md5": "c856aedb9505af24f29009bf2a3e8699",
-      "size": 3045590,
-      "lifetime_downloads": 26,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "a4add5f579ef254050c47343f7b56c70",
+      "size": 3045543,
+      "lifetime_downloads": 28,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -2597,12 +2597,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ooo/ooo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ooo/ooo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/ooo.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2026-01-01",
-      "md5": "941449e25f63d90a5fd90bf248165b94",
-      "size": 4803650,
-      "lifetime_downloads": 21,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "7a07442afd5e826ff5ad328c747b2d51",
+      "size": 4803615,
+      "lifetime_downloads": 30,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -2698,12 +2698,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/outridermako/outridermako/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/outridermako/outridermako/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/outridermako.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-07-01",
-      "md5": "f3b1c763258c7474dd9081946b695af3",
-      "size": 4907195,
-      "lifetime_downloads": 27,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "ab6e2656e689d8b1d809583e96d57796",
+      "size": 4907189,
+      "lifetime_downloads": 31,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -2897,12 +2897,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/pizzatower/pizzatower/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/pizzatower/pizzatower/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pizzatower.zip",
-      "date_updated": "2026-06-20T21:08",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-05-18",
-      "md5": "7b50ead535b8398dfb2278c1d6668eff",
-      "size": 7119785,
-      "lifetime_downloads": 58,
-      "last_commit": "[GMS] Update all gms patchscripts to accommodate pc-patched data incoming from gmtoolkit"
+      "md5": "f4fcede1875c791b0e80930805c3210f",
+      "size": 7119627,
+      "lifetime_downloads": 75,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -3287,12 +3287,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/rolusoutskirts/rolusoutskirts/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/rolusoutskirts/rolusoutskirts/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/rolusoutskirts.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:05",
       "first_seen": "2026-01-01",
-      "md5": "c8d96fdceff246d314dd5f4a9e0ff4ef",
-      "size": 5247320,
-      "lifetime_downloads": 10,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "135cb3d7ae97e09f72b73b8949acefe4",
+      "size": 5247282,
+      "lifetime_downloads": 12,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -3497,12 +3497,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/shrineslegacy/shrineslegacy/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/shrineslegacy/shrineslegacy/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/shrineslegacy.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-10-07",
-      "md5": "e296f30261bcb07e3df6748fb8465754",
-      "size": 5423597,
-      "lifetime_downloads": 39,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "14ce34a626fb8e2f47183498aaf2a447",
+      "size": 5423556,
+      "lifetime_downloads": 44,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -3862,12 +3862,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/sonictt16b/sonictt16b/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/sonictt16b/sonictt16b/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonictt16b.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-05-18",
-      "md5": "10627fc37eea3b27444c87081d2c9bf1",
-      "size": 14962545,
-      "lifetime_downloads": 71,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "ff62f68460438fd853da683cca29f9bc",
+      "size": 14962510,
+      "lifetime_downloads": 77,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -4013,12 +4013,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/spinelasher/spinelasher/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/spinelasher/spinelasher/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/spinelasher.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-08-11",
-      "md5": "1b5907f0f0ad12231e4d15c92ee06cfd",
-      "size": 5133908,
-      "lifetime_downloads": 21,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "a53e6410cf9d7b243f6c055e2bf16286",
+      "size": 5133891,
+      "lifetime_downloads": 23,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -4406,12 +4406,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/friendsofringo.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-07-02",
-      "md5": "efb05d940d3d864b24b4ab899e5dc921",
-      "size": 3985988,
-      "lifetime_downloads": 45,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "72bd8ddae2a9357e0bb66722709ff3c5",
+      "size": 3985951,
+      "lifetime_downloads": 50,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -4510,12 +4510,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-foer/zelda-foer/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-foer/zelda-foer/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-foer.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-11-07",
-      "md5": "a7043aaea46931be37b3050f242b9a95",
-      "size": 325469,
-      "lifetime_downloads": 68,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "2a4e96b5fe28a32db27938c36de7abdb",
+      "size": 325457,
+      "lifetime_downloads": 77,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -4558,12 +4558,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-wogr/zelda-wogr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-wogr/zelda-wogr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-wogr.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-11-07",
-      "md5": "846a1acfc32086e96248d256d32f9e55",
-      "size": 404103,
-      "lifetime_downloads": 53,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "98adf1aaca8591f3364da22270bf6b73",
+      "size": 404090,
+      "lifetime_downloads": 65,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5212,12 +5212,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/triga/triga/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/triga/triga/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/triga.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-07-09",
-      "md5": "b4b9c91a4da98e3de064c89dbbc45745",
-      "size": 3621879,
-      "lifetime_downloads": 16,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "a0244ed3e267997a55adc2222c7249b8",
+      "size": 3621841,
+      "lifetime_downloads": 18,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5309,12 +5309,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ufo50/ufo50/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ufo50/ufo50/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/ufo50.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-05-18",
-      "md5": "30d9f842f0804bd9ad7255e894da6854",
-      "size": 5327208,
-      "lifetime_downloads": 147,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "be9dcfb00a69a8013b15e3383d8dcf08",
+      "size": 5327189,
+      "lifetime_downloads": 181,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5431,12 +5431,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/undertaleredyellow.zip",
-      "date_updated": "2026-07-10T22:01",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-05-19",
-      "md5": "fcc318a8787423859225c547be869f26",
-      "size": 9966200,
-      "lifetime_downloads": 42,
-      "last_commit": "Various port fixes and typo corrections"
+      "md5": "8df77e379cf941abe913f35ab2fd1eb0",
+      "size": 9966156,
+      "lifetime_downloads": 47,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5493,12 +5493,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/utyellow/utyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/utyellow/utyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/utyellow.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-11-11",
-      "md5": "8699223e39c9b8446da60f4d8c411c29",
-      "size": 3939415,
-      "lifetime_downloads": 38,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "f508e56a7f720ba5cd8e4b81dbf265de",
+      "size": 3939374,
+      "lifetime_downloads": 47,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5560,12 +5560,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/valhalla/valhalla/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/valhalla/valhalla/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/valhalla.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-08-25",
-      "md5": "bba7b4dc037052d5e35b135660324bad",
-      "size": 2431646,
-      "lifetime_downloads": 39,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "0ac74b9419d31040edf9e1bcc6ec000a",
+      "size": 2431598,
+      "lifetime_downloads": 42,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5625,12 +5625,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/vhr.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2025-11-11",
-      "md5": "5d41342b6f21e97ab32d26b03332e432",
-      "size": 5562802,
-      "lifetime_downloads": 102,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "fb102b8e6f18a5a6bae32a3efa736332",
+      "size": 5562762,
+      "lifetime_downloads": 129,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   },
   {
@@ -5788,12 +5788,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda2enhanced/zelda2enhanced/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda2enhanced/zelda2enhanced/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda2enhanced.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-12T17:06",
       "first_seen": "2026-05-14",
-      "md5": "e86135551dcd5ff3d22fdc8489c01dd1",
-      "size": 2824795,
-      "lifetime_downloads": 46,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "b9752f35a7db42d8d40c11082568685c",
+      "size": 2824781,
+      "lifetime_downloads": 55,
+      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
     }
   }
 ]
