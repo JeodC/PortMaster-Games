@@ -73,6 +73,14 @@ prepare_files() {
         -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
     \) -exec rm -f {} \;
 
+    # Engine looks these up with underscores; Steam ships them with spaces
+    for pair in "Score Scramble:Score_Scramble" \
+                "Starstone A1:Starstone_A1" \
+                "Starstone Cutscene:Starstone_Cutscene"; do
+        s="$DATADIR/audio/${pair%%:*}.ogg"
+        [ -f "$s" ] && mv "$s" "$DATADIR/audio/${pair##*:}.ogg"
+    done
+
     # Edit options.ini
     if [ -f "$DATADIR/options.ini" ]; then
         sed -i 's/CreateTexturesOnDemand=0/CreateTexturesOnDemand=1/' "$DATADIR/options.ini"

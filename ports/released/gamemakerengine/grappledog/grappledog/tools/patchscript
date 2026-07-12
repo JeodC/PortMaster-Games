@@ -73,6 +73,12 @@ prepare_files() {
         -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
     \) -exec rm -f {} \;
     rm -rf "$DATADIR/grappledog_data"
+
+    # FMOD banks are read from the save area at runtime
+    if [ -d "$DATADIR/fmodBanks" ]; then
+        rm -rf "$SAVEDIR/fmodBanks"
+        mv "$DATADIR/fmodBanks" "$SAVEDIR/fmodBanks"
+    fi
 }
 
 patch_datafile() {

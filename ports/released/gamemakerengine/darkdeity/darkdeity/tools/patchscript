@@ -72,6 +72,14 @@ prepare_files() {
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \
         -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
     \) -exec rm -f {} \;
+
+    # Loose data folders are read from the save area at runtime
+    for d in Bonds Scenes Stories; do
+        if [ -d "$DATADIR/$d" ]; then
+            rm -rf "$SAVEDIR/$d"
+            mv "$DATADIR/$d" "$SAVEDIR/$d"
+        fi
+    done
 }
 
 patch_datafile() {
