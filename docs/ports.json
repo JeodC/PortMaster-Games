@@ -5625,12 +5625,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/vhr/vhr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/vhr.zip",
-      "date_updated": "2026-07-12T17:06",
+      "date_updated": "2026-07-12T18:32",
       "first_seen": "2025-11-11",
-      "md5": "fb102b8e6f18a5a6bae32a3efa736332",
-      "size": 5562762,
+      "md5": "efb38bba1e05bf5dfe50e3dac92f5bff",
+      "size": 5562831,
       "lifetime_downloads": 129,
-      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
+      "last_commit": "[VHR] Fix dropped block in patchscript"
     }
   },
   {
