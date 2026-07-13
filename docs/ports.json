@@ -2782,13 +2782,13 @@
       "min_glibc": ""
     },
     "source": {
-      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/screenshot.png",
-      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/apps/pharos/pharos/README.md",
-      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pharos.zip",
-      "date_updated": "2026-07-11T19:12",
+      "screenshot_url": "https://raw.githubusercontent.com/ReddestDream/RHH-Ports/main/ports/released/apps/pharos/pharos/screenshot.png",
+      "readme_url": "https://raw.githubusercontent.com/ReddestDream/RHH-Ports/main/ports/released/apps/pharos/pharos/README.md",
+      "download_url": "https://github.com/ReddestDream/RHH-Ports/releases/download/ports-latest/pharos.zip",
+      "date_updated": "2026-07-13T02:24",
       "first_seen": "2026-01-29",
-      "md5": "538f83e12d1a5865544c966f4646b341",
-      "size": 21757010,
+      "md5": "c7df577e6c8a7e456e8fcb8ef7b021e4",
+      "size": 21757654,
       "lifetime_downloads": 1379,
       "last_commit": "[Pharos] Update to v1.1.9"
     }
@@ -5053,15 +5053,15 @@
       ]
     },
     "source": {
-      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/screenshot.png",
-      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/README.md",
-      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-lttp.zip",
-      "date_updated": "2026-07-11T15:21",
+      "screenshot_url": "https://raw.githubusercontent.com/ReddestDream/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/screenshot.png",
+      "readme_url": "https://raw.githubusercontent.com/ReddestDream/RHH-Ports/main/ports/released/zelda-lttp/zelda-lttp/README.md",
+      "download_url": "https://github.com/ReddestDream/RHH-Ports/releases/download/ports-latest/zelda-lttp.zip",
+      "date_updated": "2026-07-13T02:24",
       "first_seen": "2026-07-10",
-      "md5": "de92962673fef6d1e0b6322e53695f74",
+      "md5": "cd3c68ec8795b34571fad368296eb93d",
       "size": 1863329,
       "lifetime_downloads": 15,
-      "last_commit": "[ZELDA3] Add dual-screen screenshot to readme"
+      "last_commit": "Comment out LinkGraphics setting in zelda3.ini."
     }
   },
   {
