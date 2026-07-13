@@ -23,13 +23,13 @@ Everything here is public and verifiable.
 - Developer on Harbour Masters, the team behind the Ship of Harkinian family of N64 PC ports.
 - Ported Dokimon: Quest, a commercially released indie monster-collector, to handhelds, and ran much of its QA back when it had almost none, setting the testing standard later testers followed.
 - Contributor to gmloader-next, the GameMaker loader over two hundred ports rely on.
-- Author of several gists and documentations for how ports and wine bottles work.
+- Author of documentation for how ports and wine bottles work.
 
 More at my [GitHub](https://github.com/JeodC).
 
 ## AI Stance
 
-I use AI as the tool it's meant to be, not for generative works. A tool is only as good as the person using it, and with AI I maintain more complex ports, dig into systems that pique my curiosity, and quickly analze unfamiliar codebases. Unlike "vibe coding", I have a passion and standards for what I do.
+I use AI as the tool it's meant to be, not for generative works. A tool is only as good as the person using it, and with AI I maintain more complex ports, dig into systems that pique my curiosity, and quickly analyze unfamiliar codebases.
 
 ## Getting in touch
 
