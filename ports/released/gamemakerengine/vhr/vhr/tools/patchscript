@@ -81,6 +81,12 @@ prepare_files() {
         emit_fail_msg "Missing data directory from copied game assets!"
         return 1
     fi
+
+    # Keep the splash movie
+    if [ -f "$DATADIR/splash_low.mp4" ]; then
+        rm -rf "$SAVEDIR/splash_low.mp4"
+        mv "$DATADIR/splash_low.mp4" "$SAVEDIR/splash_low.mp4"
+    fi
 }
 
 patch_datafile() {
