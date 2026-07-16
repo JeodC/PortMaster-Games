@@ -27,6 +27,16 @@ export DATAFILE="sonictt16b.port"
 export APKFILE="sonic-triple-trouble-16-bit-v1-2-8.apk"
 export TMPDIR="$GAMEDIR/tmp"
 
+# Check for gmtoolkit
+if [ ! -f "$controlfolder/gmtoolkit.${DEVICE_ARCH}" ]; then
+    echo "$controlfolder/gmtoolkit.${DEVICE_ARCH} was not found!"
+    echo "Get it from github.com/JeodC/gmtoolkit/releases and add it to ${controlfolder}."
+    emit_fail_msg "GMtoolkit not found at ${controlfolder}! Check the patcherr.txt for details."
+    echo "Patching process failed!"
+    mv "$LOGFILE" "$LOGERR"
+    exit 1
+fi
+
 # Tight-RAM devices can't sustain a parallel astcenc / vorbis workload.
 THREADS_FLAG=""
 if [ "${DEVICE_RAM:-0}" -le 2 ]; then

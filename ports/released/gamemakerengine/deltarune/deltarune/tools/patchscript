@@ -26,6 +26,16 @@ export INSTALLDIR="$GAMEDIR/assets/install"
 export ASSETDIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
 
+# Check for gmtoolkit
+if [ ! -f "$controlfolder/gmtoolkit.${DEVICE_ARCH}" ]; then
+    echo "$controlfolder/gmtoolkit.${DEVICE_ARCH} was not found!"
+    echo "Get it from github.com/JeodC/gmtoolkit/releases and add it to ${controlfolder}."
+    emit_fail_msg "GMtoolkit not found at ${controlfolder}! Check the patcherr.txt for details."
+    echo "Patching process failed!"
+    mv "$LOGFILE" "$LOGERR"
+    exit 1
+fi
+
 # Cap workers on tight-RAM devices
 THREADS_FLAG=""
 if [ "${DEVICE_RAM:-0}" -le 2 ]; then

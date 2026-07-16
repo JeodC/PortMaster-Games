@@ -1,5 +1,5 @@
 ## Installation
-Copy all game data to `outridermako/assets`. Requires GMToolkit runtime.
+Copy all game data to `outridermako/assets`.
 
 ## Default Gameplay Controls (Native Gamepad)
 | Button            | Action |

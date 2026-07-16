@@ -13,7 +13,7 @@
     ],
     "desc": "Take on the role of Mako on her quest to seek out and subsequently deliver her, uh, deliverables in this top-down view 2D action game. Jump on top of your enemies and slime them with goo to stop them in their tracks! Get those deliverables delivered!",
     "desc_md": null,
-    "inst": "Copy all game data to `outridermako/assets`. Requires GMToolkit runtime.",
+    "inst": "Copy all game data to `outridermako/assets`.",
     "inst_md": null,
     "genres": [
       "action",
