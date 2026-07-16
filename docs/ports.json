@@ -2206,12 +2206,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-09T19:09",
+      "date_updated": "2026-07-16T18:00",
       "first_seen": "2026-07-06",
-      "md5": "470a3f759d16b18b10a431d4804723d3",
-      "size": 5074910,
-      "lifetime_downloads": 66,
-      "last_commit": "Add missing chmod +x to 44 ports"
+      "md5": "823ab500ff4ba650dad2bb718f7f9e50",
+      "size": 5075024,
+      "lifetime_downloads": 245,
+      "last_commit": "[MCI] Fix latest SDL2 bug with alsa by patching libFAudio.so.0"
     }
   },
   {
