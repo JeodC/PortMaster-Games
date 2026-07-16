@@ -28,7 +28,7 @@ Port by Jeod. The engine patches, launcher, patch scripts, and the bundled FNA3D
 
 - **JohnnyonFlame**: this port is possible because of Johnny's [FNAPatches](https://github.com/JohnnyonFlame/FNAPatches) and TMNT: Shredder's Revenge groundwork.
 - **MonoMod** (0x0ade & contributors) and **Mono.Cecil** (Jb Evain).
-- **Ethan "flibitijibibo" Lee**: FNA, FNA3D, FAudio, and Theorafile, the stack that makes the game run at all. The bundled `libFNA3D.so.0` is an RHH-modified build and is not an official FNA3D binary.
+- **Ethan "flibitijibibo" Lee**: FNA, FNA3D, FAudio, and Theorafile, the stack that makes the game run at all. The bundled `libFNA3D.so.0` is an RHH-modified build and is not an official FNA3D binary. The bundled `libFAudio.so.0` is likewise RHH-modified: one instruction is changed to work around a NULL-deref in SDL 2.32.10's ALSA backend that would otherwise crash the port at startup. Neither binary is upstream's fault.
 - **FFmpeg** and the **Xiph.Org** codecs (libtheora, libogg, libvorbis): the bundled `tools/ffmpeg` is an RHH slim LGPL build that links them to re-encode the intro video.
 - **Arm**: the astc-encoder library, embedded in the bundled `libastcUtil.so`.
 - **DotNetZip** contributors.
