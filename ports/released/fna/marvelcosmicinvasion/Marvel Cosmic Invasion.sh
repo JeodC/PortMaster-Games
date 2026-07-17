@@ -37,10 +37,8 @@ fi
 echo "Using $("$MONO" --version | head -1)"
 
 # Save directory
-mkdir -p "$HOME/.local/share/Tribute Games"
-$ESUDO rm -rf "$HOME/.local/share/Tribute Games/MARVELCosmicInvasion"
 mkdir -p "$GAMEDIR/savedata"
-ln -sfv "$GAMEDIR/savedata" "$HOME/.local/share/Tribute Games/MARVELCosmicInvasion"
+bind_directories "$HOME/.local/share/Tribute Games/MARVELCosmicInvasion" "$GAMEDIR/savedata"
 
 # Strip bundled Windows deps
 rm -f System*.dll mscorlib.dll Mono.*.dll WindowsBase.dll
