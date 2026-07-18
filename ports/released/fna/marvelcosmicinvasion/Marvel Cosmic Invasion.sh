@@ -42,8 +42,9 @@ bind_directories "$HOME/.local/share/Tribute Games/MARVELCosmicInvasion" "$GAMED
 
 # Strip bundled Windows deps
 rm -f System*.dll mscorlib.dll Mono.*.dll WindowsBase.dll
-# Harvest the game's own FNA.dll for the port (we do not distribute it)
-[ -f "$GAMEDIR/dlls/FNA.dll" ] || cp -f FNA.dll "$GAMEDIR/dlls/FNA.dll" 2>/dev/null
+
+# Harvest the game's own FNA.dll for the port
+[ -f FNA.dll ] && cp -f FNA.dll "$GAMEDIR/dlls/FNA.dll" 2>/dev/null
 rm -f FNA.dll FNA.dll.config
 rm -f SDL2.dll SDL3.dll FNA3D.dll FAudio.dll MojoShader.dll fmod.dll fmodstudio.dll
 
@@ -67,6 +68,18 @@ export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 export MONO_LOG_LEVEL=warning
 export FNA3D_FORCE_DRIVER="OpenGL"
 export FNA3D_OPENGL_FORCE_ES3=1
+
+# Detect if user added a fresh game copy after a prior patch
+STAMPFILE="$GAMEDIR/gamedata/.mci_patched"
+if [ -f "$STAMPFILE" ]; then
+    if [ ! -s "$STAMPFILE" ] && grep -aq MonoModAdded Game.exe && grep -aq MonoModAdded ParisEngine.dll; then
+        md5sum Game.exe ParisEngine.dll > "$STAMPFILE"
+    fi
+    if [ "$(md5sum Game.exe ParisEngine.dll 2>/dev/null)" != "$(cat "$STAMPFILE" 2>/dev/null)" ]; then
+        echo "Game files changed since last patch - re-running the patcher."
+        rm -f "$STAMPFILE" "$GAMEDIR/gamedata/.repack_done"
+    fi
+fi
 
 # Check if we need to patch the game
 if [ ! -f "$GAMEDIR/patchlog.txt" ] || [ ! -f "$GAMEDIR/gamedata/.mci_patched" ]; then
@@ -123,7 +136,7 @@ fi
 # Run it
 $GPTOKEYB "mono" -c "$GAMEDIR/mci.gptk" &
 pm_platform_helper "$MONO" >/dev/null
-$TASKSET "$MONO" --ffast-math -O=all "Game.exe" -forcedraw
+$TASKSET "$MONO" -O=all "Game.exe" -forcedraw
 
 # Cleanup
 [ "$MCI_ASOUNDRC" = "1" ] && rm -f "$HOME/.asoundrc"

@@ -90,10 +90,16 @@ prepare_system() {
 }
 
 backup_originals() {
-    [ -f ParisEngine.orig.dll ] || cp ParisEngine.dll ParisEngine.orig.dll
-    [ -f Game.orig.exe ] || cp Game.exe Game.orig.exe
-    cp -f ParisEngine.orig.dll ParisEngine.dll || return 1
-    cp -f Game.orig.exe Game.exe || return 1
+    if grep -aq MonoModAdded ParisEngine.dll; then
+        cp -f ParisEngine.orig.dll ParisEngine.dll || return 1
+    else
+        cp -f ParisEngine.dll ParisEngine.orig.dll || return 1
+    fi
+    if grep -aq MonoModAdded Game.exe; then
+        cp -f Game.orig.exe Game.exe || return 1
+    else
+        cp -f Game.exe Game.orig.exe || return 1
+    fi
 }
 
 patch_assemblies() {
@@ -200,7 +206,9 @@ finalize() {
         echo "Missing AOT images after compile."
         return 1
     fi
-    touch .mci_patched
+    # Stamp the woven assemblies' md5s; the launcher compares against this to
+    # detect a game update and force a clean re-patch.
+    md5sum Game.exe ParisEngine.dll > .mci_patched || return 1
 }
 
 cleanup() {

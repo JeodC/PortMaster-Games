@@ -53,7 +53,7 @@ namespace Paris.Engine.Context
 		// Bridge for the Game.exe StartInit patch
 		public void MCI_FinishPreload()
 		{
-			this._preloadingState = ContextManager.PreloadingState.Finished;
+			this._preloadingState |= ContextManager.PreloadingState.CustomPreloaders;
 		}
 	}
 }
@@ -366,10 +366,14 @@ namespace Paris.Engine.Scene
 		// exhaustion branch can't recurse
 		private void MCI_ConstructOne(string actorTemplate, bool global)
 		{
-			bool disableInvalidate = Paris.Engine.Physic.CollisionManager.DisableInvalidate;
+			bool disableInvalidate;
+			bool useGlobalContentManager;
+			Monitor.Enter(this._lock);
+			disableInvalidate = Paris.Engine.Physic.CollisionManager.DisableInvalidate;
 			Paris.Engine.Physic.CollisionManager.DisableInvalidate = true;
-			bool useGlobalContentManager = Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager;
+			useGlobalContentManager = Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager;
 			Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager = global;
+			Monitor.Exit(this._lock);
 			try
 			{
 				string text = actorTemplate.StartsWith("SceneInstance:")
@@ -403,8 +407,10 @@ namespace Paris.Engine.Scene
 			}
 			finally
 			{
+				Monitor.Enter(this._lock);
 				Paris.Engine.Context.ContextManager.Singleton.UseGlobalContentManager = useGlobalContentManager;
 				Paris.Engine.Physic.CollisionManager.DisableInvalidate = disableInvalidate;
+				Monitor.Exit(this._lock);
 			}
 		}
 	}
