@@ -2261,12 +2261,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/madhouse/madhouse/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/madhouse/madhouse/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/madhouse.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T15:38",
       "first_seen": "2025-05-28",
-      "md5": "4264d5e14c82de38237cf159871d1848",
-      "size": 5116850,
+      "md5": "5734a93162c93af4a7c2ce626ae0d621",
+      "size": 5153694,
       "lifetime_downloads": 31,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "last_commit": "Add splash files for ports"
     }
   },
   {
@@ -2597,12 +2597,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ooo/ooo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/ooo/ooo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/ooo.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T15:38",
       "first_seen": "2026-01-01",
-      "md5": "7ee3d180ab62b3f95057041853f12857",
-      "size": 4803725,
+      "md5": "1894861df5ca7d5ea0b9b24491bc7b1b",
+      "size": 5079207,
       "lifetime_downloads": 35,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "last_commit": "Add splash files for ports"
     }
   },
   {
