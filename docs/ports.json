@@ -1626,12 +1626,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/haque/haque/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/haque/haque/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/haque.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T11:56",
       "first_seen": "2025-05-18",
-      "md5": "8ad2f07028e766305934c5b630a24619",
-      "size": 2735690,
-      "lifetime_downloads": 20,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "6de06cd4b8be72c286550f7ade0296df",
+      "size": 2736024,
+      "lifetime_downloads": 21,
+      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
     }
   },
   {
@@ -2433,12 +2433,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mystikbelle/mystikbelle/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/mystikbelle/mystikbelle/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/mystikbelle.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T11:56",
       "first_seen": "2025-05-18",
-      "md5": "e3073c5147747b2a4381a904dc50b448",
-      "size": 3045648,
+      "md5": "0faff968cec2280c3f0b8ebc639940b3",
+      "size": 3045668,
       "lifetime_downloads": 30,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
     }
   },
   {
@@ -3287,12 +3287,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/rolusoutskirts/rolusoutskirts/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/experimental/rolusoutskirts/rolusoutskirts/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/rolusoutskirts.zip",
-      "date_updated": "2026-07-16T21:21",
+      "date_updated": "2026-07-18T11:56",
       "first_seen": "2026-01-01",
-      "md5": "f6065c5b350dd3a74506cc9f18d86e3e",
-      "size": 5247391,
+      "md5": "0aa69ff4af7238c426697908fcac9ff4",
+      "size": 5247392,
       "lifetime_downloads": 13,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
     }
   },
   {
@@ -4406,12 +4406,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/friendsofringo.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T11:56",
       "first_seen": "2025-07-02",
-      "md5": "14396bd132251931c91a9c9836ea29f8",
-      "size": 3986061,
+      "md5": "9fd296412a4c20bdbe045d5f0ec41366",
+      "size": 3986060,
       "lifetime_downloads": 61,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
     }
   },
   {
@@ -4510,12 +4510,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-foer/zelda-foer/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-foer/zelda-foer/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-foer.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T11:56",
       "first_seen": "2025-11-07",
-      "md5": "0b413b8ec108ca3a3a5047ef6b638d5c",
-      "size": 325559,
-      "lifetime_downloads": 82,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "a31b36b89e918568ee435816bed1e8cf",
+      "size": 325665,
+      "lifetime_downloads": 84,
+      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
     }
   },
   {
@@ -4558,12 +4558,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-wogr/zelda-wogr/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/zelda-wogr/zelda-wogr/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/zelda-wogr.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T11:56",
       "first_seen": "2025-11-07",
-      "md5": "fe7278edc32d0cddde1006b674da660a",
-      "size": 404196,
-      "lifetime_downloads": 69,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "445dcda0fd1f6f6ad1d64fb3d0be0e1d",
+      "size": 404303,
+      "lifetime_downloads": 71,
+      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
     }
   },
   {
