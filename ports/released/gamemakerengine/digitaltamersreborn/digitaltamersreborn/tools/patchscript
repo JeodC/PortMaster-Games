@@ -87,7 +87,6 @@ prepare_files() {
             return 1
         fi
     fi
-    [ -f "$DATADIR/splash.png" ] && mv -f "$DATADIR/splash.png" "$GAMEDIR"
 
     # Delete excess files
     find "$DATADIR" -type f \( \

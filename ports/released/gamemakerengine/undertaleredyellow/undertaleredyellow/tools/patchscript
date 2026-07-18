@@ -92,7 +92,7 @@ prepare_files() {
         fi
         rm -f "$MOD_ZIP"
         for f in "$DATADIR/utry/"*.ogg; do [ -f "$f" ] && mv "$f" "$DATADIR/"; done
-        [ -f "$DATADIR/utry/splash.png" ] && mv "$DATADIR/utry/splash.png" "$GAMEDIR/"
+        [ -f "$DATADIR/utry/splash.png" ] && mv "$DATADIR/utry/splash.png" "$DATADIR/splash.png"
         BASEPATCH=$(find "$DATADIR/utry" -maxdepth 1 -type f -iname "Undertale*1.08*to*UTRY*.xdelta" | head -n 1)
         if [ -z "$BASEPATCH" ]; then
             emit_fail_msg "Did not find base UTRY xdelta in the supplied zip."
