@@ -77,11 +77,44 @@ thermal_restore() {
 prepare_files() {
     mkdir -p "$SAVEDIR"
 
+    # Linux/Mac data ships as game.unx/game.ios; gmtoolkit expects data.win
+    if [ -f "$DATADIR/game.unx" ]; then
+        mv "$DATADIR/game.unx" "$DATADIR/data.win"
+    elif [ -f "$DATADIR/game.ios" ]; then
+        mv "$DATADIR/game.ios" "$DATADIR/data.win"
+    fi
+
+    if [ ! -d "$DATADIR/Haque_Text" ]; then
+        textzip=$(find "$DATADIR" -maxdepth 1 -iname "Haque_Text.zip" | head -n 1)
+        if [ -z "$textzip" ]; then
+            emit_fail_msg "Couldn't find Haque_Text.zip! Game will not run!"
+            return 1
+        fi
+        if ! "$controlfolder/7zzs.${DEVICE_ARCH}" x -y "$textzip" -o"$DATADIR" >/dev/null; then
+            emit_fail_msg "Failed to extract Haque_Text.zip."
+            return 1
+        fi
+        rm -f "$textzip"
+        if [ ! -d "$DATADIR/Haque_Text" ]; then
+            emit_fail_msg "Haque_Text.zip did not contain a Haque_Text folder!"
+            return 1
+        fi
+    fi
+
+    # The text files need Unix line endings
+    if command -v dos2unix >/dev/null 2>&1; then
+        find "$DATADIR/Haque_Text" -type f -exec dos2unix -u {} \;
+    else
+        find "$DATADIR/Haque_Text" -type f -exec sed -i 's/\r$//' {} \;
+    fi
+
     # Delete excess files
     find "$DATADIR" -type f \( \
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \
-        -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
+        -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" -o \
+        -name "*.so" -o -name "*.icns" \
     \) -exec rm -f {} \;
+    rm -rf "$DATADIR/gamedat" "$DATADIR/runner" "$DATADIR/English.lproj"
 
     # Edit options.ini
     if [ -f "$DATADIR/options.ini" ]; then

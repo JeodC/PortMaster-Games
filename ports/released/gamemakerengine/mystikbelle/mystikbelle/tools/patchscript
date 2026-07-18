@@ -77,6 +77,10 @@ thermal_restore() {
 prepare_files() {
     mkdir -p "$SAVEDIR"
 
+    if [ -f "$DATADIR/game.unx" ]; then
+        mv "$DATADIR/game.unx" "$DATADIR/data.win"
+    fi
+
     # Delete excess files
     find "$DATADIR" -type f \( \
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \

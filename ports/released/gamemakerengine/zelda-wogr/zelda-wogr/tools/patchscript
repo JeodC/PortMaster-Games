@@ -103,12 +103,28 @@ prepare_files() {
             mv "$DATADIR/tmp/assets"/* "$DATADIR/" 2>/dev/null
             rmdir "$DATADIR/tmp/assets" 2>/dev/null || true
         fi
+
+        if [ ! -d "$DATADIR/tmp/lib" ]; then
+            emit_fail_msg "APK didn't contain lib/."
+            return 1
+        fi
+        if ! "$SEVENZIP" a -tzip -aoa -mx=0 "$GAMEDIR/$DATAFILE" "$DATADIR/tmp/lib" >/dev/null; then
+            emit_fail_msg "Failed to bundle lib/ into $DATAFILE."
+            return 1
+        fi
         rm -rf "$DATADIR/tmp"
     elif [ ! -f "$DATADIR/data.win" ] && [ ! -f "$DATADIR/game.droid" ]; then
         emit_fail_msg "Drop the WOGR Android zip into assets/."
         return 1
     fi
     [ -f "$DATADIR/game.droid" ] && [ ! -f "$DATADIR/data.win" ] && mv "$DATADIR/game.droid" "$DATADIR/data.win"
+
+    # Hand-extracted APK dumps may leave lib/ loose in assets; bundle it too.
+    if [ -d "$DATADIR/lib" ]; then
+        if "$SEVENZIP" a -tzip -aoa -mx=0 "$GAMEDIR/$DATAFILE" "$DATADIR/lib" >/dev/null; then
+            rm -rf "$DATADIR/lib"
+        fi
+    fi
 
     find "$DATADIR" -type f \( \
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \

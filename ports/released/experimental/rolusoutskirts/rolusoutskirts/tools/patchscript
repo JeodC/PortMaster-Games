@@ -23,7 +23,7 @@ echo "GAMEDIR is set to: $GAMEDIR"
 # Exports
 export DATADIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
-export DATAFILE="rolusoutskirts.port"
+export DATAFILE="rolus.port"
 
 # Check for gmtoolkit
 if [ ! -f "$controlfolder/gmtoolkit.${DEVICE_ARCH}" ]; then
