@@ -140,12 +140,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/arrestofastonebuddha.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T11:34",
       "first_seen": "2025-07-02",
-      "md5": "31bd62316baf5f0e9da8a002d9579d01",
-      "size": 2621028,
-      "lifetime_downloads": 67,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "e37a547a7ed86cf84ef2544becb98b6b",
+      "size": 2621338,
+      "lifetime_downloads": 77,
+      "last_commit": "[STONEBUDDHA] Repair patchscript special handling broken by gmtoolkit rollovber"
     }
   },
   {
