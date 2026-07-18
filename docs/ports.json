@@ -140,12 +140,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/arrestofastonebuddha/arrestofastonebuddha/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/arrestofastonebuddha.zip",
-      "date_updated": "2026-07-18T11:34",
+      "date_updated": "2026-07-18T15:01",
       "first_seen": "2025-07-02",
-      "md5": "e37a547a7ed86cf84ef2544becb98b6b",
-      "size": 2621338,
+      "md5": "4d0ca092059d1d2db2f735b7e42cb524",
+      "size": 2778812,
       "lifetime_downloads": 77,
-      "last_commit": "[STONEBUDDHA] Repair patchscript special handling broken by gmtoolkit rollovber"
+      "last_commit": "[YEO] Fix the trilogy"
     }
   },
   {
@@ -1306,12 +1306,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/fadingafternoon/fadingafternoon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/fadingafternoon/fadingafternoon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/fadingafternoon.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T15:01",
       "first_seen": "2025-07-02",
-      "md5": "9effcfbaf64bdbe7e07b5781f5d5ea1f",
-      "size": 4082620,
-      "lifetime_downloads": 91,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "e6824c4ad44c052d1a71f2a53d7dedf5",
+      "size": 4082639,
+      "lifetime_downloads": 95,
+      "last_commit": "[YEO] Fix the trilogy"
     }
   },
   {
@@ -4406,12 +4406,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/yeotrilogy/friendsofringo/friendsofringo/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/friendsofringo.zip",
-      "date_updated": "2026-07-18T11:56",
+      "date_updated": "2026-07-18T15:01",
       "first_seen": "2025-07-02",
-      "md5": "9fd296412a4c20bdbe045d5f0ec41366",
-      "size": 3986060,
+      "md5": "9f94945c51d79d7632538d9ccec7d275",
+      "size": 4265391,
       "lifetime_downloads": 61,
-      "last_commit": "Fix a couple more patchscripts that were broken by gmtoolkit rollover commit"
+      "last_commit": "[YEO] Fix the trilogy"
     }
   },
   {
