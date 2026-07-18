@@ -981,12 +981,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/digitaltamersreborn/digitaltamersreborn/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/digitaltamersreborn/digitaltamersreborn/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/digitaltamersreborn.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T15:07",
       "first_seen": "2025-05-18",
-      "md5": "8f659e152ece297953422c5458c1bd67",
-      "size": 220691372,
+      "md5": "76a369b680cde520d8fe11a1119ded20",
+      "size": 220691352,
       "lifetime_downloads": 40,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "last_commit": "Fix splash handling"
     }
   },
   {
@@ -5431,12 +5431,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/undertaleredyellow/undertaleredyellow/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/undertaleredyellow.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T15:07",
       "first_seen": "2025-05-19",
-      "md5": "57ce94eda495e9c87d68f3b7a2d78f6a",
-      "size": 9966257,
-      "lifetime_downloads": 52,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "166723e89866e15b57be720dc68b798b",
+      "size": 9966259,
+      "lifetime_downloads": 54,
+      "last_commit": "Fix splash handling"
     }
   },
   {
