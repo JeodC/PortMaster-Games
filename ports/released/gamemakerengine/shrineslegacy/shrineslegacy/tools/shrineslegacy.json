@@ -1,14 +1,27 @@
 {
     "game": "Shrines_Legacy",
-    "set_flags": [
-        "Fullscreen"
-    ],
-    "clear_flags": [
-        "Scale"
-    ],
+    "set_flags":   ["Fullscreen"],
+    "clear_flags": ["Scale"],
     "compress_audio": {
-        "bitrate": 64,
+        "min_size":       1048576,
+        "bitrate":        64,
         "recompress_ogg": true
     },
-    "externalize_textures": "../saves/textures"
+    "repack":      true,
+    "page_size":   1024,
+    "externalize_textures": "../saves/textures",
+    "shader_patches": [
+        {
+            "shader":  "shd_pal_swapper",
+            "stage":   "glsl_es_fragment",
+            "find":    "precision mediump float;",
+            "replace": "precision highp float;"
+        }
+    ],
+    "code_patches": [
+        {
+            "entry": "gml/gml_Object_C_screen_Other_18",
+            "gml":   "gml/gml_Object_C_screen_Other_18.gml"
+        }
+    ]
 }
