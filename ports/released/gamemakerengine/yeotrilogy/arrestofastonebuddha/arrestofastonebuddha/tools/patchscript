@@ -23,7 +23,7 @@ echo "GAMEDIR is set to: $GAMEDIR"
 # Exports
 export DATADIR="$GAMEDIR/assets"
 export SAVEDIR="$GAMEDIR/saves"
-export DATAFILE="arrestofastonebuddha.port"
+export DATAFILE="stonebuddha.port"
 
 # Check for gmtoolkit
 if [ ! -f "$controlfolder/gmtoolkit.${DEVICE_ARCH}" ]; then
@@ -74,6 +74,28 @@ thermal_restore() {
     IFS=$OLDIFS
 }
 
+unzip_game() {
+    cd "$DATADIR"
+    EXE="arrest of a stone buddha.exe"
+
+    # Verify the executable
+    if [ ! -f "$DATADIR/$EXE" ]; then
+        emit_fail_msg "Did not find $EXE!"
+        cd "$GAMEDIR"
+        return 1
+    fi
+
+    # Try to extract
+    UNZIP="$controlfolder/7zzs.${DEVICE_ARCH}"
+    if ! $UNZIP x -aoa "$DATADIR/$EXE"; then
+        emit_fail_msg "Could not unzip $EXE!"
+        cd "$GAMEDIR"
+        return 1
+    fi
+
+    cd "$GAMEDIR"
+}
+
 prepare_files() {
     mkdir -p "$SAVEDIR"
 
@@ -82,6 +104,29 @@ prepare_files() {
         -name "*.gitkeep" -o -name "*.exe" -o -name "*.dll" -o -name "*.hashdb" -o \
         -name "*.ico" -o -name "*.lnk" -o -name "*.msg" -o -name "*.zip" \
     \) -exec rm -f {} \;
+
+    # Handle DB@ files
+    mkdir -p "$DATADIR/DB"
+    for f in "$DATADIR"/DB@*; do
+        [ -e "$f" ] || continue
+        base="$(basename "$f")"
+        mv -f "$f" "$DATADIR/DB/${base#DB@}"
+    done
+
+    # Handle Music@ files
+    mkdir -p "$SAVEDIR/Music"
+    for f in "$DATADIR"/Music@*; do
+        [ -e "$f" ] || continue
+        base="$(basename "$f")"
+        mv -f "$f" "$SAVEDIR/Music/${base#Music@}"
+    done
+
+    # Edit options.ini
+    if [ -f "$DATADIR/options.ini" ]; then
+        sed -i 's/CreateTexturesOnDemand=0/CreateTexturesOnDemand=1/' "$DATADIR/options.ini"
+    else
+        echo "Error: options.ini missing!"
+    fi
 }
 
 patch_datafile() {
@@ -125,6 +170,7 @@ zip_archive() {
 
 process_game() {
     echo "Preparing game..."
+    unzip_game || return 1
     prepare_files || return 1
     thermal_setup
     echo "Applying patches..."
