@@ -2206,12 +2206,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/fna/marvelcosmicinvasion/marvelcosmicinvasion/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/marvelcosmicinvasion.zip",
-      "date_updated": "2026-07-17T22:02",
+      "date_updated": "2026-07-18T18:53",
       "first_seen": "2026-07-06",
-      "md5": "943f606164be0a877832400c46ded964",
-      "size": 5075013,
-      "lifetime_downloads": 265,
-      "last_commit": "[MCI] Use bind_directories for savedir"
+      "md5": "4ceadf7ad3b7e8329c7e137437a70bfb",
+      "size": 5075321,
+      "lifetime_downloads": 286,
+      "last_commit": "[MCI] Fix a race condition and harden detection for new game data on top of existing patch markers"
     }
   },
   {
