@@ -1417,12 +1417,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/grappledog.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T12:37",
       "first_seen": "2026-05-20",
-      "md5": "341e81b2de7f6f55e74d288db4b82bc8",
-      "size": 5272413,
-      "lifetime_downloads": 61,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "416ad823e93a24030843a7716c79a7a5",
+      "size": 5273880,
+      "lifetime_downloads": 76,
+      "last_commit": "Update stale plugins for pizza tower and grapple dog"
     }
   },
   {
@@ -2897,12 +2897,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/pizzatower/pizzatower/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/pizzatower/pizzatower/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pizzatower.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-18T12:37",
       "first_seen": "2025-05-18",
-      "md5": "50994cee4047d3b941627b7457220138",
-      "size": 7119734,
-      "lifetime_downloads": 82,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "380cfe882eb3e8fe9414ecc22cc13b32",
+      "size": 7120000,
+      "lifetime_downloads": 84,
+      "last_commit": "Update stale plugins for pizza tower and grapple dog"
     }
   },
   {
