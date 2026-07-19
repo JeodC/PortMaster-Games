@@ -24,7 +24,8 @@
     "rtr": false,
     "exp": false,
     "runtime": [
-      "weston_pkg_0.2.squashfs"
+      "weston_pkg_0.2.squashfs",
+      "box.squashfs"
     ],
     "store": [
       {
@@ -48,7 +49,7 @@
       "power"
     ],
     "arch": [
-      "armhf"
+      "aarch64"
     ],
     "min_glibc": ""
   }

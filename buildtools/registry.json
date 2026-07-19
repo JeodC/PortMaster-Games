@@ -94,6 +94,14 @@
     }
   },
   "runtimes": {
+    "box": {
+      "build_dir": "buildtools/runtimes/box",
+      "target_dir": "runtimes",
+      "upstream_repo": "ptitSeb/box64",
+      "track": "release",
+      "commit_prefix": "BOX",
+      "artifact": "box.squashfs"
+    },
     "gmloadernext": {
       "build_dir": "buildtools/runtimes/gmloadernext",
       "target_dir": "runtimes",

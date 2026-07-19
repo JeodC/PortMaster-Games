@@ -18,17 +18,15 @@ get_controls
 
 # Variables
 GAMEDIR="/$directory/ports/portfolder"
-GAME="$GAMEDIR/data/GameBinary.x86_64"   # the user-provided Linux Steam binary
-BOX64="$GAMEDIR/box64/box64"
+GAME="$GAMEDIR/data/GameBinary.x86_64"   # user-provided Linux build (x86_64 OR 32-bit x86)
+BOX64="$HOME/box/box64"
 
 # CD and set log
 cd "$GAMEDIR/data"
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 # Permissions
-chmod +x "$BOX64"
 chmod +x "$GAME"
-chmod +x "$GAMEDIR/tools/splash"
 
 # Pre-flight checks for X11 and OpenGL
 if [ -z "$DISPLAY" ]; then
@@ -54,19 +52,28 @@ fi
 #     echo "[WARNING] Overriding GL version to run the game; may cause perf or visual issues."
 # fi
 
+# Mount box runtime
+BOX="$HOME/box"
+BOX_RUNTIME="$controlfolder/libs/box.squashfs"
+if [ -f "$BOX_RUNTIME" ]; then
+    $ESUDO mkdir -p "$BOX"
+    $ESUDO umount "$BOX" 2>/dev/null || true
+    $ESUDO mount "$BOX_RUNTIME" "$BOX"
+else
+    pm_message "This port requires the box runtime. Please update PortMaster."
+    pm_finish
+    exit 1
+fi
+
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/box64/x64:$GAMEDIR/libs.aarch64:$GAMEDIR/data:$LD_LIBRARY_PATH"
-export BOX64_LD_LIBRARY_PATH="$GAMEDIR/box64/x64:$GAMEDIR/data:$LD_LIBRARY_PATH"
-export XDG_CONFIG_HOME="$GAMEDIR/config" && mkdir -p "$GAMEDIR/config"
+export BOX64_LD_LIBRARY_PATH="$BOX/box64-i386-linux-gnu:$BOX/box64-x86_64-linux-gnu:$GAMEDIR/libs.aarch64:$GAMEDIR/data"
+export XDG_CONFIG_HOME="$GAMEDIR/saves" && mkdir -p "$GAMEDIR/saves"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 export SDL_VIDEODRIVER="x11"
 
 # Box64 dynarec tuning — see https://github.com/ptitSeb/box64/blob/main/docs/USAGE.md
-# Defaults below favor compatibility over raw speed. For Unity games, the
-# Hollow Knight tuning (FASTROUND=0, CALLRET=2, BIGBLOCK=3, FORWARD=1024) is
-# usually a safer starting point.
 export BOX64_NOBANNER=1                # Hide Box64 startup banner (cleaner logs)
-export BOX64_DYNAREC=1                 # Enable the JIT dynarec for x86_64 to ARM
+export BOX64_DYNAREC=1                 # Enable the JIT dynarec for x86 -> ARM
 export BOX64_DYNAREC_SAFEFLAGS=0       # Skip extra flag-preservation checks for speed
 export BOX64_DYNAREC_FASTROUND=1       # Fast (non-IEEE) FP rounding — set to 0 if game misbehaves
 export BOX64_DYNAREC_BIGBLOCK=1        # Merge more instructions per block
@@ -93,14 +100,9 @@ export BOX64_VSYNC=0                   # Let the engine control vsync
 # export BOX64_PREFER_EMULATED=0
 # export BOX64_NOSIGSEGV=1
 
-# Optional: display loading splash (most boxports have one — long load times)
-# [ "$CFW_NAME" == "muOS" ] && $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 1
-# $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 30000 &
-
-# Optional: use a port-bundled gptokeyb if the system one has d-pad issues
-# (common for Unity games — uncomment to use)
-# chmod +x "$GAMEDIR/tools/gptokeyb"
-# export GPTOKEYB="$GAMEDIR/tools/gptokeyb $ESUDOKILL"
+# Optional: display loading splash from the box runtime (long load times)
+# [ "$CFW_NAME" == "muOS" ] && $ESUDO "$BOX/splash" "$GAMEDIR/splash.png" 1
+# $ESUDO "$BOX/splash" "$GAMEDIR/splash.png" 30000 &
 
 # Run it
 $GPTOKEYB "$GAME" -c "$GAMEDIR/game.gptk" &
@@ -108,4 +110,5 @@ pm_platform_helper "$GAME" > /dev/null
 $BOX64 "$GAME"
 
 # Cleanup
+$ESUDO umount "$BOX" 2>/dev/null
 pm_finish

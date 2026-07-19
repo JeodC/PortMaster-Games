@@ -18,18 +18,19 @@ get_controls
 
 # Variables
 GAMEDIR="/$directory/ports/hollow_knight"
-BOX64="$GAMEDIR/box64/box64"
+BOX="$HOME/box"
+BOX64="$BOX/box64"
 
 # CD and set log
-cd $GAMEDIR/data
+cd "$GAMEDIR/data"
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
 # Permissions
-chmod +x "$BOX64"
-chmod +x "$GAMEDIR/tools/splash"
 chmod +x "$GAMEDIR/tools/gptokeyb"
 
-# Pre-flight checks for X11 and OpenGL
+# Pre-flight checks for X11 and OpenGL. This is a Unity game — the westonwrap
+# crusty GL bridge aborts it during graphics init, so it runs on native X11/GL
+# only (hence the opengl requirement in port.json).
 if [ -z "$DISPLAY" ]; then
     echo "Error: Display manager not found. Hollow Knight requires OpenGL and X11 to run."
     exit 1
@@ -73,11 +74,28 @@ fi
 
 chmod +x "$GAME"
 
+# Mount box runtime (box64 + Box32, shared across box ports)
+BOX_RUNTIME="$controlfolder/libs/box.squashfs"
+if [ -f "$BOX_RUNTIME" ]; then
+    $ESUDO mkdir -p "$BOX"
+    $ESUDO umount "$BOX" 2>/dev/null || true
+    $ESUDO mount "$BOX_RUNTIME" "$BOX"
+else
+    pm_message "This port requires the box runtime. Please update PortMaster."
+    pm_finish
+    exit 1
+fi
+
+# Display loading splash (from the box runtime)
+[ "$CFW_NAME" == "muOS" ] && $ESUDO "$BOX/splash" "$GAMEDIR/splash.png" 1
+$ESUDO "$BOX/splash" "$GAMEDIR/splash.png" 30000 &
+
 # Exports
-export LD_LIBRARY_PATH="$GAMEDIR/box64/x64:$GAMEDIR/libs.aarch64:$GAMEDIR/data:$LD_LIBRARY_PATH"
-export BOX64_LD_LIBRARY_PATH="$GAMEDIR/box64/x64:$GAMEDIR/gamedata:$LD_LIBRARY_PATH"
-export XDG_CONFIG_HOME="$GAMEDIR/config" && mkdir -p "$GAMEDIR/config"
+export LD_LIBRARY_PATH="$GAMEDIR/libs.aarch64:$GAMEDIR/data:$LD_LIBRARY_PATH"
+export BOX64_LD_LIBRARY_PATH="$BOX/box64-x86_64-linux-gnu:$BOX/box64-i386-linux-gnu:$GAMEDIR/data:$LD_LIBRARY_PATH"
+export XDG_CONFIG_HOME="$GAMEDIR/saves" && mkdir -p "$GAMEDIR/saves"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
+export SDL_VIDEODRIVER="x11"
 
 # Box64 optimizations -- see https://github.com/ptitSeb/box64/blob/main/docs/USAGE.md
 export BOX64_NOBANNER=1                # Hide Box64 startup banner (cleaner logs)
@@ -95,20 +113,14 @@ export BOX64_VSYNC=0                   # Allow Unity engine to control vsync
 export LIBGL_NOERROR=1                 # Don’t check GL errors
 export MESA_NO_ERROR=1                 # Don’t check Mesa GL errors
 
-# Display loading splash
-[ "$CFW_NAME" == "muOS" ] && $ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 1 
-$ESUDO "$GAMEDIR/tools/splash" "$GAMEDIR/splash.png" 30000 &
-
-# Use x11 for game but not for splash
-export SDL_VIDEODRIVER="x11"
-
 # Use custom gptokeyb to fix d-pad
 export GPTOKEYB="$GAMEDIR/tools/gptokeyb $ESUDOKILL"
 
 # Run it
-$GPTOKEYB "$GAME" -c "$GAMEDIR/hollowknight.gptk" & 
+$GPTOKEYB "$GAME" -c "$GAMEDIR/hollowknight.gptk" &
 pm_platform_helper "$GAME" > /dev/null
-$BOX64 $GAME -force-opengl -screen-fullscreen 1 -screen-width $DISPLAY_WIDTH -screen-height $DISPLAY_HEIGHT
+$BOX64 "$GAME" -force-opengl -screen-fullscreen 1 -screen-width $DISPLAY_WIDTH -screen-height $DISPLAY_HEIGHT
 
-#Clean up after ourselves
+# Clean up after ourselves
+$ESUDO umount "$BOX" 2>/dev/null
 pm_finish

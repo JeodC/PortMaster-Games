@@ -1,0 +1,101 @@
+set -e
+
+# Retry git clone on transient HTTP 500s.
+git_clone_retry() {
+    local url target attempt
+    for arg in "$@"; do
+        case "$arg" in
+            http*|git@*|ssh://*|git://*) url="$arg" ;;
+            -*) ;;
+            *) [[ -n "$url" ]] && target="$arg" ;;
+        esac
+    done
+    if [[ -z "$target" && -n "$url" ]]; then
+        target="${url##*/}"; target="${target%.git}"
+    fi
+    for attempt in 1 2 3 4 5; do
+        if git clone "$@"; then return 0; fi
+        [[ -n "$target" && -d "$target" ]] && rm -rf "$target"
+        echo "git clone failed (attempt $attempt); retrying in $((attempt*5))s..." >&2
+        sleep $((attempt * 5))
+    done
+    echo "git clone failed after 5 attempts" >&2; return 1
+}
+
+BUILDROOT="$PWD"
+
+#### box64 (with Box32 for 32-bit x86 support) ####
+git_clone_retry https://github.com/ptitSeb/box64.git box64-src
+cd box64-src
+git fetch --tags --force
+
+if [[ "${FORCE_HEAD:-false}" == "true" ]]; then
+    echo "FORCE_HEAD=true — building box64 from main HEAD (nightly)"
+else
+    BOX64_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+    [[ -z "$BOX64_TAG" ]] && { echo "ERROR: no box64 release tag found"; exit 1; }
+    echo "Checking out latest box64 release tag: $BOX64_TAG"
+    git checkout "$BOX64_TAG"
+fi
+
+mkdir -p build && cd build
+cmake .. \
+    -DARM_DYNAREC=ON \
+    -DBOX32=ON \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_INSTALL_PREFIX=/usr
+make -j"$(nproc)"
+
+STAGE="$BUILDROOT/stage"
+rm -rf "$STAGE"
+make install DESTDIR="$STAGE"
+cd "$BUILDROOT"
+
+BOX64_BIN=$(find "$STAGE" -type f -name box64 -path '*bin*' | head -1)
+[[ -x "$BOX64_BIN" ]] || BOX64_BIN=$(find box64-src/build -maxdepth 1 -type f -name box64 | head -1)
+[[ -f "$BOX64_BIN" ]] || { echo "ERROR: box64 binary not produced"; exit 1; }
+
+I386_DIR=$(find "$STAGE" -type d -name 'box64-i386-linux-gnu' | head -1)
+X64_DIR=$(find "$STAGE" -type d -name 'box64-x86_64-linux-gnu' | head -1)
+[[ -n "$I386_DIR" ]] || { echo "ERROR: box64-i386-linux-gnu wrapped libs missing (Box32 not built?)"; exit 1; }
+
+#### Assemble the squashfs tree ####
+# Layout mirrors how a launcher mounts it:
+#   /box64                          the emulator
+#   /box64-i386-linux-gnu/*         Box32 wrapped libs (32-bit x86 games)
+#   /box64-x86_64-linux-gnu/*       wrapped libs (64-bit x86_64 games)
+#   /splash                         shared loading-screen helper (box ports)
+#   /licenses/box64.LICENSE
+rm -rf squashfs-stage
+mkdir -p squashfs-stage/licenses
+cp "$BOX64_BIN" squashfs-stage/box64
+strip --strip-unneeded squashfs-stage/box64 || true
+chmod +x squashfs-stage/box64
+
+cp -a "$I386_DIR" squashfs-stage/box64-i386-linux-gnu
+[[ -n "$X64_DIR" ]] && cp -a "$X64_DIR" squashfs-stage/box64-x86_64-linux-gnu
+
+cp box64-src/LICENSE squashfs-stage/licenses/box64.LICENSE 2>/dev/null || \
+    echo "WARN: box64 LICENSE not found in source root"
+
+# Shared splash tool
+if [ -f "$BUILDROOT/splash.c" ]; then
+    gcc -O2 -o squashfs-stage/splash "$BUILDROOT/splash.c" \
+        $(pkg-config --cflags --libs sdl2 SDL2_image)
+    chmod +x squashfs-stage/splash
+    echo "splash: $(file -b squashfs-stage/splash | cut -d, -f1-2)"
+else
+    echo "ERROR: splash.c missing from recipe src/"; exit 1
+fi
+
+# Version print is best-effort: box64 self-executes fine on a native arm64
+# runner but may not under a qemu-emulated build, so never fail the build on it.
+echo "box64: $(squashfs-stage/box64 --version 2>&1 | head -1 || echo '(version probe skipped)')"
+echo "squashfs tree:"; find squashfs-stage -maxdepth 2 -printf '  %p\n'
+
+#### Package ####
+rm -f box.squashfs
+mksquashfs squashfs-stage box.squashfs \
+    -comp gzip -b 131072 -all-root -no-progress -noappend
+
+echo "Built artifact:"; ls -la box.squashfs

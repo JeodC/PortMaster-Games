@@ -19,7 +19,9 @@
     "image": null,
     "rtr": false,
     "exp": false,
-    "runtime": [],
+    "runtime": [
+      "box.squashfs"
+    ],
     "store": [],
     "availability": "paid",
     "reqs": [

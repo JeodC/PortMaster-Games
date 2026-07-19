@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+SRCDIR=$1
+DESTDIR=$2
+
+cd "$DESTDIR" || { echo "DESTDIR not found: $DESTDIR"; exit 1; }
+cp "$SRCDIR/box.squashfs" "$DESTDIR/box.squashfs"
+
+echo "Packaging complete."

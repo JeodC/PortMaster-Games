@@ -13,44 +13,62 @@ else
 fi
 
 source "$controlfolder/control.txt"
-export PORT_32BIT="Y"
 [ -f "${controlfolder}/mod_${CFW_NAME}.txt" ] && source "${controlfolder}/mod_${CFW_NAME}.txt"
 get_controls
 
 GAMEDIR="/$directory/ports/momodora_rutm"
-GAME="$GAMEDIR/gamedata/MomodoraRUtM"
-BOX86="$GAMEDIR/box86/box86"
-game_libs="$GAMEDIR/box86/x86:$weston_dir/lib_armhf:$GAMEDIR/libs.armhf:/usr/lib32:/lib32"
+GAME="$GAMEDIR/data/MomodoraRUtM"
 
 # Variables
 cd "$GAMEDIR"
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
-# Permissions
-chmod +x "$BOX86"
-
 # Exports
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
 
+# gl4es tuning
 export LIBGL_FB=0
 export LIBGL_X11=1
 export LIBGL_GL=21
 export LIBGL_ES=2
-
 export LIBGL_SHRINK=0
 export LIBGL_UPLOAD_OPTIMIZE=1
 export LIBGL_NPOT=2
 
-export BOX86_DYNAREC_SAFEFLAGS=1
-export BOX86_DYNAREC_WAIT=1
+# Box64 dynarec tuning
+export BOX64_NOBANNER=1
+export BOX64_DYNAREC=1
+export BOX64_DYNAREC_BIGBLOCK=1
+export BOX64_DYNAREC_CALLRET=1
+export BOX64_DYNAREC_FORWARD=128
+export BOX64_DYNAREC_STRONGMEM=0
+export BOX64_DYNAREC_FASTROUND=1
+export BOX64_DYNAREC_FASTNAN=1
+export BOX64_DYNAREC_SAFEFLAGS=1
+export BOX64_DYNAREC_WAIT=1
+export BOX64_RDTSC_1GHZ=1
 
-# Bind config dir
-bind_directories ~/.config/MomodoraRUtM "$GAMEDIR/config"
+# Bind saves dir
+bind_directories ~/.config/MomodoraRUtM "$GAMEDIR/saves"
 
 # Prepare game
-find "$GAMEDIR/gamedata" -type f \( \
+find "$GAMEDIR/data" -type f \( \
     -name "*.sh" -o -name "*.so" -o -name "*.out" \
 \) -exec rm -f {} \;
+
+# Mount box runtime
+BOX="$HOME/box"
+BOX_RUNTIME="$controlfolder/libs/box.squashfs"
+BOX64="$BOX/box64"
+if [ -f "$BOX_RUNTIME" ]; then
+    $ESUDO mkdir -p "$BOX"
+    $ESUDO umount "$BOX" 2>/dev/null || true
+    $ESUDO mount "$BOX_RUNTIME" "$BOX"
+else
+    pm_message "This port requires the box runtime. Please update PortMaster."
+    pm_finish
+    exit 1
+fi
 
 # Mount Weston runtime
 weston_dir=/tmp/weston
@@ -78,20 +96,24 @@ fi
 
 $ESUDO mount "$controlfolder/libs/${weston_runtime}.squashfs" "$weston_dir"
 
+# Library search path
+game_libs="$BOX/box64-i386-linux-gnu:$BOX/box64-x86_64-linux-gnu:$weston_dir/lib_aarch64:$GAMEDIR/data"
+
 # Run it
-cd "$GAMEDIR/gamedata"
+cd "$GAMEDIR/data"
 $GPTOKEYB "MomodoraRUtM" -c "$GAMEDIR/momodora.gptk" &
 pm_platform_helper "$GAME" > /dev/null
 $ESUDO env \
     WRAPPED_LIBRARY_PATH="$game_libs" \
-    BOX86_LD_LIBRARY_PATH="$game_libs" \
-    $weston_dir/westonwrap32.sh headless noop kiosk crusty_glx_gl4es \
-    "$BOX86" "$GAME"
+    BOX64_LD_LIBRARY_PATH="$game_libs" \
+    $weston_dir/westonwrap.sh headless noop kiosk crusty_glx_gl4es \
+    "$BOX64" "$GAME"
 
 # Cleanup
-$ESUDO "$weston_dir/westonwrap32.sh" cleanup
+$ESUDO "$weston_dir/westonwrap.sh" cleanup
 if [ "$PM_CAN_MOUNT" != "N" ]; then
     $ESUDO umount "$weston_dir" 2>/dev/null
+    $ESUDO umount "$BOX" 2>/dev/null
 fi
 
 pm_finish

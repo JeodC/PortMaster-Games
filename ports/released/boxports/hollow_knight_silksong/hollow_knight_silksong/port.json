@@ -23,7 +23,9 @@
     "image": null,
     "rtr": false,
     "exp": false,
-    "runtime": [],
+    "runtime": [
+      "box.squashfs"
+    ],
     "store": [
       {
         "name": "Steam",
@@ -45,7 +47,8 @@
     "reqs": [
       "!lowres",
       "2gb",
-      "opengl"
+      "opengl",
+      "power"
     ],
     "arch": [
       "aarch64"
