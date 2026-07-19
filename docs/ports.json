@@ -1181,7 +1181,9 @@
       "image": null,
       "rtr": false,
       "exp": false,
-      "runtime": [],
+      "runtime": [
+        "box.squashfs"
+      ],
       "store": [
         {
           "name": "Steam",
@@ -1193,7 +1195,8 @@
       "reqs": [
         "!lowres",
         "2gb",
-        "opengl"
+        "opengl",
+        "power"
       ],
       "arch": [
         "aarch64"
@@ -1204,12 +1207,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/elementallis/elementallis/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/elementallis/elementallis/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/elementallis.zip",
-      "date_updated": "2026-04-28T16:39",
+      "date_updated": "2026-07-19T18:29",
       "first_seen": "2026-04-28",
-      "md5": "8682c376ac706605e6c9ff95c448ae80",
-      "size": 6321286,
+      "md5": "7dd9f738aa40c9d0f2f20540bdb6eae0",
+      "size": 1288898,
       "lifetime_downloads": 0,
-      "last_commit": "[ELEMENTALLIS] Release Elementallis"
+      "last_commit": "[BOXPORTS] Update boxports with autobuilds and new runtime/template"
     }
   },
   {
@@ -1658,7 +1661,9 @@
       "image": null,
       "rtr": false,
       "exp": false,
-      "runtime": [],
+      "runtime": [
+        "box.squashfs"
+      ],
       "store": [
         {
           "name": "Steam",
@@ -1680,7 +1685,8 @@
       "reqs": [
         "!lowres",
         "2gb",
-        "opengl"
+        "opengl",
+        "power"
       ],
       "arch": [
         "aarch64"
@@ -1691,12 +1697,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/hollow_knight/hollow_knight/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/hollow_knight/hollow_knight/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/hollow_knight.zip",
-      "date_updated": "2026-05-14T18:18",
+      "date_updated": "2026-07-19T18:29",
       "first_seen": "2026-01-17",
-      "md5": "195e1ab32aad2564dcae191716f1a2b9",
-      "size": 6697137,
+      "md5": "9242c3d26a05f849dcb3e671508fcccf",
+      "size": 430757,
       "lifetime_downloads": 238,
-      "last_commit": "Add discounts and more stores"
+      "last_commit": "[BOXPORTS] Update boxports with autobuilds and new runtime/template"
     }
   },
   {
@@ -1724,7 +1730,9 @@
       "image": null,
       "rtr": false,
       "exp": false,
-      "runtime": [],
+      "runtime": [
+        "box.squashfs"
+      ],
       "store": [
         {
           "name": "Steam",
@@ -1746,7 +1754,8 @@
       "reqs": [
         "!lowres",
         "2gb",
-        "opengl"
+        "opengl",
+        "power"
       ],
       "arch": [
         "aarch64"
@@ -1757,12 +1766,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/hollow_knight_silksong/hollow_knight_silksong/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/hollow_knight_silksong/hollow_knight_silksong/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/hollow_knight_silksong.zip",
-      "date_updated": "2026-06-17T12:44",
+      "date_updated": "2026-07-19T18:29",
       "first_seen": "2026-01-17",
-      "md5": "2b1cd8b102fe922946025c99143bff24",
-      "size": 6775345,
+      "md5": "08de66df785ec438553a124a558c6a25",
+      "size": 508867,
       "lifetime_downloads": 198,
-      "last_commit": "[SILKSONG] Ignore input plumber, use gptokeyb"
+      "last_commit": "[BOXPORTS] Update boxports with autobuilds and new runtime/template"
     }
   },
   {
@@ -2341,7 +2350,8 @@
       "rtr": false,
       "exp": false,
       "runtime": [
-        "weston_pkg_0.2.squashfs"
+        "weston_pkg_0.2.squashfs",
+        "box.squashfs"
       ],
       "store": [
         {
@@ -2365,7 +2375,7 @@
         "power"
       ],
       "arch": [
-        "armhf"
+        "aarch64"
       ],
       "min_glibc": ""
     },
@@ -2373,12 +2383,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/momodora_rutm/momodora_rutm/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/momodora_rutm/momodora_rutm/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/momodora_rutm.zip",
-      "date_updated": "2026-05-29T12:03",
+      "date_updated": "2026-07-19T18:29",
       "first_seen": "2026-01-17",
-      "md5": "ff9025bdd7c08b9fde9e5b350bdbdb58",
-      "size": 8487756,
+      "md5": "58f710e9dda64fc39ab56341bd1e4426",
+      "size": 149544,
       "lifetime_downloads": 41,
-      "last_commit": "Add westonpack license files to ports that use westonpack"
+      "last_commit": "[BOXPORTS] Update boxports with autobuilds and new runtime/template"
     }
   },
   {
@@ -4439,7 +4449,9 @@
       "image": null,
       "rtr": false,
       "exp": false,
-      "runtime": [],
+      "runtime": [
+        "box.squashfs"
+      ],
       "store": [
         {
           "name": "Steam",
@@ -4451,7 +4463,8 @@
       "reqs": [
         "!lowres",
         "2gb",
-        "opengl"
+        "opengl",
+        "power"
       ],
       "arch": [
         "aarch64"
@@ -4462,12 +4475,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/thegirlfromarkanya/thegirlfromarkanya/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/thegirlfromarkanya/thegirlfromarkanya/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/thegirlfromarkanya.zip",
-      "date_updated": "2026-02-24T00:37",
+      "date_updated": "2026-07-19T18:29",
       "first_seen": "2026-01-17",
-      "md5": "2a0b8cce9c884ee8936803fcd06ce453",
-      "size": 5729467,
+      "md5": "21061f1d51dbd93ed5d600a94704e6b1",
+      "size": 697192,
       "lifetime_downloads": 0,
-      "last_commit": "Normalize all port.json files for version 4"
+      "last_commit": "[BOXPORTS] Update boxports with autobuilds and new runtime/template"
     }
   },
   {
