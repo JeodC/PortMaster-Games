@@ -3497,12 +3497,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/shrineslegacy/shrineslegacy/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/shrineslegacy/shrineslegacy/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/shrineslegacy.zip",
-      "date_updated": "2026-07-16T21:22",
+      "date_updated": "2026-07-19T00:01",
       "first_seen": "2025-10-07",
-      "md5": "cd45395025a416395d874397cf13689a",
-      "size": 5423666,
-      "lifetime_downloads": 52,
-      "last_commit": "[GMS] Add a gmtoolkit binary check for patchscripts and logging"
+      "md5": "0708da894b4430f20ae9b6067b041836",
+      "size": 5430664,
+      "lifetime_downloads": 54,
+      "last_commit": "[SHRINESLEGACY] Patch for latest data and silhouette fix"
     }
   },
   {
