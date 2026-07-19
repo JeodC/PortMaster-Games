@@ -1319,6 +1319,63 @@
   },
   {
     "version": 4,
+    "name": "fieldsofmistria.zip",
+    "items": [
+      "Fields of Mistria.sh",
+      "fieldsofmistria"
+    ],
+    "items_opt": [],
+    "attr": {
+      "title": "Fields of Mistria",
+      "porter": [
+        "Jeod"
+      ],
+      "desc": "A farming RPG inspired by 16-bit classics. Cultivate your farm, befriend the townsfolk, explore ancient ruins, and uncover the mysteries of a world where magic has faded.",
+      "desc_md": null,
+      "inst": "Download the Linux version and add the game files to `fieldsofmistria/data`.",
+      "inst_md": null,
+      "genres": [
+        "simulation",
+        "adventure"
+      ],
+      "image": null,
+      "rtr": false,
+      "exp": false,
+      "runtime": [
+        "box.squashfs"
+      ],
+      "store": [
+        {
+          "name": "Steam",
+          "gameurl": "https://store.steampowered.com/app/2142790/Fields_of_Mistria/",
+          "developerurl": ""
+        }
+      ],
+      "availability": "paid",
+      "reqs": [
+        "ultra",
+        "opengl",
+        "power"
+      ],
+      "arch": [
+        "aarch64"
+      ],
+      "min_glibc": ""
+    },
+    "source": {
+      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/fieldsofmistria/fieldsofmistria/screenshot.png",
+      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/boxports/fieldsofmistria/fieldsofmistria/README.md",
+      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/fieldsofmistria.zip",
+      "date_updated": "2026-07-19T18:49",
+      "first_seen": "2026-07-19",
+      "md5": "770e0afbfaf343d55a2efb74e059ed84",
+      "size": 691548,
+      "lifetime_downloads": 0,
+      "last_commit": "[MISTRIA] Release port"
+    }
+  },
+  {
+    "version": 4,
     "name": "fishbowl.zip",
     "items": [
       "Fishbowl.sh",
