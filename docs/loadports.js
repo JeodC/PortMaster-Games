@@ -17,9 +17,9 @@ async function loadPorts() {
     const DEVLOG_COUNT = 3;
 
     const runtimeNames = {
+        'box.squashfs': 'Box86 / Box64',
         'dotnet-8.0.12.squashfs': '.NET 8',
         'gmloadernext.squashfs': 'GMLoader-Next',
-        'gmtoolkit.squashfs': 'GMToolkit',
         'mkxp-z.squashfs': 'MKXP-Z',
         'mono-6.12.0.122-aarch64.squashfs': 'Mono 6.12',
         'python_3.11.squashfs': 'Python 3.11',
