@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gamelist>
+	<game>
+		<path>./Fields of Mistria.sh</path>
+		<name>Fields of Mistria</name>
+		<desc>A farming RPG inspired by 16-bit classics. Cultivate your farm, befriend the townsfolk, explore ancient ruins, and uncover the mysteries of a world where magic has faded.</desc>
+		<image>./fieldsofmistria/cover.png</image>
+		<thumbnail>./fieldsofmistria/thumb.png</thumbnail>
+		<developer>NPC Studio</developer>
+		<genre>Simulation, Adventure</genre>
+	</game>
+</gamelist>
