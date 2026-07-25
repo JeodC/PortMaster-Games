@@ -1,5 +1,5 @@
 set -e
-source /root/buildtools/harbourmasters/lib_build.sh
+source /root/buildtools/ports/harbourmasters/lib_build.sh
 
 # Project clone — fail fast on bad REPO_URL/REF.
 project_clone https://github.com/HarbourMasters/Shipwright.git
