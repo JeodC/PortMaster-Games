@@ -20,13 +20,4 @@ project_configure_and_build GeneratePortO2R \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE:-Release} \
     -DCMAKE_CXX_FLAGS=-ldl
 
-# tinyxml2/spdlog/nlohmann-json/GSL are static-linked, not runtime deps.
-# vorbis/ogg are dynamic deps Starship inherits via SDL2_mixer; shipped
-# defensively for handhelds that don't have them in /usr/lib.
-stage_libs Starship \
-    libz.so.1 \
-    libogg.so.0 \
-    libvorbis.so.0 \
-    libvorbisenc.so.2 \
-    libvorbisfile.so.3 \
-    libzip.so.5
+stage_libs Starship

@@ -31,13 +31,4 @@ project_configure_and_build GenerateO2R \
     -DCMAKE_CXX_FLAGS="-fno-strict-aliasing -funsigned-char" \
     -DCMAKE_EXE_LINKER_FLAGS="-ldl -pthread -Wl,--no-relax"
 
-# libSDL2 / audio driver libs (libasound, libjack, libpulse) are NOT shipped:
-# devices provide them. Binary doesn't NEED libbz2.
-stage_libs Spaghettify \
-    libogg.so.0 \
-    libvorbis.so.0 \
-    libvorbisenc.so.2 \
-    libvorbisfile.so.3 \
-    libz.so.1 \
-    libzip.so.5 \
-    libtinyxml2.so.10
+stage_libs Spaghettify

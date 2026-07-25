@@ -29,19 +29,4 @@ project_configure_and_build GenerateSohOtr \
     -DBUILD_REMOTE_CONTROL=1 \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE:-Release}
 
-# Stage shipped libraries. Filenames MUST match the binary's DT_NEEDED
-# entries exactly — stage_libs uses cp -L so each destination is a real
-# file with the right SONAME. libSDL2 is NOT shipped (device provides it).
-stage_libs soh/soh.elf \
-    libz.so.1 \
-    libogg.so.0 \
-    libvorbis.so.0 \
-    libvorbisenc.so.2 \
-    libvorbisfile.so.3 \
-    libpng16.so.16 \
-    libbz2.so.1 \
-    libzip.so.5 \
-    libtinyxml2.so.10 \
-    libopus.so.0 \
-    libopusfile.so.0 \
-    libSDL2_net-2.0.so.0
+stage_libs soh/soh.elf

@@ -19,7 +19,4 @@ project_configure_and_build GeneratePortO2R \
     -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld" \
     -DCMAKE_MODULE_LINKER_FLAGS="-fuse-ld=lld"
 
-stage_libs Ghostship \
-    "/usr/local/lib/libzip.so.5=libzip.so.5" \
-    libtinyxml2.so.10 \
-    "$PROJECT_DIR/libultraship/libtcc.so=libtcc.so"
+stage_libs Ghostship

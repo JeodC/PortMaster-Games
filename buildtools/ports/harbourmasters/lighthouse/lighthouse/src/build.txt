@@ -15,11 +15,4 @@ project_configure_and_build GeneratePortO2R \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE:-Release} \
     -DCMAKE_CXX_FLAGS=-ldl
 
-stage_libs Lighthouse \
-    libSDL2_net-2.0.so.0 \
-    libz.so.1 \
-    libogg.so.0 \
-    libvorbis.so.0 \
-    libvorbisenc.so.2 \
-    libvorbisfile.so.3 \
-    libzip.so.5
+stage_libs Lighthouse

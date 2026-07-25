@@ -15,8 +15,4 @@ project_configure_and_build GeneratePortO2R \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE:-Release} \
     -DCMAKE_CXX_FLAGS=-ldl
 
-# Mirror sm64-ghostship's minimal NEEDED set initially; the verify step
-# will reveal if Paperboat's binary needs more.
-stage_libs Paperboat \
-    libzip.so.5 \
-    libtinyxml2.so.10
+stage_libs Paperboat

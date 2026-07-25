@@ -278,7 +278,7 @@ HM_DEVICE_PROVIDED_LIBS="libSDL2-2.0.so.0 \
     libasound.so.2 libpulse.so.0 libpulse-simple.so.0 libjack.so.0"
 
 stage_libs() {
-    local binary_rel=$1; shift
+    local binary_rel=$1
     local libs_dir="$PROJECT_BUILD_DIR/libs"
     local binary="$PROJECT_BUILD_DIR/$binary_rel"
 
@@ -289,56 +289,44 @@ stage_libs() {
 
     mkdir -p "$libs_dir"
 
-    local staged=()
-    for entry in "$@"; do
-        local src dest
-        if [[ "$entry" == *"="* ]]; then
-            src=${entry%%=*}
-            dest=${entry#*=}
-        else
-            dest=$entry
-            if [[ -f "/usr/lib/aarch64-linux-gnu/$entry" ]]; then
-                src="/usr/lib/aarch64-linux-gnu/$entry"
-            elif [[ -f "/usr/local/lib/$entry" ]]; then
-                src="/usr/local/lib/$entry"
+    declare -A seen
+
+    stage_needed() {
+        local file=$1
+        local needed lib src
+
+        needed=$(readelf -d "$file" 2>/dev/null | awk -F'[][]' '/NEEDED/ {print $2}')
+
+        while read -r lib; do
+            [[ -z "$lib" ]] && continue
+
+            # Already provided by the target device.
+            [[ " $HM_DEVICE_PROVIDED_LIBS " == *" $lib "* ]] && continue
+
+            # Already staged.
+            [[ -n "${seen[$lib]}" ]] && continue
+
+            if [[ -f "/usr/local/lib/$lib" ]]; then
+                src="/usr/local/lib/$lib"
+            elif [[ -f "/usr/lib/aarch64-linux-gnu/$lib" ]]; then
+                src="/usr/lib/aarch64-linux-gnu/$lib"
             else
-                echo "stage_libs: ERROR: cannot locate $entry in /usr/lib/aarch64-linux-gnu or /usr/local/lib"
+                echo "stage_libs: ERROR: cannot locate $lib"
                 exit 1
             fi
-        fi
-        cp -L "$src" "$libs_dir/$dest"
-        staged+=("$dest")
-    done
 
-    local needed
-    needed=$(readelf -d "$binary" | awk -F'[][]' '/NEEDED/ {print $2}')
-    echo "Binary NEEDED:"; echo "$needed"
-    echo "Staged:"; ls "$libs_dir"
+            echo "Staging $lib"
+            cp -L "$src" "$libs_dir/$lib"
+            seen[$lib]=1
 
-    for lib in "${staged[@]}"; do
-        if ! echo "$needed" | grep -qx "$lib"; then
-            echo "ERROR: staged $lib but binary does not NEED it"; exit 1
-        fi
-        if [[ ! -f "$libs_dir/$lib" ]]; then
-            echo "ERROR: $lib missing from libs/"; exit 1
-        fi
-    done
+            # Recurse into this library's own dependencies.
+            stage_needed "$libs_dir/$lib"
+        done <<< "$needed"
+    }
 
-    # Completeness: every NEEDED entry must be staged or device-provided.
-    local staged_str=" ${staged[*]} "
-    local provided_str=" $HM_DEVICE_PROVIDED_LIBS "
-    local unaccounted=()
-    while read -r lib; do
-        [[ -z "$lib" ]] && continue
-        [[ "$staged_str"   == *" $lib "* ]] && continue
-        [[ "$provided_str" == *" $lib "* ]] && continue
-        unaccounted+=("$lib")
-    done <<< "$needed"
+    stage_needed "$binary"
 
-    if (( ${#unaccounted[@]} )); then
-        echo "ERROR: binary NEEDs these libs but they are neither staged nor on the device-provided allowlist:" >&2
-        printf '  %s\n' "${unaccounted[@]}" >&2
-        echo "Add each to the stage_libs call in build.txt, or to HM_DEVICE_PROVIDED_LIBS in lib_build.sh if every supported device already provides it." >&2
-        exit 1
-    fi
+    echo
+    echo "Staged libraries:"
+    ls -1 "$libs_dir"
 }
