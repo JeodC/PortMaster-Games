@@ -3398,12 +3398,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/sm64-ghostship/sm64-ghostship/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/sm64-ghostship/sm64-ghostship/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sm64-ghostship.zip",
-      "date_updated": "2026-06-07T00:33",
+      "date_updated": "2026-07-29T22:00",
       "first_seen": "2026-01-18",
-      "md5": "d22e6d8c0b5d9317dee453ae991ba4f1",
-      "size": 10253705,
-      "lifetime_downloads": 107,
-      "last_commit": "[GHOSTSHIP] Update building and port to nightly"
+      "md5": "8b2f0f9fd5ee8c46a1d66c429000c5e8",
+      "size": 10253711,
+      "lifetime_downloads": 204,
+      "last_commit": "[HM] Update otrgens to accept .v64 for consistency with launchscripts"
     }
   },
   {
@@ -4022,12 +4022,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/spaghettikart/spaghettikart/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/spaghettikart/spaghettikart/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/spaghettikart.zip",
-      "date_updated": "2026-06-30T21:14",
+      "date_updated": "2026-07-29T22:00",
       "first_seen": "2026-01-25",
-      "md5": "3cbaa03f11983578ef1524f7be88a8ca",
-      "size": 28989613,
-      "lifetime_downloads": 134,
-      "last_commit": "[SPAGHETTIKART] Typo"
+      "md5": "3c4ce6e6076796882c2ccb47aca6bcb6",
+      "size": 28989620,
+      "lifetime_downloads": 172,
+      "last_commit": "[HM] Update otrgens to accept .v64 for consistency with launchscripts"
     }
   },
   {
@@ -4185,12 +4185,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/starship/starship/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/starship/starship/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/starship.zip",
-      "date_updated": "2026-06-03T15:29",
+      "date_updated": "2026-07-29T22:00",
       "first_seen": "2025-11-11",
-      "md5": "43156648f33cb569f1899563c58ee0e3",
-      "size": 6745118,
-      "lifetime_downloads": 74,
-      "last_commit": "[HARBOURMASTERS] Rebranding, drop the 64"
+      "md5": "b3c06ca603293087ceae1f6a40dfa564",
+      "size": 6745126,
+      "lifetime_downloads": 177,
+      "last_commit": "[HM] Update otrgens to accept .v64 for consistency with launchscripts"
     }
   },
   {
