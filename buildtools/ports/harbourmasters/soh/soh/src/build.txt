@@ -1,4 +1,4 @@
-set -e
+set -euo pipefail
 source /root/buildtools/ports/harbourmasters/lib_build.sh
 
 # Project clone — fail fast on bad REPO_URL/REF.

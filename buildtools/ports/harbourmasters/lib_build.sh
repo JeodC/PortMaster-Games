@@ -17,14 +17,49 @@
 #   PROJECT_DIR=/root/build-port/project
 #   DEPS_DIR=/root/build-port/deps
 #   PROJECT_BUILD_DIR=$PROJECT_DIR/build
+#
+# Local-iteration knobs (see buildtools/Build-HMPort.ps1). These are all no-ops
+# in CI, where every build gets a fresh container, so the same build.txt drives
+# both paths:
+#   RHH_LOCAL=1           — $PROJECT_DIR is a bind-mounted working copy: never
+#                           clone, never move HEAD, build exactly what's there
+#   RHH_SKIP_SUBMODULES=1 — don't touch submodules of that working copy
+#   RHH_FORCE_DEPS=1      — rebuild deps even if a marker says they're installed
 
-set -e
+set -euo pipefail
 
 PROJECT_DIR=${PROJECT_DIR:-/root/build-port/project}
 DEPS_DIR=${DEPS_DIR:-/root/build-port/deps}
 PROJECT_BUILD_DIR=${PROJECT_BUILD_DIR:-$PROJECT_DIR/build}
 
+# Markers recording which deps are already installed into the prefix. Lives
+# under /usr/local on purpose: a local run mounts a persistent volume there, so
+# the markers survive exactly as long as the installed artifacts they describe.
+RHH_DEP_MARKER_DIR=${RHH_DEP_MARKER_DIR:-/usr/local/.rhh-deps}
+
 mkdir -p "$DEPS_DIR"
+
+# _dep_marker <name> <identity...>
+#   Marker path for <name>, keyed on everything that would change the build
+#   (url, pinned ref, cmake args). Bump any of them and the old marker no
+#   longer matches, so the dep rebuilds instead of silently going stale.
+_dep_marker() {
+    local name=$1
+    shift
+    local key
+    key=$(printf '%s\0' "$@" | md5sum | cut -d' ' -f1)
+    echo "$RHH_DEP_MARKER_DIR/$name-$key"
+}
+
+# _dep_cached <marker> — true if this exact dep/config is already installed.
+_dep_cached() {
+    [[ "${RHH_FORCE_DEPS:-0}" != "1" && -f "$1" ]]
+}
+
+_dep_mark_built() {
+    mkdir -p "$RHH_DEP_MARKER_DIR"
+    : > "$1"
+}
 
 # GitHub occasionally returns transient HTTP 500s during git clone. Retry with
 # backoff so single failures don't abort the whole build.
@@ -42,21 +77,64 @@ git_clone_retry() {
     return 1
 }
 
+# submodule_update_retry <git-submodule-update-flags...>
+# Submodule init hits the same transient HTTP 500s as clone.
+submodule_update_retry() {
+    local attempt
+    for attempt in 1 2 3 4 5; do
+        if git -C "$PROJECT_DIR" submodule update "$@"; then
+            return 0
+        fi
+        local delay=$((attempt * 5))
+        echo "submodule update failed (attempt $attempt); retrying in ${delay}s..." >&2
+        sleep "$delay"
+    done
+    echo "submodule update failed after 5 attempts" >&2
+    return 1
+}
+
 # project_clone <default-url> [--recursive]
 project_clone() {
     local default_url=$1
-    local clone_flags=""
-    local sm_flags="--init"
+    local clone_flags=()
+    local sm_flags=(--init)
+
     if [[ "${2:-}" == "--recursive" ]]; then
-        clone_flags="--recursive"
-        sm_flags="--init --recursive"
+        clone_flags+=(--recursive)
+        sm_flags+=(--recursive)
+    fi
+
+    # Local iteration: $PROJECT_DIR is your own working copy. Build what's
+    # checked out — don't clone over it and don't move HEAD to a release tag.
+    if [[ "${RHH_LOCAL:-0}" == "1" ]]; then
+        if [[ ! -d "$PROJECT_DIR" ]]; then
+            echo "project_clone: ERROR: RHH_LOCAL=1 but $PROJECT_DIR does not exist" >&2
+            return 1
+        fi
+        echo ">>> project_clone: RHH_LOCAL=1, building working copy $PROJECT_DIR"
+        git -C "$PROJECT_DIR" describe --always --dirty 2>/dev/null || true
+        if [[ "${RHH_SKIP_SUBMODULES:-0}" == "1" ]]; then
+            echo ">>> project_clone: RHH_SKIP_SUBMODULES=1, leaving submodules alone"
+        else
+            submodule_update_retry "${sm_flags[@]}"
+        fi
+        return 0
+    fi
+
+    if [[ -d "$PROJECT_DIR/.git" ]]; then
+        echo ">>> project_clone: using existing checkout $PROJECT_DIR"
+        submodule_update_retry "${sm_flags[@]}"
+        return 0
     fi
 
     local url=${REPO_URL:-$default_url}
     echo ">>> project_clone: $url -> $PROJECT_DIR"
-    git_clone_retry $clone_flags "$url" "$PROJECT_DIR"
+    git_clone_retry "${clone_flags[@]}" "$url" "$PROJECT_DIR"
 
-    git -C "$PROJECT_DIR" fetch --tags
+    # Non-fatal: a tagless or tag-fetch-flaky remote shouldn't kill the build,
+    # the latest-tag lookup below degrades to HEAD on its own.
+    git -C "$PROJECT_DIR" fetch --tags ||
+        echo ">>> project_clone: WARNING: fetch --tags failed, continuing" >&2
 
     if [[ -n "${REF:-}" ]]; then
         echo ">>> project_clone: checking out explicit ref $REF"
@@ -64,19 +142,20 @@ project_clone() {
     elif [[ "${FORCE_HEAD:-false}" == "true" ]]; then
         echo ">>> project_clone: FORCE_HEAD=true, staying on default branch HEAD"
     else
-        local latest_tag
-        latest_tag=$(git -C "$PROJECT_DIR" describe --tags "$(git -C "$PROJECT_DIR" rev-list --tags --max-count=1)")
-        echo ">>> project_clone: checking out latest tag $latest_tag"
-        git -C "$PROJECT_DIR" checkout "$latest_tag"
+        local newest_tagged latest_tag=""
+        newest_tagged=$(git -C "$PROJECT_DIR" rev-list --tags --max-count=1 || true)
+        if [[ -n "$newest_tagged" ]]; then
+            latest_tag=$(git -C "$PROJECT_DIR" describe --tags "$newest_tagged" || true)
+        fi
+        if [[ -n "$latest_tag" ]]; then
+            echo ">>> project_clone: checking out latest tag $latest_tag"
+            git -C "$PROJECT_DIR" checkout "$latest_tag"
+        else
+            echo ">>> project_clone: no tags found, staying on default branch HEAD" >&2
+        fi
     fi
 
-    # Submodule init can also hit transient HTTP 500s — retry.
-    for attempt in 1 2 3 4 5; do
-        if git -C "$PROJECT_DIR" submodule update $sm_flags; then break; fi
-        echo "submodule update failed (attempt $attempt); retrying in $((attempt * 5))s..." >&2
-        sleep $((attempt * 5))
-        [[ $attempt -eq 5 ]] && { echo "submodule update failed after 5 attempts"; exit 1; }
-    done
+    submodule_update_retry "${sm_flags[@]}"
 }
 
 # project_configure_and_build <generate-target> [extra cmake -D args...]
@@ -100,11 +179,11 @@ project_configure_and_build() {
 
     if [[ -n "$gen_target" ]]; then
         echo ">>> project_configure_and_build: building asset target $gen_target"
-        cmake --build "$PROJECT_BUILD_DIR" --target "$gen_target" -j"$(nproc)"
+        cmake --build "$PROJECT_BUILD_DIR" --target "$gen_target" -j"$(nproc)" -- -k 0
     fi
 
     echo ">>> project_configure_and_build: building main"
-    cmake --build "$PROJECT_BUILD_DIR" -j"$(nproc)"
+    cmake --build "$PROJECT_BUILD_DIR" -j"$(nproc)" -- -k 0
 }
 
 # _build_dep <name> <git-url> <ref> [extra cmake -D args...]
@@ -118,6 +197,13 @@ _build_dep() {
     local src="$DEPS_DIR/$name"
     local build="$src/build"
 
+    local marker
+    marker=$(_dep_marker "$name" "$url" "$ref" "${extra_args[@]}")
+    if _dep_cached "$marker"; then
+        echo ">>> _build_dep $name: already installed at this ref/config, skipping"
+        return 0
+    fi
+
     if [[ -d "$src/.git" ]]; then
         echo ">>> _build_dep $name: already cloned, skipping fetch"
     else
@@ -125,8 +211,14 @@ _build_dep() {
         git_clone_retry "$url" "$src"
     fi
 
+    # A cached $src may predate a bumped pin, in which case the ref isn't in
+    # the local object store yet — fetch and retry before giving up.
     echo ">>> _build_dep $name: checking out $ref"
-    git -C "$src" checkout "$ref"
+    if ! git -C "$src" checkout "$ref"; then
+        echo ">>> _build_dep $name: $ref not present locally, fetching"
+        git -C "$src" fetch --tags --force origin
+        git -C "$src" checkout "$ref"
+    fi
 
     echo ">>> _build_dep $name: configuring"
     cmake -S "$src" -B "$build" \
@@ -139,6 +231,8 @@ _build_dep() {
 
     echo ">>> _build_dep $name: installing"
     cmake --install "$build"
+
+    _dep_mark_built "$marker"
 }
 
 build_sdl2() {
@@ -184,10 +278,13 @@ build_bzip2() {
 # find_package mechanism; rename it post-install so downstream falls through
 # to libultraship's path. Matches the original hm64-builder behavior.
 build_tinyxml2() {
+    local cfg="$DEPS_DIR/tinyxml2/cmake/tinyxml2-config.cmake"
+    if [[ -f "$cfg.disabled" && ! -f "$cfg" ]]; then
+        mv "$cfg.disabled" "$cfg"
+    fi
     _build_dep tinyxml2 https://github.com/leethomason/tinyxml2.git \
         57ec94127bda7979282315b7d4b0059eeb6f3b5d \
         -DBUILD_SHARED_LIBS=ON "$@"
-    local cfg="$DEPS_DIR/tinyxml2/cmake/tinyxml2-config.cmake"
     if [[ -f "$cfg" ]]; then
         mv "$cfg" "$cfg.disabled"
     fi
@@ -204,19 +301,28 @@ build_opus() {
 # can still write `build_opusfile`.
 build_opusfile() {
     local src="$DEPS_DIR/opusfile"
+    local marker
+    marker=$(_dep_marker opusfile https://github.com/xiph/opusfile.git master)
+    if _dep_cached "$marker"; then
+        echo ">>> build_opusfile: already installed, skipping"
+        return 0
+    fi
     if [[ ! -d "$src/.git" ]]; then
         echo ">>> build_opusfile: cloning"
         git_clone_retry https://github.com/xiph/opusfile.git "$src"
     fi
-    cd "$src"
-    ./autogen.sh
-    env -u LD PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
-        ./configure --prefix=/usr/local \
-            --disable-examples \
-            --enable-shared --disable-static
-    env -u LD make -j"$(nproc)"
-    env -u LD make install
-    cd - >/dev/null
+    # Subshell so a mid-build failure can't leave the caller in $src.
+    (
+        cd "$src"
+        ./autogen.sh
+        env -u LD PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
+            ./configure --prefix=/usr/local \
+                --disable-examples \
+                --enable-shared --disable-static
+        env -u LD make -j"$(nproc)"
+        env -u LD make install
+    )
+    _dep_mark_built "$marker"
 }
 
 # openssl uses its own Perl Configure, not cmake — custom helper like opusfile.
@@ -227,22 +333,31 @@ build_opusfile() {
 # system 1.1.1. no-docs/no-tests keeps the build lean.
 build_openssl() {
     local src="$DEPS_DIR/openssl"
+    local marker
+    marker=$(_dep_marker openssl https://github.com/openssl/openssl.git openssl-3.5.6)
+    if _dep_cached "$marker"; then
+        echo ">>> build_openssl: already installed, skipping"
+        return 0
+    fi
     if [[ ! -d "$src/.git" ]]; then
         echo ">>> build_openssl: cloning"
         git_clone_retry --branch openssl-3.5.6 --depth 1 \
             https://github.com/openssl/openssl.git "$src"
     fi
-    cd "$src"
-    # Explicit target (don't rely on ./config auto-detect); --libdir=lib so it
-    # lands in /usr/local/lib, not lib64, matching our staging + find paths.
-    env -u LD ./Configure linux-aarch64 shared \
-        --prefix=/usr/local \
-        --openssldir=/usr/local/ssl \
-        --libdir=lib \
-        no-docs no-tests
-    env -u LD make -j"$(nproc)"
-    env -u LD make install_sw
-    cd - >/dev/null
+    (
+        cd "$src"
+        # Explicit target (don't rely on ./config auto-detect); --libdir=lib so
+        # it lands in /usr/local/lib, not lib64, matching our staging + find
+        # paths.
+        env -u LD ./Configure linux-aarch64 shared \
+            --prefix=/usr/local \
+            --openssldir=/usr/local/ssl \
+            --libdir=lib \
+            no-docs no-tests
+        env -u LD make -j"$(nproc)"
+        env -u LD make install_sw
+    )
+    _dep_mark_built "$marker"
 }
 
 build_fmt() {
@@ -277,56 +392,102 @@ HM_DEVICE_PROVIDED_LIBS="libSDL2-2.0.so.0 \
     libstdc++.so.6 libgcc_s.so.1 \
     libasound.so.2 libpulse.so.0 libpulse-simple.so.0 libjack.so.0"
 
+# _hm_is_device_lib <soname>
+_hm_is_device_lib() {
+    [[ " $HM_DEVICE_PROVIDED_LIBS " == *" $1 "* ]]
+}
+
+# _hm_needed_of <elf-file>
+#   Prints one DT_NEEDED soname per line. Errors if the file isn't a readable
+#   ELF object — a silent empty result here would ship a port with no libs/.
+_hm_needed_of() {
+    if ! readelf -h "$1" >/dev/null 2>&1; then
+        echo "stage_libs: ERROR: not a readable ELF object: $1" >&2
+        return 1
+    fi
+    readelf -d "$1" | awk -F'[][]' '/NEEDED/ {print $2}'
+}
+
+# _hm_stage_needed <elf-file>
+#   Recursive worker for stage_libs. Reads $_hm_libs_dir and the $_hm_seen map
+#   from its caller's scope (bash dynamic scoping) — do not call directly.
+_hm_stage_needed() {
+    local needed lib src
+    needed=$(_hm_needed_of "$1")
+
+    while read -r lib; do
+        [[ -z "$lib" ]] && continue
+
+        # Already provided by the target device — don't ship, don't recurse.
+        if _hm_is_device_lib "$lib"; then
+            continue
+        fi
+
+        # Already staged (${x+_} form so an unset key is safe under `set -u`).
+        if [[ -n "${_hm_seen[$lib]+_}" ]]; then
+            continue
+        fi
+
+        if [[ -f "/usr/local/lib/$lib" ]]; then
+            src="/usr/local/lib/$lib"
+        elif [[ -f "/usr/lib/aarch64-linux-gnu/$lib" ]]; then
+            src="/usr/lib/aarch64-linux-gnu/$lib"
+        else
+            echo "stage_libs: ERROR: cannot locate $lib" >&2
+            return 1
+        fi
+
+        echo "Staging $lib"
+        cp -L "$src" "$_hm_libs_dir/$lib"
+        _hm_seen[$lib]=1
+
+        # Recurse into this library's own dependencies.
+        _hm_stage_needed "$_hm_libs_dir/$lib"
+    done <<< "$needed"
+}
+
 stage_libs() {
     local binary_rel=$1
-    local libs_dir="$PROJECT_BUILD_DIR/libs"
+    local _hm_libs_dir="$PROJECT_BUILD_DIR/libs"
     local binary="$PROJECT_BUILD_DIR/$binary_rel"
 
     if [[ ! -f "$binary" ]]; then
-        echo "stage_libs: ERROR: binary not found at $binary"
-        exit 1
+        echo "stage_libs: ERROR: binary not found at $binary" >&2
+        return 1
     fi
 
-    mkdir -p "$libs_dir"
+    # Start clean: a cached build dir must not leak stale sonames into the zip.
+    rm -rf "$_hm_libs_dir"
+    mkdir -p "$_hm_libs_dir"
 
-    declare -A seen
+    local -A _hm_seen=()
 
-    stage_needed() {
-        local file=$1
-        local needed lib src
+    _hm_stage_needed "$binary"
 
-        needed=$(readelf -d "$file" 2>/dev/null | awk -F'[][]' '/NEEDED/ {print $2}')
-
+    # Closure check. Every DT_NEEDED of the binary and of everything we staged
+    # must resolve to either a device-provided lib or a file in libs/. Without
+    # this a miss only surfaces as a failed exec on the handheld.
+    local missing=0 file lib
+    for file in "$binary" "$_hm_libs_dir"/*; do
+        # Skips the literal pattern when libs/ came out empty.
+        [[ -f "$file" ]] || continue
         while read -r lib; do
             [[ -z "$lib" ]] && continue
-
-            # Already provided by the target device.
-            [[ " $HM_DEVICE_PROVIDED_LIBS " == *" $lib "* ]] && continue
-
-            # Already staged.
-            [[ -n "${seen[$lib]}" ]] && continue
-
-            if [[ -f "/usr/local/lib/$lib" ]]; then
-                src="/usr/local/lib/$lib"
-            elif [[ -f "/usr/lib/aarch64-linux-gnu/$lib" ]]; then
-                src="/usr/lib/aarch64-linux-gnu/$lib"
-            else
-                echo "stage_libs: ERROR: cannot locate $lib"
-                exit 1
+            if _hm_is_device_lib "$lib"; then
+                continue
             fi
+            if [[ ! -f "$_hm_libs_dir/$lib" ]]; then
+                echo "stage_libs: ERROR: $lib is NEEDED by ${file##*/} but not staged" >&2
+                missing=1
+            fi
+        done <<< "$(_hm_needed_of "$file")"
+    done
 
-            echo "Staging $lib"
-            cp -L "$src" "$libs_dir/$lib"
-            seen[$lib]=1
-
-            # Recurse into this library's own dependencies.
-            stage_needed "$libs_dir/$lib"
-        done <<< "$needed"
-    }
-
-    stage_needed "$binary"
+    if (( missing )); then
+        return 1
+    fi
 
     echo
     echo "Staged libraries:"
-    ls -1 "$libs_dir"
+    ls -1 "$_hm_libs_dir"
 }
