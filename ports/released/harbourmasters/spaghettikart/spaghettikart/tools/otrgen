@@ -108,7 +108,7 @@ convert_n64() {
 }
 
 # Main logic
-rom_file=$(find "$GAMEDIR/baseroms" -maxdepth 1 \( -name "*.z64" -o -name "*.n64" \) -print -quit)
+rom_file=$(find "$GAMEDIR/baseroms" -maxdepth 1 \( -name "*.z64" -o -name "*.n64" -o -name "*.v64" \) -print -quit)
 
 # Test if regenerating o2r
 if [ -n "$REGEN" ] && [ ! -f "$ASSETS_ZIP" ]; then
@@ -128,7 +128,7 @@ fi
 echo "Processing $rom_file..."
 
 case "$rom_file" in
-    *.n64)
+    *.n64|*.v64)
         converted_file=$(convert_n64 "$rom_file") || exit 1;
         rm -f "$rom_file"
         process_rom "$(basename "$converted_file")" || exit 1;

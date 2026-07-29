@@ -109,7 +109,7 @@ convert_n64() {
 }
 
 # Main logic
-rom_file=$(find "$GAMEDIR/baseroms" -maxdepth 1 \( -name "*.z64" -o -name "*.n64" \) -print -quit)
+rom_file=$(find "$GAMEDIR/baseroms" -maxdepth 1 \( -name "*.z64" -o -name "*.n64" -o -name "*.v64" \) -print -quit)
 
 # Test if regenerating o2r. assets/ now persists unpacked at $GAMEDIR, so a
 # missing assets.zip is normal after first run — only fail if BOTH are gone.
@@ -131,7 +131,7 @@ fi
 echo "Processing $rom_file..."
 
 case "$rom_file" in
-    *.n64)
+    *.n64|*.v64)
         convert_n64 "$rom_file" || { echo "Patching process failed!"; exit 1; }
         rm -f "$rom_file"
         process_rom "rom.z64"  || { echo "Patching process failed!"; exit 1; }
