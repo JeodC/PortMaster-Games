@@ -9,6 +9,7 @@
 #   project_configure_and_build — cmake configure + asset-generation target + main build
 #   build_<dep>                 — clone, configure, build, and install a common dep into /usr/local
 #   stage_libs                  — copy host libs into $PROJECT_BUILD_DIR/libs and verify NEEDED
+#   fetch_gamecontrollerdb      — download a current SDL_GameControllerDB into the build dir
 #
 # Environment knobs:
 #   PROJECT_URL  (optional) — fork URL to clone; default: caller-provided
@@ -490,4 +491,40 @@ stage_libs() {
     echo
     echo "Staged libraries:"
     ls -1 "$_hm_libs_dir"
+}
+
+# fetch_gamecontrollerdb
+#   Pull a fresh SDL_GameControllerDB into the build dir so the shipped mapping
+#   database tracks upstream instead of aging in the port payload.
+#
+#   Most HarbourMasters CMakeLists download this themselves, but some only do it
+#   on a subset of platforms (Lighthouse: Darwin only), which leaves the Linux
+#   build with nothing for retrieve-products to pick up. Calling this is safe
+#   either way — it just overwrites whatever cmake did or didn't produce.
+fetch_gamecontrollerdb() {
+    local url=${1:-https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/master/gamecontrollerdb.txt}
+    local dest="$PROJECT_BUILD_DIR/gamecontrollerdb.txt"
+    local tmp="$dest.tmp"
+
+    mkdir -p "$PROJECT_BUILD_DIR"
+
+    echo ">>> fetch_gamecontrollerdb: $url"
+    # Checking the file as well as the exit code: not every curl build reports a
+    # 404 as a failure, so an unwritten/empty output is the reliable tell.
+    if ! curl -fsSL --retry 3 --retry-delay 2 -o "$tmp" "$url" || [[ ! -s "$tmp" ]]; then
+        echo "fetch_gamecontrollerdb: ERROR: download failed" >&2
+        rm -f "$tmp"
+        return 1
+    fi
+
+    # A truncated or error-page response would ship a broken mapping db, so
+    # sanity-check that we got something that actually looks like the database.
+    if ! grep -q "platform:Linux" "$tmp"; then
+        echo "fetch_gamecontrollerdb: ERROR: downloaded file has no Linux mappings" >&2
+        rm -f "$tmp"
+        return 1
+    fi
+
+    mv "$tmp" "$dest"
+    echo ">>> fetch_gamecontrollerdb: $(wc -l < "$dest") lines"
 }

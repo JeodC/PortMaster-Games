@@ -9,6 +9,7 @@
 #   copy_binary                  — copy the main port binary from build dir
 #   copy_o2r                     — copy the generated .o2r (warn if missing)
 #   copy_extra                   — copy any extra build-dir file (e.g. gamecontrollerdb.txt)
+#   copy_source_tree             — copy a directory straight out of the project source tree
 #   replace_libs                 — replace DESTDIR/libs with PROJECT_BUILD/libs
 #   package_soh_extractor_zip    — SoH-style assets/extractor.zip
 #   package_2ship_extractor_zip  — 2s2h-style assets/extractor.zip (with ZAPD.out)
@@ -81,6 +82,22 @@ copy_extra() {
         exit 1
     fi
     cp "$src" "$DESTDIR/$dest"
+}
+
+# copy_source_tree <project-src-relative-dir> [<dest-name>]
+#   Replace DESTDIR/<dest> with a directory taken from the project source tree.
+#   For ports that read their Torch asset yamls off disk at runtime instead of
+#   unpacking a tools/assets.zip (Lighthouse extracts in-process).
+copy_source_tree() {
+    local rel=$1
+    local dest=${2:-$(basename "$rel")}
+    local src="$PROJECT_SRC/$rel"
+    if [[ ! -d "$src" ]]; then
+        echo "copy_source_tree: ERROR: $src not found"
+        exit 1
+    fi
+    rm -rf "$DESTDIR/$dest"
+    cp -r "$src" "$DESTDIR/$dest"
 }
 
 # replace_libs

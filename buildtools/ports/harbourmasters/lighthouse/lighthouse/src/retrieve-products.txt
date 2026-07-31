@@ -10,6 +10,7 @@ copy_binary Lighthouse
 copy_o2r lighthouse.o2r
 copy_extra gamecontrollerdb.txt
 replace_libs
-package_torch_assets assets/
+copy_extra config.yml
+copy_source_tree assets
 
 echo "Packaging complete."

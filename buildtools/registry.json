@@ -76,6 +76,14 @@
       "commit_prefix": "SPAGHETTIKART",
       "artifacts": ["Spaghettify", "spaghetti.o2r", "gamecontrollerdb.txt", "libs", "tools/torch", "tools/assets.zip", "tools/config.yml"]
     },
+    "lighthouse": {
+      "port_dir": "buildtools/ports/harbourmasters/lighthouse/lighthouse",
+      "target_dirs": ["ports/released/harbourmasters/lighthouse/lighthouse"],
+      "upstream_repo": "HarbourMasters/Lighthouse",
+      "track": "release",
+      "commit_prefix": "LIGHTHOUSE",
+      "artifacts": ["Lighthouse", "lighthouse.o2r", "gamecontrollerdb.txt", "config.yml", "assets", "libs"]
+    },
     "sm64-ghostship": {
       "port_dir": "buildtools/ports/harbourmasters/sm64-ghostship/sm64-ghostship",
       "target_dirs": ["ports/released/harbourmasters/sm64-ghostship/sm64-ghostship"],
