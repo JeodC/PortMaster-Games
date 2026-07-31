@@ -2107,6 +2107,50 @@
   },
   {
     "version": 4,
+    "name": "lighthouse.zip",
+    "items": [
+      "Lighthouse.sh",
+      "lighthouse"
+    ],
+    "items_opt": [],
+    "attr": {
+      "title": "Lighthouse",
+      "porter": [
+        "Jeod"
+      ],
+      "desc": "Banjo-Kazooie brought to you by HarbourMasters, complete with randomizer, anchor multiplayer, and enhancements! The Bear and Bird live on!",
+      "desc_md": null,
+      "inst": "You need to provide your own roms. See the [Lighthouse](https://github.com/HarbourMasters/Lighthouse) repository for a list of supported rom hashes. At first boot you will be prompted to select your Banjo-Kazooie rom file via file picker. Once chosen, Torch will generate a `bk.o2r`.",
+      "inst_md": null,
+      "genres": [
+        "adventure"
+      ],
+      "image": null,
+      "rtr": false,
+      "exp": false,
+      "runtime": [],
+      "store": [],
+      "availability": "paid",
+      "reqs": [],
+      "arch": [
+        "aarch64"
+      ],
+      "min_glibc": null
+    },
+    "source": {
+      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/lighthouse/lighthouse/screenshot.png",
+      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/lighthouse/lighthouse/README.md",
+      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/lighthouse.zip",
+      "date_updated": "2026-07-31T20:37",
+      "first_seen": "2026-07-31",
+      "md5": "ef09dfafa74364ff00d5151fcd7dcc6d",
+      "size": 7412287,
+      "lifetime_downloads": 0,
+      "last_commit": "[LIGHTHOUSE] Update to 1.0.0"
+    }
+  },
+  {
+    "version": 4,
     "name": "littlebusters.zip",
     "items": [
       "Little Busters!.sh",
