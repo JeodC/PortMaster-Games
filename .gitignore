@@ -11,6 +11,3 @@ __pycache__/
 
 # FNA files
 /buildtools/fnapatches/MarvelCosmicInvasion/dev
-
-# Port files
-/ports/released/harbourmasters/lighthouse

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gamelist>
+	<game>
+		<path>./Lighthouse.sh</path>
+		<name>Lighthouse</name>
+		<desc>Banjo-Kazooie brought to you by HarbourMasters, complete with randomizer, anchor multiplayer, and enhancements! The Bear and Bird live on!</desc>
+		<image>./lighthouse/cover.png</image>
+		<thumbnail>./lighthouse/thumb.png</thumbnail>
+		<releasedate>20260731</releasedate>
+		<developer>Nintendo</developer>
+		<publisher>Harbour Masters</publisher>
+		<genre>Adventure</genre>
+	</game>
+</gamelist>

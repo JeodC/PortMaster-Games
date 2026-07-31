@@ -1,0 +1,33 @@
+{
+  "version": 4,
+  "name": "lighthouse.zip",
+  "items": [
+    "Lighthouse.sh",
+    "lighthouse"
+  ],
+  "items_opt": [],
+  "attr": {
+    "title": "Lighthouse",
+    "porter": [
+      "Jeod"
+    ],
+    "desc": "Banjo-Kazooie brought to you by HarbourMasters, complete with randomizer, anchor multiplayer, and enhancements! The Bear and Bird live on!",
+    "desc_md": null,
+    "inst": "You need to provide your own roms. See the [Lighthouse](https://github.com/HarbourMasters/Lighthouse) repository for a list of supported rom hashes. At first boot you will be prompted to select your Banjo-Kazooie rom file via file picker. Once chosen, Torch will generate a `bk.o2r`.",
+    "inst_md": null,
+    "genres": [
+      "adventure"
+    ],
+    "image": null,
+    "rtr": false,
+    "exp": false,
+    "runtime": [],
+    "store": [],
+    "availability": "paid",
+    "reqs": [],
+    "arch": [
+      "aarch64"
+    ],
+    "min_glibc": null
+  }
+}

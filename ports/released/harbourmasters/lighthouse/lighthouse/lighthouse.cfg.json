@@ -1,0 +1,32 @@
+{
+    "CVars": {
+        "gControllers": {
+        },
+        "gOpenWindows": {
+            "Menu": 0
+        },
+        "gRemote": {
+            "Anchor": {
+                "Host": "anchor.hm64.org",
+                "Name": "Player",
+                "Port": 43383,
+                "RoomId": "rhh-ports",
+                "TeamId": "default"
+            }
+        },
+        "gSettings": {
+            "ControlNav": 1,
+            "MatchRefreshRate": 1,
+            "Mods": {
+                "AlternateAssets": 1
+            }
+        }
+    },
+    "Window": {
+        "AudioBackend": "sdl",
+        "Backend": {
+            "Id": 2,
+            "Name": "OpenGL"
+        }
+    }
+}
