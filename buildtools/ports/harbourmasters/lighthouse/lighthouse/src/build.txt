@@ -12,6 +12,7 @@ build_spdlog
 
 project_configure_and_build GeneratePortO2R \
     -DUSE_OPENGLES=1 \
+    -DCPU_OPTION=-mcpu=cortex-a53 \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE:-Release} \
     -DCMAKE_CXX_FLAGS=-ldl
 
