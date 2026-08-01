@@ -2141,12 +2141,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/lighthouse/lighthouse/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/lighthouse/lighthouse/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/lighthouse.zip",
-      "date_updated": "2026-07-31T20:37",
+      "date_updated": "2026-08-01T05:59",
       "first_seen": "2026-07-31",
-      "md5": "ef09dfafa74364ff00d5151fcd7dcc6d",
-      "size": 7412287,
-      "lifetime_downloads": 0,
-      "last_commit": "[LIGHTHOUSE] Update to 1.0.0"
+      "md5": "77ce3dc10c8c9d375fa65a3bb8262530",
+      "size": 7414099,
+      "lifetime_downloads": 23,
+      "last_commit": "[LIGHTHOUSE] Update to 1.0.1"
     }
   },
   {
