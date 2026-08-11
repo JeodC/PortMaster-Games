@@ -3512,7 +3512,7 @@
       ],
       "desc": "A source port of Majora's Mask. 2Ship2Harkinian (aka SoH2) features extensive and significant enhancements over the original game, such as improved performance, increased frame-rate, native ultra-widescreen support, and extensive mod support (especially compared to emulated versions of the original), among other features.",
       "desc_md": null,
-      "inst": "Follow the guide in the readme to generate your mm.o2r file.",
+      "inst": "Place your Majora's Mask rom in ports/soh2. See the readme for supported roms.",
       "inst_md": null,
       "genres": [
         "action",
@@ -3534,12 +3534,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/soh2/soh2/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/soh2/soh2/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/soh2.zip",
-      "date_updated": "2026-08-11T15:32",
+      "date_updated": "2026-08-11T21:21",
       "first_seen": "2025-11-11",
-      "md5": "43d854ed5ee5d0eaca0fe303531bafbb",
-      "size": 16386887,
-      "lifetime_downloads": 203,
-      "last_commit": "[SOH2] Update to 5.0.0"
+      "md5": "df74998685bf7afedaba86f985379f88",
+      "size": 15439764,
+      "lifetime_downloads": 205,
+      "last_commit": "[SOH2] Update port structure for v5.0.0"
     }
   },
   {
