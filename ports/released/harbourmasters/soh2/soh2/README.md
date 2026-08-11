@@ -11,7 +11,9 @@ d6133ace5afaa0882cf214cf88daba39e266c078 - N64 US
 
 You can verify your rom at https://2ship.equipment.
 
-Legally obtain your rom and place it in `ports/soh2/baseroms`, then start the port. Texture pack files can be added to the `ports/soh2/mods` folder.
+The rom must be uncompressed (not inside a `.zip` or `.7z`) and keep a `.z64`, `.n64` or `.v64` extension. Legally obtain your rom and place it in `ports/soh2`, then start the port. 2Ship2Harkinian finds the rom on its own and walks you through generating `mm.o2r` on the first launch.
+
+Texture pack files can be added to the `ports/soh2/mods` folder.
 
 Logs are recorded automatically as `ports/soh2/log.txt`. Please provide a log if you report an issue. HarbourMasters is not affiliated with PortMaster or RHH-Ports and this distribution is not officially supported by them. *Please report an issue to the RHH-Ports repository before going to HarbourMasters!*
 
@@ -27,12 +29,10 @@ The port uses SDL controller mapping and controls can be remapped from the menu 
 ## Suggested Mods
 You can find mods at https://gamebanana.com/games/20371.
 
-The [MM Reloaded](https://github.com/GhostlyDark/MM-Reloaded-2S2H) texture pack is in a prerelease state at time of writing, but it works. I recommend using the HD version, as the 4k version won't make much difference on the retro handhelds. Add the pack to `soh2/mods`, and either have the line `"gAltAssets": 1,` in your json or assign `TAB` to a button in the `soh2.gptk` file (default R3).
-
 ## Thanks
-- Nintendo for the game  
-- HarbourMasters for the native pc port  
-- AkerHasReawakened for the cover art  
+- Nintendo for the game
+- HarbourMasters for the native pc port
+- AkerHasReawakened for the cover art
 
 
 

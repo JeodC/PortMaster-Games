@@ -27,17 +27,6 @@ export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 $ESUDO chmod +x "$GAMEDIR/2s2h.elf"
-$ESUDO chmod +x "$GAMEDIR/assets/otrgen"
-
-# Close the menu if open
-sed -i 's/"Menu": *1/"Menu": 0/' 2ship2harkinian.json
-
-# Force controller navigation on
-if grep -q '"ControlNav"' 2ship2harkinian.json; then
-    sed -i 's/"ControlNav":[[:space:]]*[0-9]*/"ControlNav": 1/' 2ship2harkinian.json
-else
-    sed -i '/"gSettings":[[:space:]]*{/a\"ControlNav": 1,' 2ship2harkinian.json
-fi
 
 # -------------------- BEGIN FUNCTIONS --------------------
 
@@ -74,53 +63,57 @@ imgui_reset() {
     mv "$temp_file" "$input_file"
 }
 
-o2r_check() {
+unzip_assets() {
+    [ -f "$GAMEDIR/assets/extractor.zip" ] || return 0
 
-# Warn if mm.o2r is older than 2s2h.elf or 2ship.o2r
-if [ -f "$GAMEDIR/mm.o2r" ]; then
-    if [ -f "$GAMEDIR/2s2h.elf" ] && [ "$GAMEDIR/2s2h.elf" -nt "$GAMEDIR/mm.o2r" ] \
-       || [ -f "$GAMEDIR/2ship.o2r" ] && [ "$GAMEDIR/2ship.o2r" -nt "$GAMEDIR/mm.o2r" ]; then
-        echo "Notice: mm.o2r is older than 2s2h.elf and/or 2ship.o2r. Forcing regeneration."
-        rm -f "$GAMEDIR/mm.o2r"
-        REGEN=1
-        export REGEN
+    SEVENZIP="$controlfolder/7zzs.${DEVICE_ARCH}"
+    if [ ! -x "$SEVENZIP" ]; then
+        pm_message "This port requires the latest version of PortMaster."
+        return 1
     fi
-fi
 
-if [ ! -f "mm.o2r" ]; then
-    # Ensure we have a rom file before attempting to generate o2r
-    if ls "$GAMEDIR/baseroms/"*.*64 1> /dev/null 2>&1; then
-        if [ -f "$controlfolder/utils/patcher.txt" ]; then
-            export PATCHER_FILE="$GAMEDIR/assets/otrgen"
-            export PATCHER_GAME="$(basename "${0%.*}")"
-            export PATCHER_TIME="5 to 10 minutes"
-            export controlfolder
-            export DEVICE_ARCH
-            source "$controlfolder/utils/patcher.txt"
-            $ESUDO kill -9 $(pidof gptokeyb)
-        else
-            pm_message "This port requires the latest version of PortMaster."
-        fi
+    echo "Unpacking extractor assets..."
+    if $ESUDO "$SEVENZIP" x -y "$GAMEDIR/assets/extractor.zip" -o"$GAMEDIR/assets" >/dev/null; then
+        rm -f "$GAMEDIR/assets/extractor.zip"
     else
-        echo "Missing ROM files in $GAMEDIR/baseroms! Can't generate o2r!"
-        exit 1
+        pm_show_error "Unable to unpack assets/extractor.zip."
+        return 1
     fi
-    
-    # Check if OTR files were generated
-    if [ ! -f "mm.o2r" ]; then
-        echo "No o2r files, can't run the game!"
-        exit 1
+}
+
+rom_check() {
+    [ -f "$GAMEDIR/mm.o2r" ] && return 0
+    if ! ls "$GAMEDIR/"*.z64 "$GAMEDIR/"*.n64 "$GAMEDIR/"*.v64 >/dev/null 2>&1; then
+        rom=$(find "$GAMEDIR" -type f \( -iname "*.z64" -o -iname "*.n64" -o -iname "*.v64" \) -print -quit)
+        if [ -z "$rom" ]; then
+            echo "No rom found in $GAMEDIR! Can't generate mm.o2r!"
+            pm_message "No rom found. Place your Majora's Mask rom in ports/soh2, then relaunch."
+            return 1
+        fi
+        name=$(basename "$rom")
+        echo "Moving $name into $GAMEDIR"
+        mv "$rom" "$GAMEDIR/${name%.*}.$(echo "${name##*.}" | tr '[:upper:]' '[:lower:]')"
     fi
-fi
 }
 
 # --------------------- END FUNCTIONS ---------------------
 
 # Perform functions
-o2r_check
+unzip_assets || exit 1
+rom_check || exit 1
 
 if [ -f "imgui.ini" ]; then
     imgui_reset
+fi
+
+# Close the menu if open
+sed -i 's/"Menu": *1/"Menu": 0/' 2ship2harkinian.json
+
+# Force controller navigation on
+if grep -q '"ControlNav"' 2ship2harkinian.json; then
+    sed -i 's/"ControlNav":[[:space:]]*[0-9]*/"ControlNav": 1/' 2ship2harkinian.json
+else
+    sed -i '/"gSettings":[[:space:]]*{/a\"ControlNav": 1,' 2ship2harkinian.json
 fi
 
 # Run the game

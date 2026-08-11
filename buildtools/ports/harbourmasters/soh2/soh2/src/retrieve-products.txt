@@ -14,6 +14,6 @@ done
 
 copy_o2r mm/2ship.o2r
 replace_libs
-package_2ship_extractor_zip mm/assets/extractor mm/assets/xml ZAPD/ZAPD.out
+package_soh_extractor_zip mm/assets/extractor mm/assets/xml
 
 echo "Packaging complete."

@@ -14,7 +14,7 @@
     ],
     "desc": "A source port of Majora's Mask. 2Ship2Harkinian (aka SoH2) features extensive and significant enhancements over the original game, such as improved performance, increased frame-rate, native ultra-widescreen support, and extensive mod support (especially compared to emulated versions of the original), among other features.",
     "desc_md": null,
-    "inst": "Follow the guide in the readme to generate your mm.o2r file.",
+    "inst": "Place your Majora's Mask rom in ports/soh2. See the readme for supported roms.",
     "inst_md": null,
     "genres": [
       "action",

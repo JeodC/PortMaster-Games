@@ -11,8 +11,7 @@
 #   copy_extra                   — copy any extra build-dir file (e.g. gamecontrollerdb.txt)
 #   copy_source_tree             — copy a directory straight out of the project source tree
 #   replace_libs                 — replace DESTDIR/libs with PROJECT_BUILD/libs
-#   package_soh_extractor_zip    — SoH-style assets/extractor.zip
-#   package_2ship_extractor_zip  — 2s2h-style assets/extractor.zip (with ZAPD.out)
+#   package_soh_extractor_zip    — SoH/2s2h-style assets/extractor.zip
 #   package_torch_assets         — Torch-style tools/torch + tools/assets.zip + tools/config.yml
 
 set -e
@@ -137,37 +136,9 @@ package_soh_extractor_zip() {
     cp -r "$extractor_src/." "$stage/"
     cp -r "$xml_src" "$stage/"
 
-    (cd "$stage" && zip -r "$DESTDIR/assets/extractor.zip" ./*)
-    rm -rf "$stage"
-}
-
-# package_2ship_extractor_zip <extractor-src-rel> <xml-src-rel> <zapd-build-rel>
-#   extractor/ subdir containing ZAPD.out + contents of <extractor-src>, plus
-#   the <xml-src> dir at zip root.
-package_2ship_extractor_zip() {
-    local extractor_rel=$1 xml_rel=$2 zapd_rel=$3
-    local extractor_src="$PROJECT_SRC/$extractor_rel"
-    local xml_src="$PROJECT_SRC/$xml_rel"
-    local zapd_bin="$PROJECT_BUILD/$zapd_rel"
-
-    if [[ ! -d "$extractor_src" || ! -d "$xml_src" ]]; then
-        echo "package_2ship_extractor_zip: WARNING: extractor or xml dir missing, skipping"
-        return 0
-    fi
-
-    local stage="$DESTDIR/assets/tmp_zip"
-    mkdir -p "$DESTDIR/assets"
-    rm -rf "$stage"
-    mkdir -p "$stage/extractor"
-
-    if [[ -f "$zapd_bin" ]]; then
-        cp "$zapd_bin" "$stage/extractor/ZAPD.out"
-    else
-        echo "package_2ship_extractor_zip: WARNING: ZAPD not found at $zapd_bin"
-    fi
-    cp -r "$extractor_src"/* "$stage/extractor/"
-    cp -r "$xml_src" "$stage/"
-
+    # zip -r updates an existing archive rather than replacing it, which would
+    # leave entries from a previous build's layout behind.
+    rm -f "$DESTDIR/assets/extractor.zip"
     (cd "$stage" && zip -r "$DESTDIR/assets/extractor.zip" ./*)
     rm -rf "$stage"
 }
