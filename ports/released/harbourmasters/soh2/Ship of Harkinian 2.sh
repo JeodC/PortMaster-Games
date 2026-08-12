@@ -22,6 +22,7 @@ GAMEDIR="/$directory/ports/soh2"
 # Exports
 export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG=$sdl_controllerconfig
+export TU_DEBUG=nolrz
 
 # CD and set permissions
 cd $GAMEDIR
