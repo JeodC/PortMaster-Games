@@ -6,5 +6,9 @@
     "page_size":   1024,
     "block":       "4x4",
     "quality":     "medium",
-    "externalize_textures": "../saves/textures"
+    "externalize_textures": "../saves/textures",
+    "code_patches": [
+        { "entry": "gml_Object_oPlr_Step_0",    "gml": "gml/gml_Object_oPlr_Step_0.gml" },
+        { "entry": "gml_Object_oCamera_Step_0", "gml": "gml/gml_Object_oCamera_Step_0.gml" }
+    ]
 }

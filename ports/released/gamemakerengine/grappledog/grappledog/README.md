@@ -7,11 +7,14 @@ Patching on a weak device can take up to an hour. You can instead do the heavy w
 **Windows:**
 
 1. Make an empty working folder. Inside it, create an `assets` subfolder and copy your whole Grapple Dog install into it (from Steam, e.g. `Z:\SteamLibrary\steamapps\common\Grapple Dog`), so you have `assets/data.win`.
-2. Download the tool and this port's config into the working folder, next to `assets`:
+2. Download the tool, this port's config, and the code patches the config applies, into the working folder next to `assets`:
    ```bash
    curl -L -o gmtoolkit.exe https://github.com/JeodC/gmtoolkit/releases/latest/download/gmtoolkit.exe
    curl -L -o grappledog.json https://github.com/JeodC/RHH-Ports/raw/main/ports/released/gamemakerengine/grappledog/grappledog/tools/grappledog.json
+   curl -L --create-dirs -o gml/gml_Object_oPlr_Step_0.gml https://github.com/JeodC/RHH-Ports/raw/main/ports/released/gamemakerengine/grappledog/grappledog/tools/gml/gml_Object_oPlr_Step_0.gml
+   curl -L --create-dirs -o gml/gml_Object_oCamera_Step_0.gml https://github.com/JeodC/RHH-Ports/raw/main/ports/released/gamemakerengine/grappledog/grappledog/tools/gml/gml_Object_oCamera_Step_0.gml
    ```
+   The `gml` folder must sit beside `grappledog.json` — the config's patch paths are resolved relative to itself.
 3. Run gmtoolkit, picking the texture preset for your screen size:
    ```bash
    gmtoolkit.exe --config grappledog.json --block 5x5 --quality fast assets/data.win
@@ -36,10 +39,9 @@ Grapple Dog is a heavy game with both cpu and memory. Patching aims to remove th
 - RG353V (some slowdowns)
 - TrimUI Smart Pro (some slowdowns)
 
-In all cases the first few levels were completable.
-
 ## Thanks
-Medallion Games -- The amazing game.  
-JohnnyOnFlame -- GMLoader-Next, FMOD compatibility, and [UTMT-CLI fork](https://github.com/JohnnyonFlame/UTMT-PortMaster).  
-Jeod -- GMLoader-Next improvements and Game Port.  
-UnderminersTeam -- For the original [UTMT-CLI utility](https://github.com/UnderminersTeam/UndertaleModTool).  
+- Medallion Games -- The amazing game.
+- JohnnyOnFlame -- GMLoader-Next, FMOD compatibility, and [UTMT-CLI fork](https://github.com/JohnnyonFlame/UTMT-PortMaster).
+- Jeod -- GMLoader-Next improvements and Game Port.
+- Fraxinus88 -- The gml patches to improve performance.
+- UnderminersTeam -- For the original [UTMT-CLI utility](https://github.com/UnderminersTeam/UndertaleModTool).
