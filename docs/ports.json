@@ -1439,7 +1439,8 @@
     "attr": {
       "title": "Grapple Dog",
       "porter": [
-        "Jeod"
+        "Jeod",
+        "Fraxinus88"
       ],
       "desc": "Jump, Swing and Zip your way through colourful worlds and exciting challenges in this unique 2D action-platformer! Master the power of the Grapple on your adventure to save the world!.",
       "desc_md": null,
@@ -1477,12 +1478,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/grappledog.zip",
-      "date_updated": "2026-07-18T12:37",
+      "date_updated": "2026-08-12T11:56",
       "first_seen": "2026-05-20",
-      "md5": "416ad823e93a24030843a7716c79a7a5",
-      "size": 5273880,
-      "lifetime_downloads": 76,
-      "last_commit": "Update stale plugins for pizza tower and grapple dog"
+      "md5": "6a081265cbcf734aff4db206d3f4962b",
+      "size": 5283992,
+      "lifetime_downloads": 114,
+      "last_commit": "[GRAPPLEDOG] Add optimization patches by Fraxinus88"
     }
   },
   {
