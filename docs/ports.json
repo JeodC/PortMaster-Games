@@ -1478,12 +1478,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/grappledog/grappledog/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/grappledog.zip",
-      "date_updated": "2026-08-12T11:56",
+      "date_updated": "2026-08-13T22:54",
       "first_seen": "2026-05-20",
-      "md5": "6a081265cbcf734aff4db206d3f4962b",
-      "size": 5283992,
-      "lifetime_downloads": 114,
-      "last_commit": "[GRAPPLEDOG] Add optimization patches by Fraxinus88"
+      "md5": "4378410312825a5f5ab954a66ba34dcf",
+      "size": 5285132,
+      "lifetime_downloads": 122,
+      "last_commit": "Improve zip instance collision checks (#84)"
     }
   },
   {
