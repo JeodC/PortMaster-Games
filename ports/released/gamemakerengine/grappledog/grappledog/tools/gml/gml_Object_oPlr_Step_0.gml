@@ -984,18 +984,30 @@ if (!instance_exists(oHook) && !place_meeting(x, y, oEnemy) && state == "normal"
     {
         if (instance_exists(zipObj[h]))
         {
-            if (collision_circle(x, y, zipMaxDis, zipObj[h], true, true) != noone)
+            // Cheap early-out: only run the 16-step raycast sweep if the
+            // nearest instance of this zip type is even within zipMaxDis.
+            // Avoids up to 16 collision_line() calls per type per frame
+            // when nothing is in range.
+            zipNearest = instance_nearest(x, y, zipObj[h]);
+            
+            if (zipNearest != noone && point_distance(x, y, zipNearest.x, zipNearest.y) <= zipMaxDis)
             {
                 i = -(zipRange / 3);
                 
                 while (i < (zipRange / 3))
                 {
+                    // collision_line() result is cached once instead of
+                    // being called twice (was: once in the if-condition,
+                    // once again to assign zipTarget).
                     zipHit = collision_line(x, y, x + lengthdir_x(zipMaxDis, zipDir + (i * 3)), y + lengthdir_y(zipMaxDis, zipDir + (i * 3)), zipObj[h], true, true);
                     
                     if (zipHit != noone)
                     {
                         zipTarget = zipHit;
                         
+                        // Guarded with zipTarget != -1 so a reset earlier
+                        // in the chain can't attempt to read .y/.x off -1
+                        // on a stricter runtime than the reference VM.
                         if (zipTarget != -1 && zipTarget.canZip == 0)
                             zipTarget = -1;
                         
