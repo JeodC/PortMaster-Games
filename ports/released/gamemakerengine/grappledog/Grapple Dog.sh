@@ -90,12 +90,44 @@ fi
 ORIG_MAX_FREQS=""
 if [ "${DEVICE_RAM:-0}" -le 2 ]; then thermal_setup; fi
 
+# asoundrc fix for dArkOS
+cfw_lower=$(echo "$CFW_NAME" | tr '[:upper:]' '[:lower:]')
+RL_ASOUNDRC_APPLIED=0
+
+case "$cfw_lower" in
+    *darkos*)
+        # dArkOS: install dmix asoundrc so ES and Rogue Legacy can share ALSA simultaneously.
+        [ -f "$HOME/.asoundrc" ] && $ESUDO cp "$HOME/.asoundrc" "$HOME/.asoundrc.rl_bak"
+        $ESUDO cp "$GAMEDIR/asoundrc" "$HOME/.asoundrc"
+        RL_ASOUNDRC_APPLIED=1
+
+        # dArkOS-specific SDL2 build fixes SDL_GL_LoadLibrary on this device's GPU stack.
+        # Only used here - it's tuned to dArkOS's kernel/driver and can crash other CFWs.
+        [ -f "$GAMEDIR/libs-darkos/libSDL2-2.0.so.0" ] && \
+            export LD_LIBRARY_PATH="$GAMEDIR/libs-darkos:$LD_LIBRARY_PATH"
+
+        export SDL_AUDIODRIVER=alsa
+        echo "Using dArkOS-specific libSDL2 build + asoundrc + alsa"
+        ;;
+    *)
+        echo "No CFW-specific audio fix needed for '$CFW_NAME' - using system default audio config"
+        ;;
+esac
+
 # Run
 $GPTOKEYB "gmloadernext.aarch64" -c "grappledog.gptk" &
 pm_platform_helper "$GMLOADER/gmloadernext.aarch64" > /dev/null
 $TASKSET "$GMLOADER/gmloadernext.aarch64" -c gmloader.json
 
 # Cleanup
+# Restore original ~/.asoundrc if needed
+if [ "$RL_ASOUNDRC_APPLIED" = "1" ]; then
+    if [ -f "$HOME/.asoundrc.rl_bak" ]; then
+        $ESUDO mv "$HOME/.asoundrc.rl_bak" "$HOME/.asoundrc"
+    else
+        $ESUDO rm -f "$HOME/.asoundrc"
+    fi
+fi
 if [ -n "$ORIG_MAX_FREQS" ]; then thermal_restore; fi
 $ESUDO umount "$GMLOADER" 2>/dev/null || true
 pm_finish
