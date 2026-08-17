@@ -11,6 +11,6 @@ copy_o2r lighthouse.o2r
 copy_extra gamecontrollerdb.txt
 replace_libs
 copy_extra config.yml
-copy_source_tree assets
+package_source_zip assets.zip assets
 
 echo "Packaging complete."

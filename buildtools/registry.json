@@ -82,7 +82,7 @@
       "upstream_repo": "HarbourMasters/Lighthouse",
       "track": "release",
       "commit_prefix": "LIGHTHOUSE",
-      "artifacts": ["Lighthouse", "lighthouse.o2r", "gamecontrollerdb.txt", "config.yml", "assets", "libs"]
+      "artifacts": ["Lighthouse", "lighthouse.o2r", "gamecontrollerdb.txt", "config.yml", "assets.zip", "libs"]
     },
     "sm64-ghostship": {
       "port_dir": "buildtools/ports/harbourmasters/sm64-ghostship/sm64-ghostship",

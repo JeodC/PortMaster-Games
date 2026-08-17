@@ -9,7 +9,7 @@
 #   copy_binary                  — copy the main port binary from build dir
 #   copy_o2r                     — copy the generated .o2r (warn if missing)
 #   copy_extra                   — copy any extra build-dir file (e.g. gamecontrollerdb.txt)
-#   copy_source_tree             — copy a directory straight out of the project source tree
+#   package_source_zip           — zip paths straight out of the project source tree
 #   replace_libs                 — replace DESTDIR/libs with PROJECT_BUILD/libs
 #   package_soh_extractor_zip    — SoH/2s2h-style assets/extractor.zip
 #   package_torch_assets         — Torch-style tools/torch + tools/assets.zip + tools/config.yml
@@ -83,20 +83,22 @@ copy_extra() {
     cp "$src" "$DESTDIR/$dest"
 }
 
-# copy_source_tree <project-src-relative-dir> [<dest-name>]
-#   Replace DESTDIR/<dest> with a directory taken from the project source tree.
-#   For ports that read their Torch asset yamls off disk at runtime instead of
-#   unpacking a tools/assets.zip (Lighthouse extracts in-process).
-copy_source_tree() {
-    local rel=$1
-    local dest=${2:-$(basename "$rel")}
-    local src="$PROJECT_SRC/$rel"
-    if [[ ! -d "$src" ]]; then
-        echo "copy_source_tree: ERROR: $src not found"
-        exit 1
-    fi
-    rm -rf "$DESTDIR/$dest"
-    cp -r "$src" "$DESTDIR/$dest"
+package_source_zip() {
+    local dest=$1
+    shift
+    local out="$DESTDIR/$dest"
+
+    local p
+    for p in "$@"; do
+        if [[ ! -e "$PROJECT_SRC/$p" ]]; then
+            echo "package_source_zip: ERROR: $PROJECT_SRC/$p not found"
+            exit 1
+        fi
+    done
+
+    mkdir -p "$(dirname "$out")"
+    rm -f "$out"
+    (cd "$PROJECT_SRC" && zip -r "$out" "$@")
 }
 
 # replace_libs

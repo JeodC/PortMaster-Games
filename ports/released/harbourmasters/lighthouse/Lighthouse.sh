@@ -36,6 +36,25 @@ $ESUDO chmod +x "$GAMEDIR/Lighthouse"
 
 # -------------------- BEGIN FUNCTIONS --------------------
 
+unzip_assets() {
+    [ -f "$GAMEDIR/assets.zip" ] || return 0
+
+    SEVENZIP="$controlfolder/7zzs.${DEVICE_ARCH}"
+    if [ ! -x "$SEVENZIP" ]; then
+        pm_message "This port requires the latest version of PortMaster."
+        return 1
+    fi
+
+    echo "Unpacking extractor assets..."
+    $ESUDO rm -rf "$GAMEDIR/assets"
+    if $ESUDO "$SEVENZIP" x -y "$GAMEDIR/assets.zip" -o"$GAMEDIR" >/dev/null; then
+        $ESUDO rm -f "$GAMEDIR/assets.zip"
+    else
+        pm_show_error "Unable to unpack assets.zip."
+        return 1
+    fi
+}
+
 # Bridge baseroms/ into the game directory.
 STAGED_ROMS=()
 
@@ -110,6 +129,9 @@ edit_json() {
 }
 
 # --------------------- END FUNCTIONS ---------------------
+
+# Unpack shipped assets
+unzip_assets || exit 1
 
 # Edit json
 edit_json
