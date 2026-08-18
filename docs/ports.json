@@ -210,53 +210,6 @@
   },
   {
     "version": 4,
-    "name": "banjorecompiled.zip",
-    "items": [
-      "Banjo Recompiled.sh",
-      "banjorecompiled"
-    ],
-    "items_opt": [],
-    "attr": {
-      "title": "Banjo-Kazooie : Recompiled",
-      "porter": [
-        "Jeod"
-      ],
-      "desc": "Banjo: Recompiled is a project that uses N64: Recompiled to statically recompile Banjo-Kazooie into a native port with many new features, enhancements, and extensive mod support.",
-      "desc_md": null,
-      "inst": "Place your `Banjo-Kazooie v1.0` rom with md5 `b29599651a13f681c9923d69354bf4a3` in the `banjorecompiled` folder.",
-      "inst_md": null,
-      "genres": [
-        "action",
-        "adventure"
-      ],
-      "image": null,
-      "rtr": false,
-      "exp": false,
-      "runtime": [],
-      "store": [],
-      "availability": "paid",
-      "reqs": [
-        "vulkan"
-      ],
-      "arch": [
-        "aarch64"
-      ],
-      "min_glibc": ""
-    },
-    "source": {
-      "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/retro64/banjorecompiled/banjorecompiled/screenshot.png",
-      "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/retro64/banjorecompiled/banjorecompiled/README.md",
-      "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/banjorecompiled.zip",
-      "date_updated": "2026-05-11T10:49",
-      "first_seen": "2026-01-25",
-      "md5": "cb74d98c21c9a0e95e05cd1b3b535d7d",
-      "size": 8708339,
-      "lifetime_downloads": 129,
-      "last_commit": "Add vulkan requirement to filter and tag ports that need it"
-    }
-  },
-  {
-    "version": 4,
     "name": "benboquest.zip",
     "items": [
       "benboquest/",
