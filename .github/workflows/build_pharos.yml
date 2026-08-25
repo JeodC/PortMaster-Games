@@ -23,7 +23,20 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
+          # Full history so the rebase below always has a merge base, but no
+          # blobs - a plain checkout drags in 4.6GB of port payloads this job
+          # never touches.
           fetch-depth: 0
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/build-port/
+            !/runtimes/
+            !/buildtools/
+            !/ports/
+            /buildtools/pharos/**
+            /ports/released/apps/pharos/**
 
       # Build inside a bullseye container so the binary links against glibc
       # 2.31 — broad enough to run on ArkOS, MuOS, ROCKNIX, Knulli without
