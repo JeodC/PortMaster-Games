@@ -22,11 +22,11 @@ TMPDIR="$GAMEDIR/tmp"
 PATCHES="$TMPDIR/patches"
 PATCHED="$TMPDIR/patchedFiles"
 UPSTREAM_BASE="https://gitlab.com/bighead.0/ladxhd_updated/-/raw"
-PATCHES_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources/patches_linux_arm64.zip"
+RESOURCES_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources"
 FUNCTIONS_CS_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Program/Functions.cs"
-ACHIEVEMENTS_URL="$UPSTREAM_BASE/${UPSTREAM_TAG:-main}/ladxhd_patcher_source_code/Resources/achievements.zip"
-PATCHES_ZIP="$TMPDIR/patches_linux_arm64.zip"
-ACHIEVEMENTS_ZIP="$TMPDIR/achievements.zip"
+PATCHES_COMMON="patches_allplatforms.7z"
+PATCHES_PLATFORM="patches_linux_arm64_gl.7z"
+ACHIEVEMENTS_ARCHIVE="achievements.7z"
 ACHIEVEMENTS_DIR="$DATADIR/Data/Achievements"
 TARGETS_FILE="$TMPDIR/file_targets.txt"
 DERIVED_SET="$TMPDIR/derived_targets.txt"
@@ -118,7 +118,7 @@ extract_game() {
         for f in "$DATADIR/"*.zip; do
             [ -f "$f" ] || continue
             case "$(basename "$f")" in
-                patches_linux_arm64.zip|achievements.zip) continue ;;
+                patches_*.zip|achievements.zip) continue ;;
             esac
             ZIPFILE="$f"
             break
@@ -205,51 +205,59 @@ extract_game() {
 download_patches() {
     mkdir -p "$PATCHES" "$PATCHED"
 
-    # Offline / manual install: if the user dropped the upstream zip into
-    # data/ themselves, use it instead of downloading. The original is left
-    # in place so future re-patches still find it.
-    local manual_zip="$DATADIR/patches_linux_arm64.zip"
-    if [ -f "$manual_zip" ]; then
-        echo "Using manually-placed patches_linux_arm64.zip from data/."
-        cp -f "$manual_zip" "$PATCHES_ZIP"
-    else
-        echo "Downloading patches..."
-        $FETCH "$PATCHES_ZIP" "$PATCHES_URL"
-        if [ $? -ne 0 ]; then
-            emit_fail_msg "Patch download failed. Check internet, or drop patches_linux_arm64.zip into data/ for offline install."
-            echo "Failed to download patches."
+    for name in "$PATCHES_COMMON" "$PATCHES_PLATFORM"; do
+        local archive="$TMPDIR/$name"
+
+        # Offline / manual install: if the user dropped the upstream archive into
+        # data/ themselves, use it instead of downloading. The original is left
+        # in place so future re-patches still find it.
+        local manual="$DATADIR/$name"
+        if [ -f "$manual" ]; then
+            echo "Using manually-placed $name from data/."
+            cp -f "$manual" "$archive"
+        else
+            echo "Downloading $name..."
+            if ! $FETCH "$archive" "$RESOURCES_URL/$name"; then
+                emit_fail_msg "Patch download failed. Check internet, or drop $name into data/ for offline install."
+                echo "Failed to download $name."
+                return 1
+            fi
+        fi
+
+        echo "Extracting $name..."
+        if ! "$SEVENZIP" x -aoa -o"$PATCHES" "$archive"; then
+            emit_fail_msg "Could not extract $name - the download may be incomplete."
+            echo "Failed to extract $name."
             return 1
         fi
-    fi
-
-    echo "Extracting patches..."
-    "$SEVENZIP" x -aoa -o"$PATCHES" "$PATCHES_ZIP"
-    rm -f "$PATCHES_ZIP"
+        rm -f "$archive"
+    done
 }
 
 extract_achievements() {
     mkdir -p "$ACHIEVEMENTS_DIR"
 
-    local manual_zip="$DATADIR/achievements.zip"
-    if [ -f "$manual_zip" ]; then
-        echo "Using manually-placed achievements.zip from data/."
-        cp -f "$manual_zip" "$ACHIEVEMENTS_ZIP"
+    local archive="$TMPDIR/$ACHIEVEMENTS_ARCHIVE"
+    local manual="$DATADIR/$ACHIEVEMENTS_ARCHIVE"
+    if [ -f "$manual" ]; then
+        echo "Using manually-placed $ACHIEVEMENTS_ARCHIVE from data/."
+        cp -f "$manual" "$archive"
     else
         echo "Downloading achievement icons..."
-        if ! $FETCH "$ACHIEVEMENTS_ZIP" "$ACHIEVEMENTS_URL"; then
-            echo "  WARN: could not download achievements.zip - achievement icons will be missing."
+        if ! $FETCH "$archive" "$RESOURCES_URL/$ACHIEVEMENTS_ARCHIVE"; then
+            echo "  WARN: could not download $ACHIEVEMENTS_ARCHIVE - achievement icons will be missing."
             return 0
         fi
     fi
 
-    if "$SEVENZIP" x -aoa -bso0 -bsp0 -o"$ACHIEVEMENTS_DIR" "$ACHIEVEMENTS_ZIP"; then
+    if "$SEVENZIP" x -aoa -bso0 -bsp0 -o"$ACHIEVEMENTS_DIR" "$archive"; then
         local n
         n=$(find "$ACHIEVEMENTS_DIR" -type f -name '*.png' | wc -l)
         echo "Extracted $n achievement icon(s)."
     else
-        echo "  WARN: could not extract achievements.zip - achievement icons will be missing."
+        echo "  WARN: could not extract $ACHIEVEMENTS_ARCHIVE - achievement icons will be missing."
     fi
-    rm -f "$ACHIEVEMENTS_ZIP"
+    rm -f "$archive"
 }
 
 download_file_targets() {
@@ -261,7 +269,7 @@ download_file_targets() {
         echo "Using manually-placed Functions.cs from data/."
         cp -f "$manual_cs" "$cs_file"
     elif ! $FETCH "$cs_file" "$FUNCTIONS_CS_URL"; then
-        emit_fail_msg "Could not get the derived-file mapping (Functions.cs). Check your internet connection, or for an offline install place Functions.cs in the data folder next to patches_linux_arm64.zip."
+        emit_fail_msg "Could not get the derived-file mapping (Functions.cs). Check your internet connection, or for an offline install place Functions.cs in the data folder next to $PATCHES_PLATFORM."
         echo "ERROR: could not download Functions.cs and none was placed in data/."
         return 1
     fi
