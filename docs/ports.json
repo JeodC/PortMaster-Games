@@ -992,12 +992,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/dokimon/dokimon/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/dokimon/dokimon/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/dokimon.zip",
-      "date_updated": "2026-07-12T17:05",
+      "date_updated": "2026-08-25T16:11",
       "first_seen": "2025-11-11",
-      "md5": "b8ebe9b1561691ee3d0381d647d79a61",
-      "size": 56261761,
+      "md5": "735939a9c1db19b3c4185be87519cebc",
+      "size": 56263369,
       "lifetime_downloads": 33,
-      "last_commit": "Update several GMS port readmes to remove old runtime reqs and add gmtoolkit.aarch64"
+      "last_commit": "[DOKIMON] Support latest release"
     }
   },
   {
