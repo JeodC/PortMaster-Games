@@ -35,10 +35,21 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          # Full history drags in every binary this repo has ever tracked - GBs
-          # of it, and by far the slowest step here. We only diff a commit or
-          # two back, so take a window and deepen on a miss (see resolve_base).
+          # A full checkout pulls every binary this repo tracks - 4.6GB, and by
+          # far the slowest step here. Keep it to the metadata the purge step
+          # walks; Process ports pulls in the payloads it zips.
           fetch-depth: 50
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/build-port/
+            !/runtimes/
+            !/ports/
+            /ports/released/**/port.json
+            /ports/released/**/screenshot*
+            /ports/released/**/README.md
+            /ports/released/**/readme.md
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y zip jq gh
@@ -177,6 +188,13 @@ jobs:
           fi
           mapfile -t PORT_DIRS <<< "${{ steps.ports.outputs.ports }}"
           PORTS_JSON="docs/ports.json"
+
+          # Only metadata was checked out; pull in what we're about to zip.
+          SPARSE_ADD=()
+          for PORT_DIR in "${PORT_DIRS[@]}"; do
+            SPARSE_ADD+=("/$(dirname "$PORT_DIR")/**")
+          done
+          git sparse-checkout add "${SPARSE_ADD[@]}"
 
           RELEASE_ID=$(gh api repos/${GITHUB_REPOSITORY}/releases/tags/ports-latest --jq '.id' 2>/dev/null || true)
 
@@ -319,6 +337,14 @@ jobs:
             echo "No valid ports found on disk; refusing to purge"
             exit 0
           }
+
+          # A checkout that didn't materialize the metadata looks exactly like
+          # a mass deletion. Don't purge live ports on the strength of it.
+          EXISTING_COUNT=$(jq 'length' "$PORTS_JSON")
+          if (( ${#VALID_NAMES[@]} * 2 < EXISTING_COUNT )); then
+            echo "::error::Only ${#VALID_NAMES[@]} ports on disk vs $EXISTING_COUNT in ports.json - refusing to purge."
+            exit 1
+          fi
 
           # Prune ports.json (keep only disk-backed ports)
           VALID_NAMES_JSON=$(printf '%s\n' "${VALID_NAMES[@]}" | jq -R . | jq -s .)
