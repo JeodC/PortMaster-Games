@@ -35,7 +35,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 0
+          # Full history drags in every binary this repo has ever tracked - GBs
+          # of it, and by far the slowest step here. We only diff a commit or
+          # two back, so take a window and deepen on a miss (see resolve_base).
+          fetch-depth: 50
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y zip jq gh
@@ -53,6 +56,21 @@ jobs:
 
           FORCE="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force || 'false' }}"
           PORT_DIRS=()
+
+          # The clone is shallow, so a base can sit outside the window. Deepen
+          # until we can see it rather than silently falling back to HEAD~1 and
+          # missing ports from the commits in between.
+          have_commit() {
+            git cat-file -e "${1}^{commit}" 2>/dev/null
+          }
+
+          ensure_commit() {
+            have_commit "$1" && return 0
+            git fetch --deepen=200 --quiet 2>/dev/null || true
+            have_commit "$1" && return 0
+            git fetch --unshallow --quiet 2>/dev/null || true
+            have_commit "$1"
+          }
 
           # Resolve the diff base. We need to find every port changed since
           # this workflow last ran so we don't miss updates when multiple
@@ -96,6 +114,7 @@ jobs:
             )
           else
             BASE=$(resolve_base)
+            ensure_commit "$BASE" || BASE="HEAD~1"
             echo "Diff base: $BASE  HEAD: $(git rev-parse HEAD)"
             {
               git diff --name-only "$BASE" HEAD 2>/dev/null ||
