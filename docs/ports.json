@@ -3488,12 +3488,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/soh2/soh2/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/soh2/soh2/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/soh2.zip",
-      "date_updated": "2026-08-12T00:44",
+      "date_updated": "2026-08-26T05:26",
       "first_seen": "2025-11-11",
-      "md5": "c028f058d2d6c6defb93cc57a84e4dd6",
-      "size": 15439780,
-      "lifetime_downloads": 205,
-      "last_commit": "[SOH2] Patch for turnip driver bug"
+      "md5": "880281c8f7c6950e2e76e1aaca64b1a3",
+      "size": 15523334,
+      "lifetime_downloads": 254,
+      "last_commit": "[SOH2] Update to 5.0.1"
     }
   },
   {
