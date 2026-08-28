@@ -3877,12 +3877,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/sonictimetwisted/sonictimetwisted/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/gamemakerengine/sonictimetwisted/sonictimetwisted/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/sonictimetwisted.zip",
-      "date_updated": "2026-05-14T13:38",
+      "date_updated": "2026-08-28T11:33",
       "first_seen": "2025-05-18",
-      "md5": "0f887c0edfcb9468235b6aa8da375136",
-      "size": 97179278,
-      "lifetime_downloads": 8,
-      "last_commit": "Update readmes to add runtime requirements"
+      "md5": "4e8c380f2aa54d76acc86cdeaa1c7098",
+      "size": 97179446,
+      "lifetime_downloads": 39,
+      "last_commit": "[STT] Merge split port file at launch"
     }
   },
   {
