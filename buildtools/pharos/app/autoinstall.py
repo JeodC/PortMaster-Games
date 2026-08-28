@@ -80,6 +80,7 @@ class AutoInstaller:
 
             print(f"[EXTRACT] Extracting {zip_name} -> {base_dir}/ (flat)")
             self._extract_preserving_ports(zf, base_dir)
+            self._join_split_payloads(zf, base_dir)
 
             # Clean macOS junk
             for junk in base_dir.rglob("__MACOSX"):
@@ -112,6 +113,46 @@ class AutoInstaller:
                 if target.is_file() and self._merge_port(zf, member, target):
                     continue
             zf.extract(member, base_dir)
+
+    def _join_split_payloads(self, zf: zipfile.ZipFile, base_dir: Path) -> None:
+        groups: dict[str, list[tuple[int, str]]] = {}
+        for name in zf.namelist():
+            base, sep, index = name.rpartition(".part.")
+            if sep and index.isdigit():
+                groups.setdefault(base, []).append((int(index), name))
+
+        for base, members in sorted(groups.items()):
+            members.sort()
+            if [i for i, _ in members] != list(range(1, len(members) + 1)):
+                print(f"[SPLIT][ERROR] {base}: parts {[i for i, _ in members]} are not a "
+                      f"complete run from 001; leaving them unjoined")
+                continue
+
+            paths = [base_dir / name for _, name in members]
+            missing = [p for p in paths if not p.is_file()]
+            if missing:
+                print(f"[SPLIT][ERROR] {base}: {len(missing)} part(s) missing after extract; "
+                      f"leaving them unjoined")
+                continue
+
+            target = base_dir / base
+            tmp = target.with_name(target.name + ".joining")
+            print(f"[SPLIT] Joining {len(paths)} parts -> {target}")
+            try:
+                with open(tmp, "wb") as out:
+                    for part in paths:
+                        with open(part, "rb") as f:
+                            shutil.copyfileobj(f, out, 1024 * 1024)
+                os.replace(tmp, target)
+            except OSError as e:
+                print(f"[SPLIT][ERROR] {base}: join failed ({e}); parts kept for retry")
+                with suppress(OSError):
+                    tmp.unlink()
+                continue
+
+            for part in paths:
+                part.unlink(missing_ok=True)
+            print(f"[SPLIT] Joined {target.name} ({target.stat().st_size} bytes)")
 
     def _merge_port(self, zf: zipfile.ZipFile, member: zipfile.ZipInfo, target: Path) -> bool:
         """Reconcile an incoming .port with the one on disk. Returns True if handled

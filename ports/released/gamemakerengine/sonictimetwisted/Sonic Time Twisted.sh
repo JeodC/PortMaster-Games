@@ -23,6 +23,19 @@ GAMEDIR="/$directory/ports/sonictimetwisted"
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
 
+PORTFILE="$GAMEDIR/sonictimetwisted.port"
+if [ ! -f "$PORTFILE" ] && [ -f "$PORTFILE.part.001" ]; then
+    pm_message "First run: assembling game data (~134 MB), please wait..."
+    if cat "$PORTFILE".part.* > "$PORTFILE"; then
+        rm -f "$PORTFILE".part.*
+    else
+        rm -f "$PORTFILE"
+        pm_message "Could not assemble game data. Check for free space on your card."
+        pm_finish
+        exit 1
+    fi
+fi
+
 # Mount gmloadernext runtime
 GMLOADER="$HOME/gmloadernext"
 GMLOADER_RUNTIME="$controlfolder/libs/gmloadernext.squashfs"
