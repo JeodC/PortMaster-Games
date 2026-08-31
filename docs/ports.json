@@ -3248,12 +3248,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rpgmaker/pkmn_tectonic/pkmn_tectonic/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/rpgmaker/pkmn_tectonic/pkmn_tectonic/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/pkmn_tectonic.zip",
-      "date_updated": "2026-05-14T13:39",
+      "date_updated": "2026-08-31T11:04",
       "first_seen": "2026-02-07",
-      "md5": "432080eee8fd4c3c66ae1d0afa34306e",
-      "size": 321242,
-      "lifetime_downloads": 36,
-      "last_commit": "Update readmes to add runtime requirements"
+      "md5": "48a09e6bec3c4d8087755bac6d780446",
+      "size": 321293,
+      "lifetime_downloads": 115,
+      "last_commit": "[TECTONIC] Adjust for arkos"
     }
   },
   {
