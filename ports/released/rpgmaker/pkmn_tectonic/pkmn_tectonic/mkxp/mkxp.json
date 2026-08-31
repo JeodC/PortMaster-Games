@@ -60,7 +60,7 @@
     // is upscaled
     // (default: disabled)
     //
-    "smoothScaling": true,
+    "smoothScaling": 1,
 
 
     // Sync screen redraws to the monitor refresh rate

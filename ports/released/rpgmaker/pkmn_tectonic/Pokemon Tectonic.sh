@@ -125,6 +125,11 @@ SCENE_FILE="$GAMEDIR/Plugins/Tectonic Graphics and UI/Menus/Options/OptionScenes
 MENU_FILE="$GAMEDIR/Plugins/Tectonic Graphics and UI/Menus/Options/PokemonOptionsMenu.rb"
 [ -f "$MENU_FILE" ] && sed -i '/optionsCommands\[cmdControlsMapping = optionsCommands\.length\]/d' "$MENU_FILE"
 
+# Close the pm_message dialog before launching.
+if [ -e "$PM_PIPE" ] && command -v PortMasterDialogExit >/dev/null 2>&1; then
+    PortMasterDialogExit
+fi
+
 # Gptk — launched with stock LD path so its hotkey/kill logic isn't
 # broken by our runtime libs
 $GPTOKEYB "mkxp-z.aarch64" -c "$GAMEDIR/tectonic.gptk" &
