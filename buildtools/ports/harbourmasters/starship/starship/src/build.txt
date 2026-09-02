@@ -1,13 +1,10 @@
 set -euo pipefail
 source /root/buildtools/ports/harbourmasters/lib_build.sh
 
-# Recursive — Starship vendors deps via submodules.
 project_clone https://github.com/HarbourMasters/starship.git --recursive
+strip_upstream_cpu_option
 
-# See SoH build.txt for the rationale on building SDL2 from source but not
-# shipping libSDL2 to devices.
 build_sdl2
-
 build_libzip
 build_json
 build_tinyxml2

@@ -6,6 +6,7 @@
 # Provides:
 #   project_clone               — clone the port repo, optionally with submodules,
 #                                 honoring REPO_URL/REF/FORCE_HEAD
+#   strip_upstream_cpu_option   — drop upstream's set(CPU_OPTION ...) so -DCPU_OPTION wins
 #   project_configure_and_build — cmake configure + asset-generation target + main build
 #   build_<dep>                 — clone, configure, build, and install a common dep into /usr/local
 #   stage_libs                  — copy host libs into $PROJECT_BUILD_DIR/libs and verify NEEDED
@@ -157,6 +158,31 @@ project_clone() {
     fi
 
     submodule_update_retry "${sm_flags[@]}"
+}
+
+strip_upstream_cpu_option() {
+    local cml="$PROJECT_DIR/CMakeLists.txt"
+    local pattern='^[[:space:]]*set\(CPU_OPTION ' hits
+
+    if [[ ! -f "$cml" ]]; then
+        echo "strip_upstream_cpu_option: ERROR: $cml not found" >&2
+        return 1
+    fi
+
+    hits=$(grep -cE "$pattern" "$cml" || true)
+    if (( hits == 0 )); then
+        if grep -qF '${CPU_OPTION}' "$cml"; then
+            echo ">>> strip_upstream_cpu_option: already stripped"
+            return 0
+        fi
+        echo "strip_upstream_cpu_option: ERROR: no CPU_OPTION at all in $cml" >&2
+        echo "  Upstream changed how the CPU flag is chosen. Confirm -DCPU_OPTION still" >&2
+        echo "  reaches target_compile_options before dropping this call." >&2
+        return 1
+    fi
+
+    sed -i -E "/$pattern/d" "$cml"
+    echo ">>> strip_upstream_cpu_option: removed $hits assignment(s)"
 }
 
 # project_configure_and_build <generate-target> [extra cmake -D args...]
