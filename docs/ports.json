@@ -4183,12 +4183,12 @@
       "screenshot_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/starship/starship/screenshot.png",
       "readme_url": "https://raw.githubusercontent.com/JeodC/RHH-Ports/main/ports/released/harbourmasters/starship/starship/README.md",
       "download_url": "https://github.com/JeodC/RHH-Ports/releases/download/ports-latest/starship.zip",
-      "date_updated": "2026-07-29T22:00",
+      "date_updated": "2026-09-02T20:31",
       "first_seen": "2025-11-11",
-      "md5": "b3c06ca603293087ceae1f6a40dfa564",
-      "size": 6745126,
-      "lifetime_downloads": 177,
-      "last_commit": "[HM] Update otrgens to accept .v64 for consistency with launchscripts"
+      "md5": "b304addb7664f71cdf0b7deb0c8cf450",
+      "size": 6912465,
+      "lifetime_downloads": 344,
+      "last_commit": "[STARSHIP Build nightly 6202c44"
     }
   },
   {
